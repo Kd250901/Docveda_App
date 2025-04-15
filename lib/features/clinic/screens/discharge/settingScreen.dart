@@ -83,31 +83,118 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   title: const Text(
                     "Logout",
-                    style: TextStyle(color: DocvedaColors.primaryColor),
+                    style: TextStyle(
+                      color: DocvedaColors.primaryColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   onTap: () {
-                    Get.defaultDialog(
-                      title: "Confirm Logout",
-                      titleStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: DocvedaColors.primaryColor,
+                    Get.dialog(
+                      Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            width: Get.width * 0.85,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 25),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Log out?",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  "Are you sure you want to log out?",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () => Get.back(),
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor: Colors.grey.shade200,
+                                          foregroundColor: Colors.black87,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          side: BorderSide
+                                              .none, // Removes the blue border
+                                        ),
+                                        child: const Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          StorageHelper.clearTokens();
+                                          Get.offAll(() => const LoginScreen());
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor:
+                                              DocvedaColors.primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14),
+                                          side: BorderSide
+                                              .none, // Removes the blue border
+                                        ),
+                                        child: const Text(
+                                          "Log out",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                      middleText: "Are you sure you want to logout?",
-                      middleTextStyle: const TextStyle(fontSize: 16),
-                      backgroundColor: Colors.white,
-                      radius: 10,
-                      textCancel: "Cancel",
-                      cancelTextColor: DocvedaColors.primaryColor,
-                      textConfirm: "Logout",
-                      confirmTextColor: Colors.white,
-                      buttonColor: DocvedaColors.primaryColor,
-                      onConfirm: () {
-                        StorageHelper.clearTokens();
-                        Get.offAll(() => const LoginScreen());
-                      },
+                      barrierDismissible: true,
                     );
                   },
-                ),
+                )
               ],
             ),
           ),

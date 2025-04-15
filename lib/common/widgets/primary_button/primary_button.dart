@@ -24,6 +24,7 @@ class PrimaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(vertical: 14),
+          side: BorderSide.none,
         ),
         child: Text(
           text,
