@@ -1,24 +1,39 @@
 class DateFormatter {
   /// Converts "dd/MM/yyyy" or "dd/MM/yyyy HH:mm:ss" to "9th Feb, 25"
-  static String formatDate(String inputDate) {
+  static String formatDate(String? inputDate) {
+    if (inputDate == null || inputDate.isEmpty) return "N/A";
+
     try {
-      // Normalize date input
-      List<String> parts = inputDate.split(' ');
-      List<String> dateParts = parts[0].split('/');
+      DateTime parsedDate;
 
-      if (dateParts.length != 3) return inputDate;
+      // Handle dd/MM/yyyy or dd/MM/yyyy HH:mm:ss
+      if (inputDate.contains('/')) {
+        List<String> parts = inputDate.split(' ');
+        List<String> dateParts = parts[0].split('/');
 
-      int day = int.parse(dateParts[0]);
-      int month = int.parse(dateParts[1]);
-      int year = int.parse(dateParts[2]);
+        if (dateParts.length != 3) return inputDate;
 
+        int day = int.parse(dateParts[0]);
+        int month = int.parse(dateParts[1]);
+        int year = int.parse(dateParts[2]);
+
+        parsedDate = DateTime(year, month, day);
+      }
+      // Handle yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss
+      else if (inputDate.contains('-')) {
+        parsedDate = DateTime.parse(inputDate);
+      } else {
+        return inputDate; // unknown format
+      }
+
+      int day = parsedDate.day;
       String suffix = _getDaySuffix(day);
-      String monthName = _monthShortName(month);
-      String shortYear = year.toString().substring(2);
+      String monthName = _monthShortName(parsedDate.month);
+      String shortYear = parsedDate.year.toString().substring(2);
 
       return '$day$suffix $monthName, $shortYear';
     } catch (e) {
-      return inputDate; // fallback if parsing fails
+      return "N/A";
     }
   }
 

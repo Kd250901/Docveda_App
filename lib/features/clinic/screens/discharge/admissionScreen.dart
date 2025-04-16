@@ -75,7 +75,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
-          ? DateTime(selectedDate.year, selectedDate.month - 1, selectedDate.day)
+          ? DateTime(
+              selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
   }
@@ -83,7 +84,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   void _goToNext() {
     setState(() {
       selectedDate = isMonthly
-          ? DateTime(selectedDate.year, selectedDate.month + 1, selectedDate.day)
+          ? DateTime(
+              selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
   }
@@ -109,7 +111,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                   title: Center(
                     child: DocvedaText(
                       text: DocvedaTexts.admission,
-                      style: TextStyleFont.subheading.copyWith(color: DocvedaColors.white),
+                      style: TextStyleFont.subheading
+                          .copyWith(color: DocvedaColors.white),
                     ),
                   ),
                   showBackArrow: true,
@@ -149,12 +152,14 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItems),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: DocvedaSizes.spaceBtwItems),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DocvedaText(
-                            text: "${patients.length} ${DocvedaTexts.patientFound}",
+                            text:
+                                "${patients.length} ${DocvedaTexts.patientFound}",
                             style: TextStyleFont.subheading,
                           ),
                           DocvedaText(
@@ -167,7 +172,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                     const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                     Expanded(
                       child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItems),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: DocvedaSizes.spaceBtwItems),
                         itemCount: patients.length,
                         itemBuilder: (context, index) {
                           final patient = patients[index];
@@ -176,8 +182,11 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                               "name": "${patient["Patient_Name"] ?? ""}".trim(),
                               "age": patient["Age"]?.toString() ?? "N/A",
                               "gender": patient["Gender"] ?? "N/A",
-                              "admission": DateFormatter.formatDate(patient["Registration_Date"]) ?? "N/A",
-                              "registrationNumber": patient["Registration_No"] ?? "N/A",
+                              "admission": DateFormatter.formatDate(
+                                      patient["Registration_Date"]) ??
+                                  "N/A",
+                              "registrationNumber":
+                                  patient["Registration_No"] ?? "N/A",
                               "finalSettlement": "",
                             },
                             index: index,
@@ -207,17 +216,21 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                       ),
                       child: PrimaryButton(
                         onPressed: () {
-                          if (patients.isEmpty || selectedPatientIndex >= patients.length) return;
+                          if (patients.isEmpty ||
+                              selectedPatientIndex >= patients.length) return;
 
                           final selected = patients[selectedPatientIndex];
                           Get.to(
                             () => ViewReportScreen(
                               patientName:
-                                  "${selected["f_DV_First_Name"] ?? ""} ${selected["f_DV_Last_Name"] ?? ""}".trim(),
+                                  "${selected["f_DV_First_Name"] ?? ""} ${selected["f_DV_Last_Name"] ?? ""}"
+                                      .trim(),
                               age: selected["Ageyear"] ?? "N/A",
                               gender: selected["Gender"] ?? "N/A",
-                              admissionDate: selected["f_HIS_IPD_Reg_Date"] ?? "",
-                              dischargeDate: selected["f_HIS_IPD_Discharge_Date"] ?? "",
+                              admissionDate:
+                                  selected["f_HIS_IPD_Reg_Date"] ?? "",
+                              dischargeDate:
+                                  selected["f_HIS_IPD_Discharge_Date"] ?? "",
                               finalSettlement: "",
                             ),
                           );

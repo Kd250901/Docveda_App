@@ -22,12 +22,52 @@ class Opdpaymentscreen extends StatefulWidget {
 
 class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
   int selectedPatientIndex = 0;
+  // final ApiService apiService = ApiService();
+  // late Future<List<Map<String, dynamic>>> patientData;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   patientData = fetchDashboardData();
+  // }
 
   void handlePatientSelection(int index) {
     setState(() {
       selectedPatientIndex = index;
     });
   }
+
+// Future<List<Map<String, dynamic>>> fetchDashboardData() async {
+  //   final storage = FlutterSecureStorage();
+  //   String? accessToken = await storage.read(key: 'accessToken');
+
+  //   if (accessToken != null) {
+  //     try {
+  //       final response = await apiService.dischargeData(accessToken);
+
+  //       if (response != null && response['statusCode'] == 401) {
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           Get.offAll(() => const LoginScreen());
+  //         });
+  //         return [];
+  //       }
+
+  //       if (response != null && response['data'] != null) {
+  //         return List<Map<String, dynamic>>.from(response['data']);
+  //       } else {
+  //         return [];
+  //       }
+  //     } catch (e) {
+  //       print('Error fetching dashboard data: $e');
+  //       return [];
+  //     }
+  //   } else {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       Get.offAll(() => const LoginScreen());
+  //     });
+  //     return [];
+  //   }
+  // }
 
   DateTime selectedDate = DateTime.now();
   bool isMonthly = false;

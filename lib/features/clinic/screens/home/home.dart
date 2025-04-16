@@ -79,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // List<Map<String, dynamic>> dashboardData = [];
   // late Future<List<Map<String, dynamic>>> dashboardData;
   late Future<List<Map<String, dynamic>>> dashboardDataFuture;
+  bool isMonthly = false; // default to daily
 
   //  Optional: A loading flag to show a loader while fetching data
   //bool isLoading = true;
@@ -101,20 +102,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //get item => null;
 
-  Future<List<Map<String, dynamic>>> fetchDashboardData() async {
-    String? accessToken =
-        await StorageHelper.getAccessToken(); // Read the access token
+  Future<List<Map<String, dynamic>>> fetchDashboardData(
+      {required bool isMonthly}) async {
+    print(
+        ' API Called with mode: ${isMonthly ? 'monthly' : 'daily'} on date: $selectedDate');
+    String? accessToken = await StorageHelper.getAccessToken();
 
-    // Check if accessToken is valid
     if (accessToken != null) {
       try {
-        // print("Triggering getCards with accessToken: $accessToken");
+        final response = await apiService.getCards(
+          accessToken,
+          context,
+          isMonthly: isMonthly, // Pass isMonthly here
+        );
 
-        final response = await apiService.getCards(accessToken, context);
-        // final response = await apiService.getCards("", context);
-        // print("Full API response: $response");
-
-        print("response of get cards ${response}");
         if (response != null && response['statusCode'] == 401) {
           StorageHelper.clearTokens();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -123,32 +124,23 @@ class _HomeScreenState extends State<HomeScreen> {
           return [];
         }
 
-        // Check if the response is valid and contains 'results'
         if (response != null && response['results'] != null) {
           List<Map<String, dynamic>> allResults =
               List<Map<String, dynamic>>.from(response['results']);
 
-          // Filter only the desired titles
-          List<Map<String, dynamic>> filteredResults = allResults.where((item) {
+          return allResults.where((item) {
             final title = item['Dashboard_Title']?.toString() ?? '';
             return title == "Todays Registration" ||
                 title == "Todays Collection";
           }).toList();
-          //  print(
-          //      "Filtered Dashboard Items: $filteredResults"); // 👈 See what passed
-
-          return filteredResults;
         } else {
-          print('Invalid data format or missing "results" field.');
           return [];
         }
       } catch (e) {
-        // Catch and print any errors during the API request
         print('Error fetching dashboard data: $e');
         return [];
       }
     } else {
-      // 🔐 If accessToken is missing, go to LoginScreen
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.offAll(() => const LoginScreen());
       });
@@ -179,17 +171,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
+  //bool isMonthly = false;
 
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month - 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
+
+      dashboardDataFuture =
+          fetchDashboardData(isMonthly: isMonthly); // ⬅️ API call
     });
   }
 
@@ -197,17 +189,18 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month + 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
+
+      dashboardDataFuture =
+          fetchDashboardData(isMonthly: isMonthly); // ⬅️ API call
     });
   }
 
-  void _handleToggle(bool value) {
+  void _handleToggle(bool newValue) {
     setState(() {
-      isMonthly = value;
+      isMonthly = newValue;
+      dashboardDataFuture = fetchDashboardData(isMonthly: isMonthly);
     });
   }
 
@@ -262,10 +255,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Image.asset(
                                           DocvedaImages.protectLogo,
-                                          width:
-                                              DocvedaSizes.imageWidthS, // Set the width as per your requirement
-                                          height:
-                                              DocvedaSizes.imageHeightS, // Set the height as per your requirement
+                                          width: DocvedaSizes
+                                              .imageWidthS, // Set the width as per your requirement
+                                          height: DocvedaSizes
+                                              .imageHeightS, // Set the height as per your requirement
                                           fit: BoxFit
                                               .contain, // Ensures the image fits well
                                         ),
@@ -316,7 +309,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   alignment: Alignment.center,
                       //   child: DocvedaToggle(),
                       // ),
-                      const SizedBox(height: DocvedaSizes.spaceBtwItemsS), // New spacing below toggle
+                      const SizedBox(
+                          height: DocvedaSizes
+                              .spaceBtwItemsS), // New spacing below toggle
                       // const SizedBox(height: DocvedaSizes.spaceBtwItems,),
                       DocvedaToggle(
                         isMonthly: isMonthly,
@@ -383,7 +378,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             },
                             borderRadius: BorderRadius.circular(12),
-                            splashColor: DocvedaColors.buttonPrimary.withOpacity(0.2),
+                            splashColor:
+                                DocvedaColors.buttonPrimary.withOpacity(0.2),
                             child: SizedBox(
                               height: DocvedaSizes.pieChartHeight,
                               child: DocvedaCard(
@@ -400,7 +396,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Icon(Iconsax.activity),
-                                      const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
+                                      const SizedBox(
+                                          width: DocvedaSizes.spaceBtwItemsS),
                                       Expanded(
                                         child: Column(
                                           mainAxisAlignment:
@@ -413,17 +410,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ['Dashboard_Title'] ??
                                                   "N/A",
                                               style: TextStyleFont.dashboardcard
-                                                  .copyWith(fontSize: DocvedaSizes.fontSize),
+                                                  .copyWith(
+                                                      fontSize: DocvedaSizes
+                                                          .fontSize),
                                               softWrap: true,
                                               maxLines: 2,
                                             ),
-                                            const SizedBox(height: DocvedaSizes.xs),
+                                            const SizedBox(
+                                                height: DocvedaSizes.xs),
                                             Text(
                                               filteredData[index]['Records']
                                                       ?.toString() ??
                                                   '0',
                                               style: TextStyleFont.subheading
-                                                  .copyWith(fontSize: DocvedaSizes.fontSize),
+                                                  .copyWith(
+                                                      fontSize: DocvedaSizes
+                                                          .fontSize),
                                             ),
                                           ],
                                         ),
@@ -447,7 +449,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             Row(
                               children: [
                                 Icon(Iconsax.arrange_circle_2),
-                                const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
+                                const SizedBox(
+                                    width: DocvedaSizes.spaceBtwItemsS),
                                 Text(
                                   "123",
                                   style: TextStyle(
@@ -531,7 +534,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Iconsax.activity),
-                                  const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
+                                  const SizedBox(
+                                      width: DocvedaSizes.spaceBtwItemsS),
                                   Expanded(
                                     child: Column(
                                       mainAxisAlignment:
@@ -579,7 +583,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: 2,
                         itemBuilder: (_, index) => DocvedaCard(
                           child: Padding(
-                            padding: const EdgeInsets.only(left: DocvedaSizes.xs),
+                            padding:
+                                const EdgeInsets.only(left: DocvedaSizes.xs),
                             child: SizedBox(
                               height: double.infinity,
                               width: double.infinity,
@@ -625,7 +630,8 @@ void _showLogoutDialog(BuildContext context) {
           horizontal: DocvedaSizes.dialogBoxHorizontal,
         ), // Adjust padding
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DocvedaSizes.cardRadiusMd), // Rounded corners
+          borderRadius: BorderRadius.circular(
+              DocvedaSizes.cardRadiusMd), // Rounded corners
         ),
         content: SizedBox(
           width: DocvedaSizes.dialogBoxWidth, // Set a smaller width
