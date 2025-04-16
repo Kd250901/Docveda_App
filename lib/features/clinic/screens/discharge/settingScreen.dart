@@ -39,9 +39,9 @@ class SettingsScreen extends StatelessWidget {
                 ListTile(
                   leading: Icon(Iconsax.user, color: DocvedaColors.primary),
                   title: const DocvedaText(text: DocvedaTexts.profile),
-                  subtitle:
-                      const DocvedaText(text: DocvedaTexts.profileDesc),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
+                  subtitle: const DocvedaText(text: DocvedaTexts.profileDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios,
+                      size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const ProfileScreen()),
                 ),
                 const Divider(),
@@ -51,8 +51,10 @@ class SettingsScreen extends StatelessWidget {
                   leading:
                       Icon(Iconsax.notification, color: DocvedaColors.primary),
                   title: const DocvedaText(text: DocvedaTexts.notifications),
-                  subtitle: const DocvedaText(text: DocvedaTexts.notificationsDesc),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
+                  subtitle:
+                      const DocvedaText(text: DocvedaTexts.notificationsDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios,
+                      size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const NotificationsScreen()),
                 ),
                 const Divider(),
@@ -62,7 +64,8 @@ class SettingsScreen extends StatelessWidget {
                   leading: Icon(Iconsax.chart, color: DocvedaColors.primary),
                   title: const Text(DocvedaTexts.analytics),
                   subtitle: const Text(DocvedaTexts.analyticsDesc),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
+                  trailing: const Icon(Icons.arrow_forward_ios,
+                      size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const AnalyticsScreen()),
                 ),
                 const Divider(),
@@ -72,7 +75,8 @@ class SettingsScreen extends StatelessWidget {
                   leading: Icon(Iconsax.lock, color: DocvedaColors.primary),
                   title: const Text(DocvedaTexts.changePassword),
                   subtitle: const Text(DocvedaTexts.changePasswordDesc),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
+                  trailing: const Icon(Icons.arrow_forward_ios,
+                      size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(() => const NewPasswordScreen()),
                 ),
                 const Divider(),
@@ -99,10 +103,13 @@ class SettingsScreen extends StatelessWidget {
                           child: Container(
                             width: Get.width * 0.85,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: DocvedaSizes.spaceBtwItemsLg, vertical: DocvedaSizes.spaceBtwSectionsVertical),
+                                horizontal: DocvedaSizes.spaceBtwItemsLg,
+                                vertical:
+                                    DocvedaSizes.spaceBtwSectionsVertical),
                             decoration: BoxDecoration(
                               color: DocvedaColors.white,
-                              borderRadius: BorderRadius.circular(DocvedaSizes.borderaRadiusXlg),
+                              borderRadius: BorderRadius.circular(
+                                  DocvedaSizes.borderaRadiusXlg),
                               boxShadow: [
                                 BoxShadow(
                                   color: DocvedaColors.black,
@@ -123,7 +130,8 @@ class SettingsScreen extends StatelessWidget {
                                     color: DocvedaColors.black,
                                   ),
                                 ),
-                                const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+                                const SizedBox(
+                                    height: DocvedaSizes.spaceBtwItemsS),
                                 const Text(
                                   DocvedaTexts.logoutDesc,
                                   style: TextStyle(
@@ -131,7 +139,8 @@ class SettingsScreen extends StatelessWidget {
                                     color: DocvedaColors.black,
                                   ),
                                 ),
-                                const SizedBox(height: DocvedaSizes.spaceBtwItemsXlg),
+                                const SizedBox(
+                                    height: DocvedaSizes.spaceBtwItemsXlg),
                                 Row(
                                   children: [
                                     Expanded(
@@ -139,14 +148,16 @@ class SettingsScreen extends StatelessWidget {
                                         onPressed: () => Get.back(),
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
-                                          backgroundColor: DocvedaColors.softGrey,
+                                          backgroundColor:
+                                              DocvedaColors.softGrey,
                                           foregroundColor: DocvedaColors.black,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(DocvedaSizes.borderRadiusXmd),
+                                            borderRadius: BorderRadius.circular(
+                                                DocvedaSizes.borderRadiusXmd),
                                           ),
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: DocvedaSizes.paddingVertical),
+                                              vertical:
+                                                  DocvedaSizes.paddingVertical),
                                           side: BorderSide
                                               .none, // Removes the blue border
                                         ),
@@ -157,7 +168,8 @@ class SettingsScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
+                                    const SizedBox(
+                                        width: DocvedaSizes.spaceBtwItemsS),
                                     Expanded(
                                       child: ElevatedButton(
                                         onPressed: () {
@@ -169,11 +181,12 @@ class SettingsScreen extends StatelessWidget {
                                           backgroundColor:
                                               DocvedaColors.primaryColor,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(DocvedaSizes.borderRadiusXmd),
+                                            borderRadius: BorderRadius.circular(
+                                                DocvedaSizes.borderRadiusXmd),
                                           ),
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: DocvedaSizes.paddingVertical),
+                                              vertical:
+                                                  DocvedaSizes.paddingVertical),
                                           side: BorderSide
                                               .none, // Removes the blue border
                                         ),
@@ -202,16 +215,16 @@ class SettingsScreen extends StatelessWidget {
           ),
 
           Center(
-              child: DocvedaText(
-                text: "App Version\nv 1.0.1",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: DocvedaColors.darkGrey,
-                  fontSize: DocvedaSizes.fontSizeSm,
-                ),
+            child: DocvedaText(
+              text: "App Version\nv 1.0.1",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: DocvedaColors.darkGrey,
+                fontSize: DocvedaSizes.fontSizeSm,
               ),
             ),
-            const SizedBox(height: 10),
+          ),
+          const SizedBox(height: 10),
         ],
       ),
     );

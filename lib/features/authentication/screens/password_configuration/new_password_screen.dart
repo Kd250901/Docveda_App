@@ -18,15 +18,19 @@ class NewPasswordScreen extends StatefulWidget {
 }
 
 class _NewPasswordScreenState extends State<NewPasswordScreen> {
+  final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   String _errorMessage = "";
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
+  bool isOldPasswordVisible = false;
 
   void _resetPassword() {
-    if (_passwordController.text.isEmpty ||
+    // Validate if all fields are filled
+    if (_oldPasswordController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       setState(() {
         _errorMessage = DocvedaTexts.fieldRequiredErrorMsg;
@@ -49,6 +53,37 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       // Navigate to Login Screen and remove all previous screens
       Get.offAll(() => const LoginScreen());
     }
+
+    // Validate if old password matches the new password
+    if (_passwordController.text == _oldPasswordController.text) {
+      setState(() {
+        _errorMessage = "Old password cannot be the same as the new password.";
+      });
+      return;
+    }
+
+    // Validate if new password and confirm password match
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        _errorMessage = "New password and confirm password do not match.";
+      });
+      return;
+    }
+
+    // If no errors, clear the error message and proceed
+    setState(() {
+      _errorMessage = "";
+    });
+
+    // Show success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: DocvedaText(text: "Password Reset Successfully!"),
+      ),
+    );
+
+    // Navigate to Login Screen and remove all previous screens
+    Get.offAll(() => const LoginScreen());
   }
 
   @override
@@ -99,6 +134,12 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                   isPasswordVisible ? Iconsax.eye : Iconsax.eye_slash,
                 ),
               ),
+            ),
+            const SizedBox(height: DocvedaSizes.spaceBtwInputFields),
+
+            const DocvedaText(
+              text: "Confirm your new password:",
+              style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwInputFields),
 

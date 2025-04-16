@@ -102,14 +102,20 @@ class ApiService {
 
   Future<Map<String, dynamic>?> getCards(
     String accessToken,
-    BuildContext context,
-  ) async {
+    BuildContext context, {
+    required bool isMonthly,
+  }) async {
     try {
+      // Assuming the API needs a query parameter like ?mode=monthly/daily
+      String mode =
+          isMonthly ? 'monthly' : 'daily'; // Set the mode based on toggle
+
       final response = await http.get(
-        Uri.parse('$baseUrl/dashboard/getCards/admin'),
+        Uri.parse('$baseUrl/dashboard/getCards/admin?mode=$mode'),
+        // Pass mode in query params
         headers: {
           'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json', // Ensure correct headers
+          'Content-Type': 'application/json',
         },
       );
 
@@ -117,7 +123,6 @@ class ApiService {
         return json.decode(response.body);
       } else if (response.statusCode == 401) {
         print('Unauthorized access. Redirecting to login...');
-        // Redirect user to login or authentication screen
         Get.offAllNamed('/login');
         return null;
       } else {

@@ -199,7 +199,9 @@ class _BottomSheetContent extends StatelessWidget {
             const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
             const Text(
               DocvedaTexts.updateAppTitle,
-              style: TextStyle(fontSize: DocvedaSizes.fontSizeLg, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: DocvedaSizes.fontSizeLg,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwItemsSm),
             const Text(

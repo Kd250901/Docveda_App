@@ -10,13 +10,34 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
 
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
+
+  @override
+  _ForgotPasswordState createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  late TextEditingController usernameController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller here
+    usernameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // Dispose the controller when the widget is removed from the tree
+    usernameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    TextEditingController usernameController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
@@ -51,8 +72,7 @@ class ForgotPassword extends StatelessWidget {
             // ),
             const SizedBox(height: DocvedaSizes.spaceBtwItems),
             DocvedaText(
-              text:
-                  DocvedaTexts.forgotPasswordDesc,
+              text: DocvedaTexts.forgotPasswordDesc,
               style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwSections * 2),

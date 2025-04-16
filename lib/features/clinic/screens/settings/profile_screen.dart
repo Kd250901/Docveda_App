@@ -21,7 +21,7 @@
 //       statusBarBrightness: Brightness.dark,
 //     ),
 //   );
-    
+
 //     return Scaffold(
 //       backgroundColor: DocvedaColors.lightGrey,
 //       body: SafeArea(
@@ -50,7 +50,7 @@
 //                             ),
 //                             showBackArrow: true,
 //                           ),
-                          
+
 //                           const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
 //                           const CircleAvatar(
 //                             radius: DocvedaSizes.profileAvatarRadius,
@@ -140,15 +140,21 @@
 //   }
 // }
 
-
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool showVersion = false;
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +183,8 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: DocvedaColors.primaryColor,
                 image: DecorationImage(
-                  image: AssetImage(DocvedaImages.clinicLogo), // ➕ Use your image
+                  image:
+                      AssetImage(DocvedaImages.clinicLogo), // ➕ Use your image
                   colorFilter: ColorFilter.mode(
                     DocvedaColors.primaryColor.withOpacity(0.85),
                     BlendMode.darken,
@@ -212,8 +219,6 @@ class ProfileScreen extends StatelessWidget {
             _buildInfoTile("Email ID", "shaileshk@gmail.com"),
             _buildInfoTile("Area", "Tilak Nagar"),
             _buildInfoTile("City", "Mumbai"),
-
-            
           ],
         ),
       ),
