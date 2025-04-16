@@ -7,10 +7,10 @@ import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:iconsax/iconsax.dart';
 
 class Opdbillsscreen extends StatefulWidget {
   const Opdbillsscreen({super.key});
@@ -75,9 +75,9 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: Text(
-                      'OPD Bills',
+                      DocvedaTexts.opdBills,
                       style: TextStyleFont.subheading.copyWith(
-                        color: Colors.white,
+                        color: DocvedaColors.white,
                       ),
                     ),
                   ),
@@ -89,8 +89,8 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
                   isMonthly: isMonthly,
-                  textColor: Colors.white,
-                  fontSize: 14,
+                  textColor: DocvedaColors.white,
+                  fontSize: DocvedaSizes.fontSizeSm,
                 ),
               ],
             ),
@@ -104,14 +104,14 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "6 Patients Found",
+                    "6 ${DocvedaTexts.patientFound}",
                     style: TextStyleFont.subheading,
                   ),
                   Text(
-                    "Select a patient's card to download the report",
+                    DocvedaTexts.depositePatientDesc,
                     style: TextStyleFont.body,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                   Expanded(
                     child: ListView.builder(
                       itemCount: patients.length,
@@ -138,17 +138,17 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
               vertical: 10,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: DocvedaColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  spreadRadius: 2,
+                  color: DocvedaColors.black.withOpacity(0.1),
+                  blurRadius: DocvedaSizes.borderRadiusMd,
+                  spreadRadius: DocvedaSizes.spreadRadius,
                 ),
               ],
             ),
             child: PrimaryButton(
-              text: 'View Report',
+              text: DocvedaTexts.viewReport,
               backgroundColor: DocvedaColors.primaryColor,
               onPressed: () {
                 final selectedPatient = patients[selectedPatientIndex];

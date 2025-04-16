@@ -3,6 +3,7 @@ import 'package:docveda_app/common/widgets/app_text_field/app_text_field.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart'; // Import Iconsax for icons
@@ -28,11 +29,11 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     if (_passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       setState(() {
-        _errorMessage = "Both fields are required.";
+        _errorMessage = DocvedaTexts.fieldRequiredErrorMsg;
       });
     } else if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _errorMessage = "Passwords do not match.";
+        _errorMessage = DocvedaTexts.passwordNotMatchMsg;
       });
     } else {
       setState(() {
@@ -42,7 +43,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: DocvedaText(text: "Password Reset Successfully!")),
+            content: DocvedaText(text: DocvedaTexts.resetPasswordSuccess)),
       );
 
       // Navigate to Login Screen and remove all previous screens
@@ -55,30 +56,30 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
-          text: "Change Password",
-          style: TextStyle(color: Colors.white),
+          text: DocvedaTexts.changePassword,
+          style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItemsLg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: Image.asset(
                 DocvedaImages.darkAppLogo,
-                height: 80, // Adjust size as needed
+                height: DocvedaSizes.imgHeightMd, // Adjust size as needed
               ),
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwSections),
 
             const DocvedaText(
-              text: "Enter your new password:",
-              style: TextStyle(fontSize: 16),
+              text: DocvedaTexts.enterPassword,
+              style: TextStyle(fontSize: DocvedaSizes.fontSizeMd),
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwInputFields),
 
@@ -87,7 +88,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               controller: _passwordController,
               obscureText: !isPasswordVisible,
               prefixIcon: Iconsax.password_check,
-              label: "New Password",
+              label: DocvedaTexts.newPassword,
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -106,7 +107,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               controller: _confirmPasswordController,
               obscureText: !isConfirmPasswordVisible,
               prefixIcon: Iconsax.password_check,
-              label: "Confirm Password",
+              label: DocvedaTexts.confirmPassword,
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -118,13 +119,13 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
 
             // Error Message
             if (_errorMessage.isNotEmpty)
               DocvedaText(
                 text: _errorMessage,
-                style: const TextStyle(color: Colors.red),
+                style: const TextStyle(color: DocvedaColors.error),
               ),
 
             const SizedBox(height: DocvedaSizes.spaceBtwSections),
@@ -132,7 +133,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
             // Reset Password Button
             PrimaryButton(
                 onPressed: _resetPassword,
-                text: 'Change Password',
+                text: DocvedaTexts.changePassword,
                 backgroundColor: DocvedaColors.primaryColor),
 
             Center(
@@ -145,9 +146,9 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                   );
                 },
                 child: const DocvedaText(
-                  text: "Login",
+                  text: DocvedaTexts.login,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: DocvedaSizes.fontSizeLg,
                     color: DocvedaColors.primaryColor,
                     decoration: TextDecoration.none,
                   ),

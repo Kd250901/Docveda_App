@@ -5,6 +5,8 @@ import 'package:docveda_app/features/clinic/screens/home/analytics/analytics.dar
 import 'package:docveda_app/features/clinic/screens/home/notifications/notifications.dart';
 import 'package:docveda_app/features/clinic/screens/settings/profile_screen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,12 +20,12 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
-          text: "Settings",
-          style: TextStyle(color: Colors.white),
+          text: DocvedaTexts.settings,
+          style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: Column(
         children: [
@@ -31,15 +33,15 @@ class SettingsScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
                 // Profile
                 ListTile(
                   leading: Icon(Iconsax.user, color: DocvedaColors.primary),
-                  title: const DocvedaText(text: "Profile"),
+                  title: const DocvedaText(text: DocvedaTexts.profile),
                   subtitle:
-                      const DocvedaText(text: "Manage your profile details"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      const DocvedaText(text: DocvedaTexts.profileDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const ProfileScreen()),
                 ),
                 const Divider(),
@@ -48,9 +50,9 @@ class SettingsScreen extends StatelessWidget {
                 ListTile(
                   leading:
                       Icon(Iconsax.notification, color: DocvedaColors.primary),
-                  title: const DocvedaText(text: "Notifications"),
-                  subtitle: const DocvedaText(text: "Notification preferences"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  title: const DocvedaText(text: DocvedaTexts.notifications),
+                  subtitle: const DocvedaText(text: DocvedaTexts.notificationsDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const NotificationsScreen()),
                 ),
                 const Divider(),
@@ -58,9 +60,9 @@ class SettingsScreen extends StatelessWidget {
                 // Analytics
                 ListTile(
                   leading: Icon(Iconsax.chart, color: DocvedaColors.primary),
-                  title: const Text("Analytics"),
-                  subtitle: const Text("View usage statistics"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  title: const Text(DocvedaTexts.analytics),
+                  subtitle: const Text(DocvedaTexts.analyticsDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(const AnalyticsScreen()),
                 ),
                 const Divider(),
@@ -68,9 +70,9 @@ class SettingsScreen extends StatelessWidget {
                 // Change Password
                 ListTile(
                   leading: Icon(Iconsax.lock, color: DocvedaColors.primary),
-                  title: const Text("Change Password"),
-                  subtitle: const Text("Update your login credentials"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  title: const Text(DocvedaTexts.changePassword),
+                  subtitle: const Text(DocvedaTexts.changePasswordDesc),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: DocvedaSizes.fontSizeMd),
                   onTap: () => Get.to(() => const NewPasswordScreen()),
                 ),
                 const Divider(),
@@ -82,10 +84,10 @@ class SettingsScreen extends StatelessWidget {
                     color: DocvedaColors.primaryColor,
                   ),
                   title: const Text(
-                    "Logout",
+                    DocvedaTexts.logout,
                     style: TextStyle(
                       color: DocvedaColors.primaryColor,
-                      fontSize: 16,
+                      fontSize: DocvedaSizes.fontSizeMd,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -93,18 +95,18 @@ class SettingsScreen extends StatelessWidget {
                     Get.dialog(
                       Center(
                         child: Material(
-                          color: Colors.transparent,
+                          color: DocvedaColors.transparent,
                           child: Container(
                             width: Get.width * 0.85,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 25),
+                                horizontal: DocvedaSizes.spaceBtwItemsLg, vertical: DocvedaSizes.spaceBtwSectionsVertical),
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
+                              color: DocvedaColors.white,
+                              borderRadius: BorderRadius.circular(DocvedaSizes.borderaRadiusXlg),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 12,
+                                  color: DocvedaColors.black,
+                                  blurRadius: DocvedaSizes.blurRadius,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
@@ -114,22 +116,22 @@ class SettingsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Log out?",
+                                  DocvedaTexts.logoutTitle,
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: DocvedaSizes.fontSizeXlg,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
+                                    color: DocvedaColors.black,
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
                                 const Text(
-                                  "Are you sure you want to log out?",
+                                  DocvedaTexts.logoutDesc,
                                   style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black54,
+                                    fontSize: DocvedaSizes.fontSizeSm,
+                                    color: DocvedaColors.black,
                                   ),
                                 ),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: DocvedaSizes.spaceBtwItemsXlg),
                                 Row(
                                   children: [
                                     Expanded(
@@ -137,25 +139,25 @@ class SettingsScreen extends StatelessWidget {
                                         onPressed: () => Get.back(),
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
-                                          backgroundColor: Colors.grey.shade200,
-                                          foregroundColor: Colors.black87,
+                                          backgroundColor: DocvedaColors.softGrey,
+                                          foregroundColor: DocvedaColors.black,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                                BorderRadius.circular(DocvedaSizes.borderRadiusXmd),
                                           ),
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 14),
+                                              vertical: DocvedaSizes.paddingVertical),
                                           side: BorderSide
                                               .none, // Removes the blue border
                                         ),
                                         child: const Text(
-                                          "Cancel",
+                                          DocvedaTexts.cancel,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w500),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
                                     Expanded(
                                       child: ElevatedButton(
                                         onPressed: () {
@@ -168,17 +170,17 @@ class SettingsScreen extends StatelessWidget {
                                               DocvedaColors.primaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                                BorderRadius.circular(DocvedaSizes.borderRadiusXmd),
                                           ),
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 14),
+                                              vertical: DocvedaSizes.paddingVertical),
                                           side: BorderSide
                                               .none, // Removes the blue border
                                         ),
                                         child: const Text(
-                                          "Log out",
+                                          DocvedaTexts.logout,
                                           style: TextStyle(
-                                            color: Colors.white,
+                                            color: DocvedaColors.white,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -199,20 +201,17 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
 
-          // App version text pinned at the bottom
-          const Padding(
-            padding: EdgeInsets.only(bottom: 16),
-            child: Center(
-              child: Text(
-                "App Version\nv 1.0.1",
+          Center(
+              child: DocvedaText(
+                text: "App Version\nv 1.0.1",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+                  color: DocvedaColors.darkGrey,
+                  fontSize: DocvedaSizes.fontSizeSm,
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 10),
         ],
       ),
     );

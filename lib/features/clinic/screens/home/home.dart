@@ -19,6 +19,7 @@ import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
+import 'package:docveda_app/utils/notification/notification_services.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,7 +72,7 @@ final List<String> dashboardItems = [
 // ];
 
 class _HomeScreenState extends State<HomeScreen> {
-  // NotificationServices notificationServices = NotificationServices();
+  NotificationServices notificationServices = NotificationServices();
   final ApiService apiService = ApiService();
 
   //  Declare the variable to store API response
@@ -88,14 +89,14 @@ class _HomeScreenState extends State<HomeScreen> {
     //dashboardData = fetchDashboardData();
     // loadDashboardData(); // Call API when screen initializes
     dashboardDataFuture = fetchDashboardData();
-    // notificationServices.requestNotificationPermission();
-    // notificationServices.firebaseInit(context);
-    // notificationServices.setupInteractMessage(context);
-    // // notificationServices.isTokenRefresh();
-    // notificationServices.getDeviceToken().then((value) {
-    //   print("Device Token: ");
-    //   print(value);
-    // });
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.setupInteractMessage(context);
+    // notificationServices.isTokenRefresh();
+    notificationServices.getDeviceToken().then((value) {
+      print("Device Token: ");
+      print(value);
+    });
   }
 
   //get item => null;
@@ -262,14 +263,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Image.asset(
                                           DocvedaImages.protectLogo,
                                           width:
-                                              20, // Set the width as per your requirement
+                                              DocvedaSizes.imageWidthS, // Set the width as per your requirement
                                           height:
-                                              20, // Set the height as per your requirement
+                                              DocvedaSizes.imageHeightS, // Set the height as per your requirement
                                           fit: BoxFit
                                               .contain, // Ensures the image fits well
                                         ),
                                         const SizedBox(
-                                          width: 8,
+                                          width: DocvedaSizes.spaceBtwItemsSm,
                                         ), // Adds spacing between image and text
                                         Text(
                                           DocvedaTexts.logo,
@@ -291,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.only(
-                                right: 8.0,
+                                right: DocvedaSizes.spaceBtwItemsSm,
                               ), // Adjust as needed
                               child: IconButton(
                                 icon: const Icon(
@@ -308,14 +309,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(
-                        height: 10,
+                        height: DocvedaSizes.spaceBtwItemsS,
                       ), // Increased spacing before toggle
                       // Increased spacing
                       // Align(
                       //   alignment: Alignment.center,
                       //   child: DocvedaToggle(),
                       // ),
-                      const SizedBox(height: 10), // New spacing below toggle
+                      const SizedBox(height: DocvedaSizes.spaceBtwItemsS), // New spacing below toggle
                       // const SizedBox(height: DocvedaSizes.spaceBtwItems,),
                       DocvedaToggle(
                         isMonthly: isMonthly,
@@ -326,11 +327,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPrevious: _goToPrevious,
                         onNext: _goToNext,
                         isMonthly: isMonthly,
-                        textColor: Colors.white,
-                        fontSize: 14,
+                        textColor: DocvedaColors.white,
+                        fontSize: DocvedaSizes.fontSizeSm,
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
                     ],
                   ),
                 ),
@@ -348,18 +349,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: 16, // Adjust as needed
+                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
                           fontWeight:
                               FontWeight.bold, // Optional: Adjust weight
-                          color: Colors.black, // Optional: Change color
+                          color: DocvedaColors.black, // Optional: Change color
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
                       DocvedaGridLayout(
                         itemCount: dashboardData.length,
                         itemBuilder: (_, index) => Material(
-                          color: Colors.transparent,
+                          color: DocvedaColors.transparent,
                           child: InkWell(
                             onTap: () {
                               if (index < dashboardData.length) {
@@ -382,16 +383,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             },
                             borderRadius: BorderRadius.circular(12),
-                            splashColor: Colors.blue.withOpacity(0.2),
+                            splashColor: DocvedaColors.buttonPrimary.withOpacity(0.2),
                             child: SizedBox(
-                              height: 200,
+                              height: DocvedaSizes.pieChartHeight,
                               child: DocvedaCard(
                                 child: Container(
                                   height: double.infinity,
                                   width: double.infinity,
                                   alignment: Alignment.center,
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
+                                    horizontal: DocvedaSizes.spaceBtwItemsS,
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -399,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Icon(Iconsax.activity),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
                                       Expanded(
                                         child: Column(
                                           mainAxisAlignment:
@@ -412,17 +413,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ['Dashboard_Title'] ??
                                                   "N/A",
                                               style: TextStyleFont.dashboardcard
-                                                  .copyWith(fontSize: 12),
+                                                  .copyWith(fontSize: DocvedaSizes.fontSize),
                                               softWrap: true,
                                               maxLines: 2,
                                             ),
-                                            const SizedBox(height: 4),
+                                            const SizedBox(height: DocvedaSizes.xs),
                                             Text(
                                               filteredData[index]['Records']
                                                       ?.toString() ??
                                                   '0',
                                               style: TextStyleFont.subheading
-                                                  .copyWith(fontSize: 12),
+                                                  .copyWith(fontSize: DocvedaSizes.fontSize),
                                             ),
                                           ],
                                         ),
@@ -436,17 +437,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
                       DocvedaCard(
                         width: double.infinity,
-                        height: 60,
+                        height: DocvedaSizes.cardHeightLg,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 Icon(Iconsax.arrange_circle_2),
-                                const SizedBox(width: 10),
+                                const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
                                 Text(
                                   "123",
                                   style: TextStyle(
@@ -470,10 +471,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: 16, // Adjust as needed
+                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
                           fontWeight:
                               FontWeight.bold, // Optional: Adjust weight
-                          color: Colors.black, // Optional: Change color
+                          color: DocvedaColors.black, // Optional: Change color
                         ),
                       ),
 
@@ -530,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Iconsax.activity),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
                                   Expanded(
                                     child: Column(
                                       mainAxisAlignment:
@@ -566,10 +567,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: 16, // Adjust as needed
+                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
                           fontWeight:
                               FontWeight.bold, // Optional: Adjust weight
-                          color: Colors.black, // Optional: Change color
+                          color: DocvedaColors.black, // Optional: Change color
                         ),
                       ),
 
@@ -578,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: 2,
                         itemBuilder: (_, index) => DocvedaCard(
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 5.0),
+                            padding: const EdgeInsets.only(left: DocvedaSizes.xs),
                             child: SizedBox(
                               height: double.infinity,
                               width: double.infinity,
@@ -601,7 +602,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 30),
+                      const SizedBox(height: DocvedaSizes.spaceBtwSections),
                     ],
                   ),
                 ),
@@ -620,14 +621,14 @@ void _showLogoutDialog(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 30,
+          vertical: DocvedaSizes.dialogBoxVertical,
+          horizontal: DocvedaSizes.dialogBoxHorizontal,
         ), // Adjust padding
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Rounded corners
+          borderRadius: BorderRadius.circular(DocvedaSizes.cardRadiusMd), // Rounded corners
         ),
         content: SizedBox(
-          width: 75, // Set a smaller width
+          width: DocvedaSizes.dialogBoxWidth, // Set a smaller width
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -636,7 +637,7 @@ void _showLogoutDialog(BuildContext context) {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: DocvedaSizes.spaceBtwItems),
               Divider(),
               TextButton(
                 onPressed: () {
@@ -644,7 +645,7 @@ void _showLogoutDialog(BuildContext context) {
                 },
                 child: const Text(
                   "All Devices",
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: DocvedaColors.error),
                 ),
               ),
               Divider(),
@@ -654,7 +655,7 @@ void _showLogoutDialog(BuildContext context) {
                 },
                 child: const Text(
                   "Current Device",
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: DocvedaColors.error),
                 ),
               ),
               Divider(),

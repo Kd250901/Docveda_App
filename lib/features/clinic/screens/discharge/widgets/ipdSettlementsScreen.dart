@@ -7,10 +7,10 @@ import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:iconsax/iconsax.dart';
 
 class Ipdsettlementsscreen extends StatefulWidget {
   const Ipdsettlementsscreen({super.key});
@@ -69,9 +69,9 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: Text(
-                      'IPD Settlement',
+                      DocvedaTexts.ipdSettlement,
                       style: TextStyleFont.subheading.copyWith(
-                        color: Colors.white,
+                        color: DocvedaColors.white,
                       ),
                     ),
                   ),
@@ -83,8 +83,8 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
                   isMonthly: isMonthly,
-                  textColor: Colors.white,
-                  fontSize: 14,
+                  textColor: DocvedaColors.white,
+                  fontSize: DocvedaSizes.fontSizeSm,
                 ),
               ],
             ),
@@ -97,19 +97,19 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                 /// **Patient List Section**
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItems),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${patients.length} Patients Found",
+                          "${patients.length} ${DocvedaTexts.patientFound}",
                           style: TextStyleFont.subheading,
                         ),
                         Text(
-                          "Select a patient's card to download the report",
+                          DocvedaTexts.depositePatientDesc,
                           style: TextStyleFont.body,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
 
                         /// **Scrollable List of Patient Cards**
                         Expanded(
@@ -136,15 +136,15 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.05,
-                      vertical: 10,
+                      vertical: DocvedaSizes.cardRadiusSm,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          spreadRadius: 2,
+                          color: DocvedaColors.black.withOpacity(0.1),
+                          blurRadius: DocvedaSizes.borderRadiusMd,
+                          spreadRadius: DocvedaSizes.spreadRadius,
                         ),
                       ],
                     ),
@@ -164,7 +164,7 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                           ),
                         );
                       },
-                      text: 'View Report',
+                      text: DocvedaTexts.viewReport,
                       backgroundColor: DocvedaColors.primaryColor,
                     ),
                   ),

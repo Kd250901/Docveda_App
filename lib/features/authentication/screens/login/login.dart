@@ -1,7 +1,6 @@
 import 'package:docveda_app/common/styles/spacing_styles.dart';
 import 'package:docveda_app/features/authentication/screens/login/widgets/login_form.dart';
 import 'package:docveda_app/features/authentication/screens/login/widgets/login_header.dart';
-import 'package:docveda_app/features/clinic/screens/home/home.dart';
 import 'package:docveda_app/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

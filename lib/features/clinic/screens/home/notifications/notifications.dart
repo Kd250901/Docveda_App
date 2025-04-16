@@ -1,4 +1,6 @@
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -9,15 +11,15 @@ class NotificationsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Notifications",
-          style: TextStyle(color: Colors.white),
+          DocvedaTexts.notifications,
+          style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
         itemCount: 20, // Number of notifications (replace with dynamic data)
         itemBuilder: (context, index) {
           return Card(
@@ -26,10 +28,10 @@ class NotificationsScreen extends StatelessWidget {
             child: ListTile(
               leading: const Icon(
                 Icons.notifications,
-                color: Colors.deepPurple,
+                color: DocvedaColors.primaryColor,
               ),
-              title: Text("Notification ${index + 1}"),
-              subtitle: const Text("This is a sample notification message."),
+              title: Text("${DocvedaTexts.notificationTitle} ${index + 1}"),
+              subtitle: const Text(DocvedaTexts.notificationsDesc),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
                 // Handle notification click

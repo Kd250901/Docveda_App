@@ -1,4 +1,6 @@
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -9,30 +11,30 @@ class AnalyticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Analytics", style: TextStyle(color: Colors.white)),
+        title: const Text(DocvedaTexts.analytics, style: TextStyle(color: DocvedaColors.white)),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Sales Overview",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              DocvedaTexts.salesOverview,
+              style: TextStyle(fontSize: DocvedaSizes.fontSizeLg, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            SizedBox(height: 200, child: _buildPieChart()),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+            SizedBox(height: DocvedaSizes.pieChartHeight, child: _buildPieChart()),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
             const Text(
-              "Revenue Growth",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              DocvedaTexts.revenueGrowth,
+              style: TextStyle(fontSize: DocvedaSizes.fontSizeLg, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            SizedBox(height: 200, child: _buildLineChart()),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+            SizedBox(height: DocvedaSizes.pieChartHeight, child: _buildLineChart()),
           ],
         ),
       ),
@@ -44,10 +46,10 @@ class AnalyticsScreen extends StatelessWidget {
     return PieChart(
       PieChartData(
         sections: [
-          PieChartSectionData(value: 40, color: Colors.blue, title: '40%'),
-          PieChartSectionData(value: 30, color: Colors.red, title: '30%'),
-          PieChartSectionData(value: 20, color: Colors.green, title: '20%'),
-          PieChartSectionData(value: 10, color: Colors.orange, title: '10%'),
+          PieChartSectionData(value: DocvedaSizes.sec1, color: DocvedaColors.buttonPrimary, title: '40%'),
+          PieChartSectionData(value: DocvedaSizes.sec2, color: DocvedaColors.error, title: '30%'),
+          PieChartSectionData(value: DocvedaSizes.sec3, color: DocvedaColors.success, title: '20%'),
+          PieChartSectionData(value: DocvedaSizes.sec4, color: DocvedaColors.warning, title: '10%'),
         ],
       ),
     );
@@ -72,8 +74,8 @@ class AnalyticsScreen extends StatelessWidget {
               const FlSpot(6, 4),
             ],
             isCurved: true,
-            color: Colors.deepPurple,
-            barWidth: 4,
+            color: DocvedaColors.primaryColor,
+            barWidth: DocvedaSizes.xs,
           ),
         ],
       ),

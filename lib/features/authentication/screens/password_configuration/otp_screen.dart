@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/app_text_field/app_text_field.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
-import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/password_configuration/new_password_screen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -83,8 +84,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Widget _buildOtpField(BuildContext context, int index) {
     return SizedBox(
-      height: 68,
-      width: 48,
+      height: DocvedaSizes.otpFieldHeight,
+      width: DocvedaSizes.otpFieldWidth,
       child: RawKeyboardListener(
         focusNode: FocusNode(),
         onKey: (event) => _onKeyEvent(event, index),
@@ -114,9 +115,9 @@ class _OtpScreenState extends State<OtpScreen> {
 
     setState(() {
       if (enteredOtp.length < 6) {
-        _errorMessage = "Please enter all 6 digits.";
+        _errorMessage = DocvedaTexts.enterAllDigitsErrorMsg;
       } else if (enteredOtp != _correctOtp) {
-        _errorMessage = "Invalid OTP. Please try again.";
+        _errorMessage = DocvedaTexts.invalidOTPErrorMsg;
       } else {
         _errorMessage = "";
         Navigator.pushReplacement(
@@ -131,7 +132,7 @@ class _OtpScreenState extends State<OtpScreen> {
     // TODO: Call your resend OTP API here
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("OTP has been resent")),
+      const SnackBar(content: Text(DocvedaTexts.OTPReset)),
     );
 
     startTimer(); // Restart timer after resend
@@ -142,15 +143,15 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
-          text: "OTP Verification",
-          style: TextStyle(color: Colors.white),
+          text: DocvedaTexts.OTPVerification,
+          style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItemsLg),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -159,17 +160,17 @@ class _OtpScreenState extends State<OtpScreen> {
               Center(
                 child: Image.asset(
                   DocvedaImages.darkAppLogo,
-                  height: 80, // Adjust size as needed
+                  height: DocvedaSizes.imgHeightMd, // Adjust size as needed
                   width: double.infinity,
                 ),
               ),
               // const SizedBox(height: 8),
               const DocvedaText(
-                text: "Enter the 6-digit OTP sent to your email",
+                text: DocvedaTexts.enterOTPMsg,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: DocvedaSizes.fontSizeMd),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
               Form(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -179,13 +180,13 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
               if (_errorMessage.isNotEmpty)
                 DocvedaText(
                   text: _errorMessage,
-                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                  style: const TextStyle(color: DocvedaColors.error, fontSize: 14),
                 ),
-              const SizedBox(height: 20),
+              const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
 
               // Timer or Resend Option
               _isResendVisible
@@ -198,12 +199,12 @@ class _OtpScreenState extends State<OtpScreen> {
                           minimumSize: Size(0, 0),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           foregroundColor:
-                              Colors.grey, // match timer text color
+                              DocvedaColors.grey, // match timer text color
                         ),
                         child: const DocvedaText(
-                          text: "Resend OTP",
+                          text: DocvedaTexts.resendOTP,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: DocvedaSizes.fontSizeSm,
                             color: DocvedaColors.primaryColor,
                             decoration: TextDecoration.none, // remove underline
                           ),
@@ -216,14 +217,14 @@ class _OtpScreenState extends State<OtpScreen> {
                         text:
                             "Resend OTP in 00:${_start.toString().padLeft(2, '0')}",
                         style: const TextStyle(
-                            fontSize: 14, color: DocvedaColors.primaryColor),
+                            fontSize: DocvedaSizes.fontSizeSm, color: DocvedaColors.primaryColor),
                       ),
                     ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
               PrimaryButton(
                   onPressed: _verifyOtp,
-                  text: 'Verify OTP',
+                  text: DocvedaTexts.verifyOTP,
                   backgroundColor: DocvedaColors.primaryColor),
 
               const SizedBox(height: 20),
@@ -232,9 +233,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   Navigator.pop(context); // Goes back to the previous screen
                 },
                 child: const DocvedaText(
-                  text: "Go Back",
+                  text: DocvedaTexts.goBack,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: DocvedaSizes.fontSizeLg,
                     color: DocvedaColors.primaryColor,
                     decoration: TextDecoration.none,
                   ),

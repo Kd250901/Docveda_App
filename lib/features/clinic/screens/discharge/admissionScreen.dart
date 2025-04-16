@@ -7,6 +7,8 @@ import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +75,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
-          ? DateTime(
-              selectedDate.year, selectedDate.month - 1, selectedDate.day)
+          ? DateTime(selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
   }
@@ -82,8 +83,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   void _goToNext() {
     setState(() {
       selectedDate = isMonthly
-          ? DateTime(
-              selectedDate.year, selectedDate.month + 1, selectedDate.day)
+          ? DateTime(selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
   }
@@ -108,9 +108,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: DocvedaText(
-                      text: 'Admission',
-                      style: TextStyleFont.subheading
-                          .copyWith(color: Colors.white),
+                      text: DocvedaTexts.admission,
+                      style: TextStyleFont.subheading.copyWith(color: DocvedaColors.white),
                     ),
                   ),
                   showBackArrow: true,
@@ -121,7 +120,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
                   isMonthly: isMonthly,
-                  textColor: Colors.white,
+                  textColor: DocvedaColors.white,
                   fontSize: 14,
                 ),
               ],
@@ -141,7 +140,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: DocvedaText(text: 'No registered patients found.'),
+                    child: DocvedaText(text: DocvedaTexts.noPatientFound),
                   );
                 }
 
@@ -150,94 +149,81 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItems),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DocvedaText(
-                            text: "${patients.length} Patients Found",
+                            text: "${patients.length} ${DocvedaTexts.patientFound}",
                             style: TextStyleFont.subheading,
                           ),
                           DocvedaText(
-                            text:
-                                "Select a patient's card to download the report",
+                            text: DocvedaTexts.depositePatientDesc,
                             style: TextStyleFont.body,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ListView.builder(
-                          itemCount: patients.length,
-                          itemBuilder: (context, index) {
-                            final patient = patients[index];
-                            return PatientCard(
-                              patient: {
-                                "name":
-                                    "${patient["Patient_Name"] ?? ""}".trim(),
-                                "age": patient["Age"]?.toString() ?? "N/A",
-                                "gender": patient["Gender"] ?? "N/A",
-                                "admission": DateFormatter.formatDate(
-                                        patient["Registration_Date"]) ??
-                                    "N/A",
-                                "registrationNumber":
-                                    patient["Registration_No"] ?? "N/A",
-                                "finalSettlement": "",
-                              },
-                              index: index,
-                              selectedPatientIndex: selectedPatientIndex,
-                              onPatientSelected: handlePatientSelection,
-                            );
-                          },
-                        ),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItems),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientCard(
+                            patient: {
+                              "name": "${patient["Patient_Name"] ?? ""}".trim(),
+                              "age": patient["Age"]?.toString() ?? "N/A",
+                              "gender": patient["Gender"] ?? "N/A",
+                              "admission": DateFormatter.formatDate(patient["Registration_Date"]) ?? "N/A",
+                              "registrationNumber": patient["Registration_No"] ?? "N/A",
+                              "finalSettlement": "",
+                            },
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+                          );
+                        },
                       ),
                     ),
 
-                    /// View Report Button
-                    SafeArea(
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: PrimaryButton(
-                          onPressed: () {
-                            if (patients.isEmpty ||
-                                selectedPatientIndex >= patients.length) return;
+                    /// View Report Button (Sticky to bottom)
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: DocvedaSizes.spaceBtwItemsS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DocvedaColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DocvedaColors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          if (patients.isEmpty || selectedPatientIndex >= patients.length) return;
 
-                            final selected = patients[selectedPatientIndex];
-                            Get.to(
-                              () => ViewReportScreen(
-                                patientName:
-                                    "${selected["f_DV_First_Name"] ?? ""} ${selected["f_DV_Last_Name"] ?? ""}"
-                                        .trim(),
-                                age: selected["Ageyear"] ?? "N/A",
-                                gender: selected["Gender"] ?? "N/A",
-                                admissionDate:
-                                    selected["f_HIS_IPD_Reg_Date"] ?? "",
-                                dischargeDate:
-                                    selected["f_HIS_IPD_Discharge_Date"] ?? "",
-                                finalSettlement: "",
-                              ),
-                            );
-                          },
-                          text: 'View Report',
-                          backgroundColor: DocvedaColors.primaryColor,
-                        ),
+                          final selected = patients[selectedPatientIndex];
+                          Get.to(
+                            () => ViewReportScreen(
+                              patientName:
+                                  "${selected["f_DV_First_Name"] ?? ""} ${selected["f_DV_Last_Name"] ?? ""}".trim(),
+                              age: selected["Ageyear"] ?? "N/A",
+                              gender: selected["Gender"] ?? "N/A",
+                              admissionDate: selected["f_HIS_IPD_Reg_Date"] ?? "",
+                              dischargeDate: selected["f_HIS_IPD_Discharge_Date"] ?? "",
+                              finalSettlement: "",
+                            ),
+                          );
+                        },
+                        text: DocvedaTexts.viewReport,
+                        backgroundColor: DocvedaColors.primaryColor,
                       ),
                     ),
                   ],

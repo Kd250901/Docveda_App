@@ -7,6 +7,7 @@ import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -76,9 +77,9 @@ class _DepositsscreenState extends State<Depositsscreen> {
                   DocvedaAppBar(
                     title: Center(
                       child: Text(
-                        'Deposits',
+                        DocvedaTexts.deposits,
                         style: TextStyleFont.subheading.copyWith(
-                          color: Colors.white,
+                          color: DocvedaColors.white,
                         ),
                       ),
                     ),
@@ -90,8 +91,8 @@ class _DepositsscreenState extends State<Depositsscreen> {
                     onPrevious: _goToPrevious,
                     onNext: _goToNext,
                     isMonthly: isMonthly,
-                    textColor: Colors.white,
-                    fontSize: 14,
+                    textColor: DocvedaColors.white,
+                    fontSize: DocvedaSizes.fontSizeSm,
                   ),
                 ],
               ),
@@ -104,12 +105,12 @@ class _DepositsscreenState extends State<Depositsscreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("6 Patients Found", style: TextStyleFont.subheading),
+                    Text("6 ${DocvedaTexts.patientFound}", style: TextStyleFont.subheading),
                     Text(
-                      "Select a patient's card to download the report",
+                      DocvedaTexts.depositePatientDesc,
                       style: TextStyleFont.body,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                     Expanded(
                       child: ListView.builder(
                         itemCount: patients.length,
@@ -133,20 +134,20 @@ class _DepositsscreenState extends State<Depositsscreen> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.05,
-                vertical: 10,
+                vertical: DocvedaSizes.cardRadiusSm,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DocvedaColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: DocvedaColors.black.withOpacity(0.1),
                     blurRadius: 8,
                     spreadRadius: 2,
                   ),
                 ],
               ),
               child: PrimaryButton(
-                text: 'View Report',
+                text: DocvedaTexts.viewReport,
                 backgroundColor: DocvedaColors.primaryColor,
                 onPressed: () {
                   Get.to(

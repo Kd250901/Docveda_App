@@ -15,7 +15,7 @@ class DocvedaLoginHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image(
-          height: 60,
+          height: DocvedaSizes.imgHeightMd,
           width: double.infinity,
           fit: BoxFit
               .contain, // Use BoxFit.cover if you want it to fill the space

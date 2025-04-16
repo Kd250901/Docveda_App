@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "463411523741",
+    "project_id": "docveda-app",
+    "storage_bucket": "docveda-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463411523741:android:4b07f3091cf26250366474",
+        "android_client_info": {
+          "package_name": "com.example.docveda_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHYPdqGLmD6uXCoUPKT8slGkAsWc-kxlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

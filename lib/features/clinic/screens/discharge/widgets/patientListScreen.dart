@@ -1,5 +1,6 @@
 import 'package:docveda_app/common/widgets/card/patient_card.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 
 List<Map<String, dynamic>> patients = [
@@ -41,10 +42,10 @@ class _PatientListScreenState extends State<PatientListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Patients", style: TextStyle(color: Colors.white)),
+        title: const Text(DocvedaTexts.patients, style: TextStyle(color: DocvedaColors.white)),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: ListView.builder(
         itemCount: patients.length,

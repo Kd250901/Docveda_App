@@ -7,6 +7,8 @@ import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -117,9 +119,9 @@ class _DischargescreenState extends State<Dischargescreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: DocvedaText(
-                      text: 'Discharge',
+                      text: DocvedaTexts.discharge,
                       style: TextStyleFont.subheading.copyWith(
-                        color: Colors.white,
+                        color: DocvedaColors.white,
                       ),
                     ),
                   ),
@@ -139,8 +141,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                           onPrevious: _goToPrevious,
                           onNext: _goToNext,
                           isMonthly: isMonthly,
-                          textColor: Colors.white,
-                          fontSize: 14,
+                          textColor: DocvedaColors.white,
+                          fontSize: DocvedaSizes.fontSizeSm,
                         ),
                       ],
                     ),
@@ -160,7 +162,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                       child: DocvedaText(text: 'Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: DocvedaText(text: 'No discharged patients found.'),
+                    child: DocvedaText(text: DocvedaTexts.noDischargePatientFound),
                   );
                 }
 
@@ -174,17 +176,17 @@ class _DischargescreenState extends State<Dischargescreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DocvedaText(
-                            text: "${patients.length} Patients Found",
+                            text: "${patients.length} ${DocvedaTexts.patientFound}",
                             style: TextStyleFont.subheading.copyWith(
-                              fontSize: screenWidth < 360 ? 12 : 14,
+                              fontSize: screenWidth < 360 ? DocvedaSizes.fontSize : DocvedaSizes.fontSizeSm,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                           DocvedaText(
                             text:
-                                "Select a patient's card to download the report",
+                                DocvedaTexts.depositePatientDesc,
                             style: TextStyleFont.body.copyWith(
-                              fontSize: screenWidth < 360 ? 10 : 12,
+                              fontSize: screenWidth < 360 ? DocvedaSizes.fontSizeXsm : DocvedaSizes.fontSize,
                             ),
                           ),
                         ],
@@ -193,13 +195,13 @@ class _DischargescreenState extends State<Dischargescreen> {
                     const SizedBox(height: 8),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.spaceBtwItemsS), // changed 14 to 10
                         child: ListView.builder(
                           itemCount: patients.length,
                           itemBuilder: (context, index) {
                             final patient = patients[index];
                             return Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
+                              padding: const EdgeInsets.only(bottom: DocvedaSizes.spaceBtwItemsS),
                               child: PatientCard(
                                 patient: {
                                   "name":
@@ -231,15 +233,15 @@ class _DischargescreenState extends State<Dischargescreen> {
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(
                           horizontal: screenWidth * 0.05,
-                          vertical: 10,
+                          vertical: DocvedaSizes.spaceBtwItemsS,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: DocvedaColors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              spreadRadius: 2,
+                              color: DocvedaColors.black.withOpacity(0.1),
+                              blurRadius: DocvedaSizes.borderRadiusMd,
+                              spreadRadius: DocvedaSizes.spreadRadius,
                             ),
                           ],
                         ),
@@ -249,9 +251,9 @@ class _DischargescreenState extends State<Dischargescreen> {
                                 patients[selectedPatientIndex];
                             // Add report logic/navigation here
                             print(
-                                "View report for: ${selectedPatient["f_DV_First_Name"]}");
+                                "${DocvedaTexts.viewReportFor} ${selectedPatient["f_DV_First_Name"]}");
                           },
-                          text: 'View Report',
+                          text: DocvedaTexts.viewReport,
                           backgroundColor: DocvedaColors.primaryColor,
                         ),
                       ),

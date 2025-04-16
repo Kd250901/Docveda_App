@@ -7,9 +7,9 @@ import 'package:docveda_app/navigation_menu.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/encryption/pkec_keys.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
-import 'package:docveda_app/utils/bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
@@ -43,18 +43,13 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
       String codeVerifier = pkceKeys["code_verifier"] ?? "";
       String codeChallenger = pkceKeys["code_challenge"] ?? "";
 
-      print(" Username: $username");
-      print(" Password: $password");
-      print(" codeChallenger: $codeChallenger");
-      print(" codeVerifier: $codeVerifier");
-
       if (username.isEmpty || password.isEmpty) {
         Get.snackbar(
           "Error",
-          "Email and password are required",
+          DocvedaTexts.loginErrorMsg,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          backgroundColor: DocvedaColors.error,
+          colorText: DocvedaColors.white,
         );
         return;
       }
@@ -65,26 +60,15 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
         password,
         codeChallenger,
       );
-      print(" Auth Code Response: $authCodeResponse");
 
       if (!authCodeResponse.containsKey("authCode") &&
           !authCodeResponse.containsKey("code")) {
-        throw Exception("Authorization code not received.");
+        throw Exception(DocvedaTexts.authorizationErrorMsg);
       }
 
       String authCode = authCodeResponse["code"]; // Ensure this is correct
 
-      print("Received Authorization Code: $codeVerifier"); // Force unwrap
-      print("Received Authorization Code: $codeChallenger");
-
       final tokenResponse = await apiService.issueToken(authCode, codeVerifier);
-      // print(" Full Token Response: $tokenResponse"); // Add this line
-
-      //  Fetch User Access
-      // final userAccess = await apiService.getUserAccess(roleId, accessToken);
-      // print("User Access: $userAccess");
-
-      print("accessToken from response : ${tokenResponse["accessToken"]}");
       await StorageHelper.storeTokens(
         tokenResponse["accessToken"],
         tokenResponse["idToken"],
@@ -96,11 +80,11 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
     } catch (e) {
       print(" Login Error: $e");
       Get.snackbar(
-        "Login Failed",
+        DocvedaTexts.loginFailedErrorMsg,
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: DocvedaColors.error,
+        colorText: DocvedaColors.white,
       );
     } finally {
       setState(() {
@@ -121,13 +105,13 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
             // Email
             DocvedaTextFormField(
                 controller: usernameController,
-                label: "Username",
+                label: DocvedaTexts.username,
                 prefixIcon: Iconsax.direct_right),
             const SizedBox(height: DocvedaSizes.spaceBtwInputFields),
             DocvedaTextFormField(
               controller: passwordController,
               prefixIcon: Iconsax.password_check,
-              label: "Password",
+              label: DocvedaTexts.password,
               obscureText: !isPasswordVisible,
               suffixIcon: IconButton(
                 onPressed: () {
@@ -157,8 +141,8 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
                       },
                     ),
                     const DocvedaText(
-                      text: "Remember me",
-                      style: TextStyle(fontSize: 12),
+                      text: DocvedaTexts.rememberMe,
+                      style: TextStyle(fontSize: DocvedaSizes.inputFieldRadius),
                     ),
                   ],
                 ),
@@ -167,8 +151,8 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
                 TextButton(
                   onPressed: () => Get.to(() => const ForgotPassword()),
                   child: const DocvedaText(
-                    text: "Forgot Password ?",
-                    style: TextStyle(fontSize: 12),
+                    text: DocvedaTexts.forgotPassword,
+                    style: TextStyle(fontSize: DocvedaSizes.inputFieldRadius),
                   ),
                 ),
               ],
@@ -177,35 +161,8 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
 
             PrimaryButton(
                 onPressed: loginUser,
-                text: 'Log In',
+                text: DocvedaTexts.login,
                 backgroundColor: DocvedaColors.primaryColor)
-            // // Sign In Button
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     // onPressed: loginUser,
-            //     onPressed: () {
-            //       BottomSheetUtils.showCustomBottomSheet(
-            //         context: context,
-            //         child: const _BottomSheetContent(),
-            //       );
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor:
-            //           DocvedaColors.primaryColor, // ✅ Button background color
-            //       foregroundColor: Colors.white, // ✅ Text color
-            //       shadowColor: Colors.transparent, // ✅ Removes shadow
-            //       overlayColor:
-            //           Colors.transparent, // ✅ Removes blue highlight on press
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(
-            //           8,
-            //         ), // Optional: Adjust border radius
-            //       ),
-            //     ),
-            //     child: const DocvedaText(text: "Sign In"),
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -227,7 +184,7 @@ class _BottomSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(DocvedaSizes.defaultSpace),
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.35,
         child: Column(
@@ -237,41 +194,24 @@ class _BottomSheetContent extends StatelessWidget {
             // No extra top padding or margin
             Image.asset(
               DocvedaImages.updateApp,
-              height: 150,
+              height: DocvedaSizes.imgHeightLs,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
             const Text(
-              'New Updates Available!',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              DocvedaTexts.updateAppTitle,
+              style: TextStyle(fontSize: DocvedaSizes.fontSizeLg, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsSm),
             const Text(
-              'Update application to continue using',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              DocvedaTexts.updateAppDesc,
+              style: TextStyle(fontSize: 14, color: DocvedaColors.grey),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: DocvedaSizes.defaultSpace),
             PrimaryButton(
                 onPressed: _launchPlayStore,
-                text: 'Go to Playstore',
+                text: DocvedaTexts.goToPlaystore,
                 backgroundColor: DocvedaColors.primaryColor)
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     onPressed: _launchPlayStore,
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: DocvedaColors.primaryColor,
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(30),
-            //       ),
-            //       padding: const EdgeInsets.symmetric(vertical: 14),
-            //     ),
-            //     child: const Text(
-            //       'Go to Playstore',
-            //       style: TextStyle(fontSize: 16),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

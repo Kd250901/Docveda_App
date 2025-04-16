@@ -1,5 +1,7 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 
@@ -26,15 +28,15 @@ class ViewReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
-          text: "Discharge Report",
-          style: TextStyle(color: Colors.white),
+          text: DocvedaTexts.dischargeRepost,
+          style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        foregroundColor: DocvedaColors.white,
+        iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -42,11 +44,11 @@ class ViewReportScreen extends StatelessWidget {
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(DocvedaSizes.buttonRadius),
               ),
-              color: Colors.white,
+              color: DocvedaColors.white,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,12 +58,12 @@ class ViewReportScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: "Manrope",
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: DocvedaSizes.fontSizeXlg,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Divider(color: Colors.grey.shade300),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSm),
+                    Divider(color: DocvedaColors.lightGrey),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSm),
                     _buildInfoRow("Age", age.toString()),
                     _buildInfoRow("Gender", gender),
                     _buildInfoRow("Admission Date", admissionDate),
@@ -72,7 +74,7 @@ class ViewReportScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
 
             // Download Button without background or border
             SizedBox(
@@ -81,7 +83,7 @@ class ViewReportScreen extends StatelessWidget {
                 onPressed: () {
                   // Handle report download
                 },
-                text: 'Download Report',
+                text: DocvedaTexts.downloadReport,
                 backgroundColor: DocvedaColors.primaryColor,
                 // No background color or border here
               ),
@@ -94,7 +96,7 @@ class ViewReportScreen extends StatelessWidget {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: DocvedaSizes.xs),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -103,16 +105,16 @@ class ViewReportScreen extends StatelessWidget {
             style: const TextStyle(
               fontFamily: "Manrope",
               fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: Colors.grey,
+              fontSize: DocvedaSizes.fontSizeMd,
+              color: DocvedaColors.grey,
             ),
           ),
           Text(
             value,
             style: const TextStyle(
               fontFamily: "Manrope",
-              fontSize: 16,
-              color: Colors.black,
+              fontSize: DocvedaSizes.fontSizeMd,
+              color: DocvedaColors.black,
             ),
           ),
         ],

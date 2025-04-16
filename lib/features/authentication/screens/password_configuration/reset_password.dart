@@ -1,6 +1,7 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,13 +28,13 @@ class ResetPassword extends StatelessWidget {
               // Image
               Image(
                 image: const AssetImage(DocvedaImages.darkAppLogo),
-                height: 150,
+                height: DocvedaSizes.imgHeightLs,
               ),
               // const SizedBox(height: DocvedaSizes.spaceBtwSections,),
 
               // Title & Subtitle
               DocvedaText(
-                text: "Reset Password",
+                text: DocvedaTexts.resetPassword,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -41,8 +42,7 @@ class ResetPassword extends StatelessWidget {
                 height: DocvedaSizes.spaceBtwItems,
               ),
               DocvedaText(
-                text:
-                    "Your Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.",
+                text: DocvedaTexts.resetPasswordDesc,
                 style: Theme.of(context).textTheme.labelMedium,
                 textAlign: TextAlign.center,
               ),
@@ -54,7 +54,7 @@ class ResetPassword extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                     onPressed: () => Get.back(),
-                    child: const DocvedaText(text: "Done")),
+                    child: const DocvedaText(text: DocvedaTexts.done)),
               )
             ],
           ),

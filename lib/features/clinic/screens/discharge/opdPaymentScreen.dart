@@ -7,6 +7,8 @@ import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -68,9 +70,9 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: DocvedaText(
-                      text: 'OPD Payments',
+                      text: DocvedaTexts.opdPayments,
                       style: TextStyleFont.subheading.copyWith(
-                        color: Colors.white,
+                        color: DocvedaColors.white,
                       ),
                     ),
                   ),
@@ -82,8 +84,8 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
                   isMonthly: isMonthly,
-                  textColor: Colors.white,
-                  fontSize: 14,
+                  textColor: DocvedaColors.white,
+                  fontSize: DocvedaSizes.fontSizeSm,
                 ),
               ],
             ),
@@ -96,13 +98,13 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 6),
+                  const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                   DocvedaText(
-                    text: "6 Patients Found",
+                    text: "6 ${DocvedaTexts.patientFound}",
                     style: TextStyleFont.subheading,
                   ),
                   DocvedaText(
-                    text: "Select a patient's card to download the report",
+                    text: DocvedaTexts.depositePatientDesc,
                     style: TextStyleFont.body,
                   ),
                   // const SizedBox(height: 2),
@@ -131,20 +133,20 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
             width: double.infinity,
             padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.05,
-              vertical: 10,
+              vertical: DocvedaSizes.spaceBtwItemsS,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: DocvedaColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  spreadRadius: 2,
+                  color: DocvedaColors.black.withOpacity(0.1),
+                  blurRadius: DocvedaSizes.borderRadiusMd,
+                  spreadRadius: DocvedaSizes.spreadRadius,
                 ),
               ],
             ),
             child: SizedBox(
-              height: 55,
+              height: DocvedaSizes.cardHeight,
               width: double.infinity,
               child: PrimaryButton(
                 onPressed: () {
@@ -162,7 +164,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                     ),
                   );
                 },
-                text: 'View Report',
+                text: DocvedaTexts.viewReport,
                 backgroundColor: DocvedaColors.primaryColor,
               ),
             ),
