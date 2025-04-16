@@ -3,7 +3,7 @@ import 'package:docveda_app/features/clinic/screens/home/notifications/notificat
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:docveda_app/features/clinic/screens/home/home.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/helpers/helper_functions.dart';
@@ -15,6 +15,10 @@ class NavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
     final darkMode = DocvedaHelperFunctions.isDarkMode(context);
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+
+    List pageNames = ['Analytics','Dashboard','Notifications'];
 
     return Scaffold(
       bottomNavigationBar: Container(
@@ -38,8 +42,22 @@ class NavigationMenu extends StatelessWidget {
             height: 80,
             elevation: 0,
             selectedIndex: controller.selectedIndex.value,
-            onDestinationSelected:
-                (index) => controller.selectedIndex.value = index,
+            onDestinationSelected: (index) async {
+              print('Index $index');
+              controller.selectedIndex.value = index;
+              // Log Firebase Analytics Event
+              await analytics.logEvent(
+                name: "navigation_selected",
+                parameters: {
+                  "index": index,
+                  "screen_name": pageNames[index],
+                },
+              ).then((value) {
+                print("Analytics event logged successfully");
+              }).catchError((error) {
+                print("Failed to log event: $error");
+              });
+            },
             backgroundColor:
                 Colors
                     .transparent, // Make NavigationBar transparent to use Container's color
