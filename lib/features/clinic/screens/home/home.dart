@@ -7,23 +7,26 @@ import 'package:docveda_app/common/widgets/section_heading/section_heading.dart'
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/admissionScreen.dart';
+import 'package:docveda_app/features/clinic/screens/admission/admissionScreen.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/dischargeScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/opdPaymentScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/settingScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/widgets/depositsScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/widgets/ipdSettlementsScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/widgets/opdBillsScreen.dart';
+import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
+import 'package:docveda_app/features/clinic/screens/settings/settingScreen.dart';
+import 'package:docveda_app/features/clinic/screens/bedTransferScreen/bedTransferScreen.dart';
+import 'package:docveda_app/features/clinic/screens/depositScreen/depositsScreen.dart';
+import 'package:docveda_app/features/clinic/screens/ipdSettlement/ipdSettlementsScreen.dart';
+import 'package:docveda_app/features/clinic/screens/opdBills/opdBillsScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
+import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:docveda_app/utils/notification/notification_services.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -89,11 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     //dashboardData = fetchDashboardData();
     // loadDashboardData(); // Call API when screen initializes
-    dashboardDataFuture = fetchDashboardData();
+    dashboardDataFuture = fetchDashboardData(
+      isMonthly: isMonthly,
+      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+      pType: isMonthly ? 'MONTHLY' : 'DAILY',
+    );
+    print("dashboardDataFuture: $dashboardDataFuture");
+
     notificationServices.requestNotificationPermission();
     notificationServices.firebaseInit(context);
     notificationServices.setupInteractMessage(context);
-    // notificationServices.isTokenRefresh();
+    notificationServices.isTokenRefresh();
     notificationServices.getDeviceToken().then((value) {
       print("Device Token: ");
       print(value);
@@ -102,20 +111,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //get item => null;
 
-  Future<List<Map<String, dynamic>>> fetchDashboardData(
-      {required bool isMonthly}) async {
+  Future<List<Map<String, dynamic>>> fetchDashboardData({
+    required bool isMonthly,
+    required String pType,
+    required String pDate,
+  }) async {
     print(
         ' API Called with mode: ${isMonthly ? 'monthly' : 'daily'} on date: $selectedDate');
     String? accessToken = await StorageHelper.getAccessToken();
 
     if (accessToken != null) {
       try {
-        final response = await apiService.getCards(
-          accessToken,
-          context,
-          isMonthly: isMonthly, // Pass isMonthly here
-        );
-
+        final response = await apiService.getCards(accessToken, context,
+            isMonthly: isMonthly,
+            pDate: pDate,
+            pType: pType // Pass isMonthly here
+            );
+        print("API Response from home: ${response}");
         if (response != null && response['statusCode'] == 401) {
           StorageHelper.clearTokens();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -123,16 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           return [];
         }
-
-        if (response != null && response['results'] != null) {
-          List<Map<String, dynamic>> allResults =
-              List<Map<String, dynamic>>.from(response['results']);
-
-          return allResults.where((item) {
-            final title = item['Dashboard_Title']?.toString() ?? '';
-            return title == "Todays Registration" ||
-                title == "Todays Collection";
-          }).toList();
+        if (response != null && response['data'] != null) {
+          return List<Map<String, dynamic>>.from(response['data']);
         } else {
           return [];
         }
@@ -154,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // final data = await fetchDashboardData();
     // print(
     //   "API Response of d data: $data",
-    // ); // 👈 this will print the full response in console
+    // ); //  this will print the full response in console
 
     // setState(() {
     //   dashboardData = data;
@@ -162,13 +166,13 @@ class _HomeScreenState extends State<HomeScreen> {
     // });
   }
 
-  String getDashboardValue(List<Map<String, dynamic>> data, String title) {
-    final item = data.firstWhere(
-      (item) => item['Dashboard_Title'] == title,
-      orElse: () => {},
-    );
-    return item['Records']?.toString() ?? '0';
-  }
+  // String getDashboardValue(List<Map<String, dynamic>> data, String title) {
+  //   final item = data.firstWhere(
+  //     (item) => item['Dashboard_Title'] == title,
+  //     orElse: () => {},
+  //   );
+  //   return item['Records']?.toString() ?? '0';
+  // }
 
   DateTime selectedDate = DateTime.now();
   //bool isMonthly = false;
@@ -180,8 +184,11 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
 
-      dashboardDataFuture =
-          fetchDashboardData(isMonthly: isMonthly); // ⬅️ API call
+      dashboardDataFuture = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'MONTHLY' : 'DAILY',
+      );
     });
   }
 
@@ -192,16 +199,47 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
 
-      dashboardDataFuture =
-          fetchDashboardData(isMonthly: isMonthly); // ⬅️ API call
+      dashboardDataFuture = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'MONTHLY' : 'DAILY',
+      );
     });
   }
 
   void _handleToggle(bool newValue) {
     setState(() {
       isMonthly = newValue;
-      dashboardDataFuture = fetchDashboardData(isMonthly: isMonthly);
+
+      final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+      final type = isMonthly ? 'MONTHLY' : 'DAILY';
+
+      dashboardDataFuture = fetchDashboardData(
+        isMonthly: isMonthly,
+        pType: type,
+        pDate: formattedDate,
+      );
     });
+  }
+
+  List<Map<String, dynamic>> extractOptionsFromData({
+    required Map<String, dynamic> data,
+    required List<String> keys,
+  }) {
+    List<Map<String, dynamic>> options = [];
+
+    for (String key in keys) {
+      if (data.containsKey(key)) {
+        options.add({
+          'label':
+              key.replaceAll('_', ' '), // Optional: make key human-readable
+          'value': data[key],
+          'key': key,
+        });
+      }
+    }
+
+    return options;
   }
 
   @override
@@ -219,7 +257,21 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final dashboardData = snapshot.data!;
-          print("dashboardData ${dashboardData}");
+          List<Map<String, dynamic>> patientDataArray = extractOptionsFromData(
+            data: dashboardData[0],
+            keys: ["Total_Registrations", "Discharge"],
+          );
+
+          List<Map<String, dynamic>> revenueDataArray = extractOptionsFromData(
+            data: dashboardData[0],
+            keys: ["Deposite", "OPD_Payment", "OPD_Bill", "IPD_Settlement"],
+          );
+          print('revenueDataArray: $revenueDataArray');
+          List<Map<String, dynamic>> expenseDataArray = extractOptionsFromData(
+            data: dashboardData[0],
+            keys: ["Total_Discount", "Total_Refund"],
+          );
+          print('expenseDataArray: $expenseDataArray');
           List<Map<String, dynamic>> filteredData = snapshot.data!;
 
           return SingleChildScrollView(
@@ -353,21 +405,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
                       DocvedaGridLayout(
-                        itemCount: dashboardData.length,
+                        itemCount: patientDataArray.length,
                         itemBuilder: (_, index) => Material(
                           color: DocvedaColors.transparent,
                           child: InkWell(
                             onTap: () {
-                              if (index < dashboardData.length) {
+                              if (index < patientDataArray.length) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return index == 0
-                                          ? AdmissionScreen(filteredData[index]
-                                              ['Dashboard_Mst_Cd'])
-                                          : Dischargescreen(filteredData[index]
-                                              ['Dashboard_Mst_Cd']);
+                                          ? AdmissionScreen(
+                                              patientDataArray[index]
+                                                  ['Total_Registrations'])
+                                          : Dischargescreen(
+                                              patientDataArray[index]
+                                                  ['Discharge']);
                                     },
                                   ),
                                 );
@@ -406,8 +460,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              filteredData[index]
-                                                      ['Dashboard_Title'] ??
+                                              patientDataArray[index]
+                                                      ['label'] ??
                                                   "N/A",
                                               style: TextStyleFont.dashboardcard
                                                   .copyWith(
@@ -419,13 +473,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             const SizedBox(
                                                 height: DocvedaSizes.xs),
                                             Text(
-                                              filteredData[index]['Records']
+                                              patientDataArray[index]['value']
                                                       ?.toString() ??
                                                   '0',
-                                              style: TextStyleFont.subheading
-                                                  .copyWith(
-                                                      fontSize: DocvedaSizes
-                                                          .fontSize),
+                                              style: TextStyleFont.subheading,
                                             ),
                                           ],
                                         ),
@@ -440,37 +491,45 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+
                       DocvedaCard(
                         width: double.infinity,
                         height: DocvedaSizes.cardHeightLg,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Iconsax.arrange_circle_2),
-                                const SizedBox(
-                                    width: DocvedaSizes.spaceBtwItemsS),
-                                Text(
-                                  "123",
-                                  style: TextStyle(
-                                    fontSize: DocvedaSizes
-                                        .cardNumberSize, // Increase font size
-                                    fontWeight:
-                                        FontWeight.bold, // Make text bold
+                        child: GestureDetector(
+                          onTap: () {
+                            // Navigate to BedTransferScreen when tapped
+                            Get.to(() => BedTransferScreen());
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Iconsax.arrange_circle_2),
+                                  const SizedBox(
+                                      width: DocvedaSizes.spaceBtwItemsS),
+                                  Text(
+                                    "123",
+                                    style: TextStyle(
+                                      fontSize: DocvedaSizes
+                                          .cardNumberSize, // Increase font size
+                                      fontWeight:
+                                          FontWeight.bold, // Make text bold
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 5),
-                                Text(DocvedaTexts.dashboardItems3),
-                              ],
-                            ),
-                            Icon(Iconsax.arrow_right_3),
-                          ],
+                                  const SizedBox(width: 5),
+                                  Text(DocvedaTexts.dashboardItems3),
+                                ],
+                              ),
+                              Icon(Iconsax.arrow_right_3),
+                            ],
+                          ),
                         ),
                       ),
+
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaSectionHeading(
-                        title: 'PATIENT INFORMATION',
+                        title: 'REVENUE',
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
@@ -483,7 +542,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaGridLayout(
-                        itemCount: 4,
+                        itemCount: revenueDataArray.length,
                         itemBuilder: (_, index) => InkWell(
                           onTap: () {
                             if (dashboardItems[index + 3] ==
@@ -499,12 +558,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             } else if (dashboardItems[index + 3] ==
                                 DocvedaTexts.dashboardItems4) {
                               // Navigate to OPD Bills
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Opdbillsscreen(),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     // builder: (context) => Opdbillsscreen(),
+                              //   ),
+                              // );
                             } else if (index + 3 == 6) {
                               // IPD Settlements
                               Navigator.push(
@@ -544,13 +603,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          dashboardItems[index + 3],
+                                          revenueDataArray[index]['label'] ??
+                                              "N/A",
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyleFont.dashboardcard,
                                         ),
                                         Text(
-                                          "\u{20B9}12,000",
+                                          FormatAmount.formatAmount(
+                                                  revenueDataArray[index]
+                                                      ['value'])
+                                              .toString(),
                                           style: TextStyleFont.subheading,
                                         ),
                                       ],
@@ -567,7 +630,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // EXPENSES
                       DocvedaSectionHeading(
-                        title: 'PATIENT INFORMATION',
+                        title: 'EXPENSES',
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
@@ -580,7 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaGridLayout(
-                        itemCount: 2,
+                        itemCount: expenseDataArray.length,
                         itemBuilder: (_, index) => DocvedaCard(
                           child: Padding(
                             padding:
@@ -593,11 +656,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    dashboardItems[index + 5],
+                                    expenseDataArray[index]['label'] ?? "N/A",
                                     style: TextStyleFont.dashboardcard,
                                   ), // Using dynamic list
                                   Text(
-                                    "\u{20B9}4,700",
+                                    FormatAmount.formatAmount(
+                                        expenseDataArray[index]['value']),
                                     style: TextStyleFont.subheading,
                                   ),
                                 ],
