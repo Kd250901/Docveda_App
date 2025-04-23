@@ -1,5 +1,4 @@
 class DateFormatter {
-  /// Converts "dd/MM/yyyy" or "dd/MM/yyyy HH:mm:ss" to "9th Feb, 25"
   static String formatDate(String? inputDate) {
     if (inputDate == null || inputDate.isEmpty) return "N/A";
 
@@ -26,48 +25,12 @@ class DateFormatter {
         return inputDate; // unknown format
       }
 
-      int day = parsedDate.day;
-      String suffix = _getDaySuffix(day);
-      String monthName = _monthShortName(parsedDate.month);
-      String shortYear = parsedDate.year.toString().substring(2);
-
-      return '$day$suffix $monthName, $shortYear';
+      // New format: yyyy-MM-dd
+      return '${parsedDate.year.toString().padLeft(4, '0')}-'
+          '${parsedDate.month.toString().padLeft(2, '0')}-'
+          '${parsedDate.day.toString().padLeft(2, '0')}';
     } catch (e) {
       return "N/A";
     }
-  }
-
-  /// Gets the appropriate suffix for a day (st, nd, rd, th)
-  static String _getDaySuffix(int day) {
-    if (day >= 11 && day <= 13) return 'th';
-    switch (day % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  }
-
-  /// Converts month number to short name
-  static String _monthShortName(int month) {
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return monthNames[month - 1];
   }
 }
