@@ -18,7 +18,7 @@ class NavigationMenu extends StatelessWidget {
     final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
-    List pageNames = ['Analytics','Dashboard','Notifications'];
+    List pageNames = ['Analytics', 'Dashboard', 'Notifications'];
 
     return Scaffold(
       bottomNavigationBar: Container(
@@ -58,9 +58,8 @@ class NavigationMenu extends StatelessWidget {
                 print("Failed to log event: $error");
               });
             },
-            backgroundColor:
-                Colors
-                    .transparent, // Make NavigationBar transparent to use Container's color
+            backgroundColor: Colors
+                .transparent, // Make NavigationBar transparent to use Container's color
             indicatorColor:
                 Colors.deepPurple, // Background color for selected item
             indicatorShape: RoundedRectangleBorder(

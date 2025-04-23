@@ -1,6 +1,6 @@
 import 'package:docveda_app/app.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:docveda_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +16,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 //   runApp(const App());
 // }
 
-Future main() async{ 
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -31,8 +31,9 @@ Future main() async{
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   // NotificationServices().showNotification(message);
-  print("_firebaseMessagingBackgroundHandler ${message.notification?.title.toString()}");
+  print(
+      "_firebaseMessagingBackgroundHandler ${message.notification?.title.toString()}");
 }
