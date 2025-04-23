@@ -184,7 +184,8 @@ class _OtpScreenState extends State<OtpScreen> {
               if (_errorMessage.isNotEmpty)
                 DocvedaText(
                   text: _errorMessage,
-                  style: const TextStyle(color: DocvedaColors.error, fontSize: 14),
+                  style:
+                      const TextStyle(color: DocvedaColors.error, fontSize: 14),
                 ),
               const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
 
@@ -217,7 +218,8 @@ class _OtpScreenState extends State<OtpScreen> {
                         text:
                             "Resend OTP in 00:${_start.toString().padLeft(2, '0')}",
                         style: const TextStyle(
-                            fontSize: DocvedaSizes.fontSizeSm, color: DocvedaColors.primaryColor),
+                            fontSize: DocvedaSizes.fontSizeSm,
+                            color: DocvedaColors.primaryColor),
                       ),
                     ),
 
@@ -235,10 +237,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: const DocvedaText(
                   text: DocvedaTexts.goBack,
                   style: TextStyle(
-                    fontSize: DocvedaSizes.fontSizeLg,
-                    color: DocvedaColors.primaryColor,
-                    decoration: TextDecoration.none,
-                  ),
+                      fontSize: DocvedaSizes.fontSizeLg,
+                      color: DocvedaColors.primaryColor,
+                      decoration: TextDecoration.none,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ],
