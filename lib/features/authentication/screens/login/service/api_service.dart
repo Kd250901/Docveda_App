@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:docveda_app/utils/encryption/aes_helper.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  // static const String baseUrl = 'http://192.168.10.132:4000/api';
-  static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
+  static const String baseUrl = 'http://192.168.0.105:4000/api';
+  // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
     String username,
@@ -16,6 +16,8 @@ class ApiService {
     final Uri apiUrl = Uri.parse(
       '$baseUrl/auth/auth_code?code_challenge=$code_challenger',
     );
+    print("apiUrl: $apiUrl");
+    print("baseUrl: $baseUrl");
 
     var encryptedText = AESHelper.encryptText(password);
     print("Username: $username");
@@ -36,6 +38,10 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        // Handle unauthorized
+        UnauthorizedHelper.handle();
+        return Future.error('Unauthorized access');
       } else {
         throw Exception('Failed to authenticate: ${response.body}');
       }
@@ -67,6 +73,9 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle(); // 👈 Handle session expiry
+        return Future.error('Unauthorized access');
       } else {
         throw Exception('Failed to get tokens: ${response.body}');
       }
@@ -92,8 +101,11 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle(); // 👈 Optional: global redirect or logout
+        throw Exception('Unauthorized access');
       } else {
-        throw Exception('Failed to fetch user access.');
+        throw Exception('Failed to fetch user access: ${response.body}');
       }
     } catch (e) {
       throw Exception('Error during user access fetch: $e');
@@ -104,26 +116,31 @@ class ApiService {
     String accessToken,
     BuildContext context, {
     required bool isMonthly,
+    required String pDate,
+    required String pType,
   }) async {
     try {
-      // Assuming the API needs a query parameter like ?mode=monthly/daily
-      String mode =
-          isMonthly ? 'monthly' : 'daily'; // Set the mode based on toggle
+      String mode = isMonthly ? 'monthly' : 'daily';
 
-      final response = await http.get(
-        Uri.parse('$baseUrl/dashboard/getCards/admin?mode=$mode'),
-        // Pass mode in query params
+      final response = await http.post(
+        Uri.parse('$baseUrl/frontdesk/app/getDashboardCount'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
       );
+
+      print("API Response (${response.statusCode}): ${response.body}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else if (response.statusCode == 401) {
-        print('Unauthorized access. Redirecting to login...');
-        Get.offAllNamed('/login');
+        print("unAuthorized...");
+        UnauthorizedHelper.handle();
         return null;
       } else {
         print('Failed to load cards: ${response.statusCode}');
@@ -152,6 +169,9 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
       } else {
         print('Failed to load getAdmissionData: ${response.statusCode}');
         return null;
@@ -183,6 +203,10 @@ class ApiService {
         }),
       );
       print("API Response (${response.statusCode}): ${response.body}");
+      if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return {'statusCode': 401};
+      }
 
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       jsonResponse['statusCode'] = response.statusCode; // 👈 Add this line
