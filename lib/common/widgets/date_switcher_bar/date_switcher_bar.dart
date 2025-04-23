@@ -23,9 +23,7 @@ class DateSwitcherBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String formattedDate = isMonthly
-        ? DateFormat("MMM, yyyy").format(selectedDate)
-        : DateFormat("dd MMM, yyyy").format(selectedDate);
+    final String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDate);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
