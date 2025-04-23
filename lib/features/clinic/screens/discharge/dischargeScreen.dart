@@ -6,7 +6,7 @@ import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.d
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/viewReportScreen.dart';
+import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
