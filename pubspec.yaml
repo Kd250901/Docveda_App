@@ -41,6 +41,7 @@ dependencies:
       ref: master
       path: flutter_secure_storage
   flutter_local_notifications: ^18.0.1
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:

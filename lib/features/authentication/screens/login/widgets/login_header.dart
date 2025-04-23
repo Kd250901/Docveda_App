@@ -3,6 +3,7 @@ import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DocvedaLoginHeader extends StatelessWidget {
   const DocvedaLoginHeader({super.key});
@@ -14,14 +15,11 @@ class DocvedaLoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Image(
+        SvgPicture.asset(
+          dark ? DocvedaImages.darkAppLogo : DocvedaImages.darkAppLogo,
           height: DocvedaSizes.imgHeightMd,
           width: double.infinity,
-          fit: BoxFit
-              .contain, // Use BoxFit.cover if you want it to fill the space
-          image: AssetImage(
-            dark ? DocvedaImages.darkAppLogo : DocvedaImages.darkAppLogo,
-          ),
+          fit: BoxFit.contain,
         ),
         const SizedBox(height: DocvedaSizes.lg),
         // DocvedaText(

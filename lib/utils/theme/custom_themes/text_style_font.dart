@@ -37,4 +37,6 @@ class TextStyleFont {
     fontSize: 12, // Updated to 16px
     fontWeight: FontWeight.w600, // Updated to 800
   );
+
+  static var title;
 }
