@@ -1,5 +1,4 @@
 class DocvedaTexts {
-
   // Login
   static const String rememberMe = "Remember me";
   static const String forgotPassword = "Forgot Password ?";
@@ -14,7 +13,8 @@ class DocvedaTexts {
 
   // Forgot Password
   static const String forgotPasswordTitle = "Forgot Password";
-  static const String forgotPasswordDesc = "Don't worry, sometimes people forget too! Enter your email and we will send you a password reset link.";
+  static const String forgotPasswordDesc =
+      "Don't worry, sometimes people forget too! Enter your email and we will send you a password reset link.";
   static const String getOTP = "Get OTP";
 
   // New Password
@@ -22,7 +22,7 @@ class DocvedaTexts {
   static const String changePassword = "Change Password";
   static const String enterPassword = "Enter your new password:";
   static const String newPassword = "New Password";
-  static const String confirmPassword = "Confirm Password";
+  static const String confirmPassword = "Re-Enter Password";
 
   // OTP Screen
   static const String OTPReset = "OTP has been resent";
@@ -34,19 +34,21 @@ class DocvedaTexts {
 
   // Reset Password
   static const String resetPassword = "Reset Password";
-  static const String resetPasswordDesc = "Your Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.";
+  static const String resetPasswordDesc =
+      "Your Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.";
   static const String done = "Done";
 
   // Deposits
   static const String deposits = "Deposits";
   static const String patientFound = "Patients Found";
-  static const String depositePatientDesc = "Select a patient's card to download the report";
+  static const String depositePatientDesc =
+      "Select a patient's card to download the report";
   static const String viewReport = "View Report";
 
   // IPD Settlement
   static const String ipdSettlement = "IPD Settlement";
 
-  // OPD Bills 
+  // OPD Bills
   static const String opdBills = "OPD Bills";
 
   // Patient List
@@ -86,7 +88,8 @@ class DocvedaTexts {
 
   // Notifications
   static const String notificationTitle = "Notification";
-  static const String notificationDesc = "This is a sample notification message.";
+  static const String notificationDesc =
+      "This is a sample notification message.";
 
   static const String homeAppBarTitle = "Docveda";
   static const String homeAppBarSubTitle = "Docveda Sub Title";
@@ -103,14 +106,12 @@ class DocvedaTexts {
   static const String dashboardItems8 = " Discounts";
   static const String dashboardItems9 = " Refunds";
 
-
-
-
   // Error Messages
 
   // Login
   static const String loginErrorMsg = "Email and password are required";
-  static const String authorizationErrorMsg = "Authorization code not received.";
+  static const String authorizationErrorMsg =
+      "Authorization code not received.";
   static const String loginFailedErrorMsg = "Login Failed";
 
   // Forgot Password
