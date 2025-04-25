@@ -472,81 +472,79 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
+
                       DocvedaGridLayout(
                         itemCount: revenueDataArray.length,
-                        itemBuilder: (_, index) => InkWell(
-                          onTap: () {
-                            String tappedItem =
-                                dashboardItems[index + 3].trim();
+                        itemBuilder: (_, index) {
+                          final label =
+                              revenueDataArray[index]['label']?.toLowerCase() ??
+                                  '';
 
-                            if (tappedItem ==
-                                DocvedaTexts.dashboardItems5.trim()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Opdpaymentscreen()),
-                              );
-                            } else if (tappedItem ==
-                                DocvedaTexts.dashboardItems4.trim()) {
-                              // Navigate to OPD Bills
-                            } else if (tappedItem ==
-                                DocvedaTexts.dashboardItems6.trim()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Depositsscreen()),
-                              );
-                            } else if (tappedItem ==
-                                DocvedaTexts.dashboardItems7.trim()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        IPDSettlementScreen()),
-                              );
-                            }
-                          },
-                          child: DocvedaCard(
-                            child: Container(
-                              height: double.infinity,
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Iconsax.activity),
-                                  const SizedBox(
-                                      width: DocvedaSizes.spaceBtwItemsS),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          revenueDataArray[index]['label'] ??
-                                              "N/A",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyleFont.dashboardcard,
-                                        ),
-                                        Text(
-                                          FormatAmount.formatAmount(
-                                                  revenueDataArray[index]
-                                                      ['value'])
-                                              .toString(),
-                                          style: TextStyleFont.subheading,
-                                        ),
-                                      ],
+                          // Define map of keywords to corresponding screens
+                          final Map<String, Widget Function()> revenueScreens =
+                              {
+                            'deposit': () => DepositScreen(),
+                            'opd payment': () => Opdpaymentscreen(),
+                            'opd bill': () =>
+                                Opdbillsscreen(), // Replace with your actual screen
+                            'ipd settlement': () => IPDSettlementScreen(),
+                          };
+
+                          return GestureDetector(
+                            onTap: () {
+                              for (final key in revenueScreens.keys) {
+                                if (label.contains(key)) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            revenueScreens[key]!()),
+                                  );
+                                  break;
+                                }
+                              }
+                            },
+                            child: DocvedaCard(
+                              child: Container(
+                                height: double.infinity,
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Iconsax.activity),
+                                    const SizedBox(
+                                        width: DocvedaSizes.spaceBtwItemsS),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            revenueDataArray[index]['label'] ??
+                                                "N/A",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyleFont.dashboardcard,
+                                          ),
+                                          Text(
+                                            FormatAmount.formatAmount(
+                                              revenueDataArray[index]['value'],
+                                            ).toString(),
+                                            style: TextStyleFont.subheading,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),

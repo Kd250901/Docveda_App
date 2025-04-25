@@ -173,22 +173,79 @@ class _RefundsScreenState extends State<RefundsScreen> {
                           itemBuilder: (context, index) {
                             final patient = patients[index];
                             return PatientCard(
-                              patient: {
-                                "name":
-                                    "${patient["Patient_Name"] ?? ""}".trim(),
-                                "age": patient["Age"]?.toString() ?? "N/A",
-                                "gender": patient["Gender"] ?? "N/A",
-                                "admission": DateFormatter.formatDate(
-                                        patient["Admission Date"]) ??
-                                    "N/A",
-                                "registrationNumber":
-                                    patient["Registration_No"] ?? "N/A",
-                                "discountGiven":
-                                    patient["RefundAmount"]?.toString() ?? "0",
-                              },
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
                               onPatientSelected: handlePatientSelection,
+
+                              // Custom topRow
+                              topRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 16,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text("${patient["Patient Name"] ?? ""}"
+                                          .trim()),
+                                    ],
+                                  ),
+                                  Text(
+                                    "${patient["Age"] ?? "N/A"} Yrs • ${patient["Gender"] ?? "N/A"}",
+                                  ),
+                                ],
+                              ),
+
+                              // Custom middleRow
+                              middleRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Admission"),
+                                      Text(DateFormatter.formatDate(
+                                              patient["Admission Date"]) ??
+                                          "N/A"),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text("Reg No."),
+                                      Text(patient["Registration_No"] ?? "N/A"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              // Custom bottomRow
+                              bottomRow: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Refund Amount"),
+                                    Text("₹${patient["Refund Amount"] ?? "0"}"),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),

@@ -191,26 +191,99 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                         itemBuilder: (context, index) {
                           final patient = patients[index];
                           return PatientCard(
-                            patient: {
-                              "name": "${patient["Patient Name"] ?? ""}".trim(),
-                              "age": patient["Age"]?.toString() ?? "N/A",
-                              "gender": patient["Gender"] ?? "N/A",
-                              "admission": DateFormatter.formatDate(
-                                      patient["Admission Date"]) ??
-                                  "N/A",
-                              "registrationNumber":
-                                  patient["Registration_No"] ?? "N/A",
-                              "deposit":
-                                  patient["Deposite"]?.toString() ?? "₹0",
-                              "billAmount":
-                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
-                              "finalSettlement":
-                                  patient["Final Settlement"]?.toString() ??
-                                      "₹0",
-                            },
                             index: index,
                             selectedPatientIndex: selectedPatientIndex,
                             onPatientSelected: handlePatientSelection,
+                            topRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      index == selectedPatientIndex
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      size: 16,
+                                      color: index == selectedPatientIndex
+                                          ? DocvedaColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    DocvedaText(
+                                      text:
+                                          "${patients[index]["Patient Name"] ?? ""}"
+                                              .trim(),
+                                      style: TextStyleFont.body.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                DocvedaText(
+                                  text:
+                                      "${patients[index]["Age"]?.toString() ?? "--"} Yrs • ${patients[index]["Gender"] ?? "--"}",
+                                  style: TextStyleFont.caption
+                                      .copyWith(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            middleRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DocvedaText(
+                                        text: "ADMISSION",
+                                        style: TextStyleFont.caption),
+                                    DocvedaText(
+                                      text: DateFormatter.formatDate(
+                                              patients[index]
+                                                  ["Admission Date"]) ??
+                                          "N/A",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    DocvedaText(
+                                        text: "Discharge ",
+                                        style: TextStyleFont.caption),
+                                    DocvedaText(
+                                      text: patients[index]["Discharge Date"] ??
+                                          "N/A",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            bottomRow: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DocvedaText(
+                                      text: "TOTAL BILL",
+                                      style: TextStyleFont.caption),
+                                  DocvedaText(
+                                    text:
+                                        "₹${patients[index]["Total IPD Bill"] ?? "0"}",
+                                    style: TextStyleFont.body
+                                        .copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),

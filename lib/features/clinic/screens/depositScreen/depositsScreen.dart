@@ -5,7 +5,6 @@ import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
-import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
@@ -15,17 +14,17 @@ import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/route_manager.dart';
+import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:intl/intl.dart';
 
-class Depositsscreen extends StatefulWidget {
-  const Depositsscreen({super.key});
+class DepositScreen extends StatefulWidget {
+  const DepositScreen({super.key});
 
   @override
-  _DepositsscreenState createState() => _DepositsscreenState();
+  State<DepositScreen> createState() => _DepositScreenState();
 }
 
-class _DepositsscreenState extends State<Depositsscreen> {
-  // int selectedPatientIndex = 0;
+class _DepositScreenState extends State<DepositScreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> patientData;
@@ -36,17 +35,22 @@ class _DepositsscreenState extends State<Depositsscreen> {
   @override
   void initState() {
     super.initState();
-
-    patientData = fetchDashboardData(
-      isMonthly: isMonthly,
-      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-      pType: isMonthly ? 'MONTHLY' : 'DAILY',
-    );
+    loadDepositData();
   }
 
   void handlePatientSelection(int index) {
     setState(() {
       selectedPatientIndex = index;
+    });
+  }
+
+  void loadDepositData() {
+    setState(() {
+      patientData = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'Monthly' : 'Daily',
+      );
     });
   }
 
@@ -60,12 +64,12 @@ class _DepositsscreenState extends State<Depositsscreen> {
 
     if (accessToken != null) {
       try {
-        final response = await apiService.getOpdPaymnetData(
+        final response = await apiService.getDepositData(
           accessToken,
           context,
           isMonthly: isMonthly,
-          pDate: "2025-04-24",
-          pType: "DAILY",
+          pDate: pDate,
+          pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
         );
 
         if (response != null && response['data'] != null) {
@@ -75,7 +79,7 @@ class _DepositsscreenState extends State<Depositsscreen> {
           return [];
         }
       } catch (e) {
-        print('Error fetching dashboard data: $e');
+        print('Error fetching deposit data: $e');
         return [];
       }
     } else {
@@ -84,57 +88,49 @@ class _DepositsscreenState extends State<Depositsscreen> {
     }
   }
 
-  // DateTime selectedDate = DateTime.now();
-  // bool isMonthly = false;
-
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month - 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
+    loadDepositData();
   }
 
   void _goToNext() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month + 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
+    loadDepositData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
+    loadDepositData();
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Column(
         children: [
-          /// Header Section
           DocvedaPrimaryHeaderContainer(
             child: Column(
               children: [
                 DocvedaAppBar(
                   title: Center(
                     child: DocvedaText(
-                      text: DocvedaTexts.opdPayments,
-                      style: TextStyleFont.subheading.copyWith(
-                        color: DocvedaColors.white,
-                      ),
+                      text: "Deposits",
+                      style: TextStyleFont.subheading
+                          .copyWith(color: DocvedaColors.white),
                     ),
                   ),
                   showBackArrow: true,
@@ -146,13 +142,11 @@ class _DepositsscreenState extends State<Depositsscreen> {
                   onNext: _goToNext,
                   isMonthly: isMonthly,
                   textColor: DocvedaColors.white,
-                  fontSize: DocvedaSizes.fontSizeSm,
+                  fontSize: 14,
                 ),
               ],
             ),
           ),
-
-          /// FutureBuilder for API data
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: patientData,
@@ -160,104 +154,205 @@ class _DepositsscreenState extends State<Depositsscreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text("Error: ${snapshot.error}"));
+                  return Center(
+                      child: DocvedaText(text: 'Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                      child: Text("No patient data available."));
+                      child: DocvedaText(text: "No deposit data found."));
                 }
 
                 final patients = snapshot.data!;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-                      DocvedaText(
-                        text: "${patients.length} ${DocvedaTexts.patientFound}",
-                        style: TextStyleFont.subheading,
-                      ),
-                      DocvedaText(
-                        text: DocvedaTexts.depositePatientDesc,
-                        style: TextStyleFont.body,
-                      ),
-
-                      /// Patient Cards
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: patients.length,
-                          itemBuilder: (context, index) {
-                            final patient = patients[index];
-                            return PatientCard(
-                              patient: {
-                                "name":
-                                    "${patient["Patient_Name"] ?? ""}".trim(),
-                                "age": patient["Age"]?.toString() ?? "N/A",
-                                "gender": patient["Gender"] ?? "N/A",
-                                "admission": DateFormatter.formatDate(
-                                        patient["Admission Date"]) ??
-                                    "N/A",
-                                "discharge": DateFormatter.formatDate(
-                                        patient["Discharge Date"]) ??
-                                    "N/A",
-                                "finalSettlement":
-                                    patient["Final Settle Amount"]
-                                            ?.toString() ??
-                                        "0",
-                              },
-                              index: index,
-                              selectedPatientIndex: selectedPatientIndex,
-                              onPatientSelected: handlePatientSelection,
-                            );
-                          },
-                        ),
-                      ),
-
-                      /// View Report Button
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05,
-                          vertical: DocvedaSizes.spaceBtwItemsS,
-                        ),
-                        decoration: BoxDecoration(
-                          color: DocvedaColors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: DocvedaColors.black.withOpacity(0.1),
-                              blurRadius: DocvedaSizes.borderRadiusMd,
-                              spreadRadius: DocvedaSizes.spreadRadius,
-                            ),
-                          ],
-                        ),
-                        child: SizedBox(
-                          height: DocvedaSizes.cardHeight,
-                          width: double.infinity,
-                          child: PrimaryButton(
-                            onPressed: () {
-                              final selectedPatient =
-                                  patients[selectedPatientIndex];
-                              Get.to(
-                                () => ViewReportScreen(
-                                  patientName: selectedPatient["name"],
-                                  age: selectedPatient["age"],
-                                  gender: selectedPatient["gender"],
-                                  admissionDate: selectedPatient["admission"],
-                                  dischargeDate: selectedPatient["discharge"],
-                                  finalSettlement:
-                                      selectedPatient["finalSettlement"],
-                                  screenName: "OPD Payments",
-                                ),
-                              );
-                            },
-                            text: DocvedaTexts.viewReport,
-                            backgroundColor: DocvedaColors.primaryColor,
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: DocvedaSizes.spaceBtwItems),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DocvedaText(
+                            text: "${patients.length} deposits found",
+                            style: TextStyleFont.subheading,
                           ),
-                        ),
+                          DocvedaText(
+                            text: "Patients with advance deposits made.",
+                            style: TextStyleFont.body,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: DocvedaSizes.spaceBtwItems),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientCard(
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+
+                            /// 👤 Top Row: Name, Age, Gender
+                            topRow: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      index == selectedPatientIndex
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      size: 16,
+                                      color: index == selectedPatientIndex
+                                          ? DocvedaColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    DocvedaText(
+                                      text: "${patient["Patient Name"] ?? ""}"
+                                          .trim(),
+                                      style: TextStyleFont.body.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                DocvedaText(
+                                  text:
+                                      "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                  style: TextStyleFont.caption.copyWith(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+
+                            /// 📅 Middle Row: Admission & Discharge
+                            middleRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DocvedaText(
+                                      text: "ADMISSION",
+                                      style: TextStyleFont.caption
+                                          .copyWith(color: Colors.grey),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    DocvedaText(
+                                      text: DateFormatter.formatDate(
+                                              patient["Admission Date"]) ??
+                                          "N/A",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    DocvedaText(
+                                      text: "UHID No",
+                                      style: TextStyleFont.caption
+                                          .copyWith(color: Colors.grey),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    DocvedaText(
+                                      text:
+                                          "₹${patient["UHID No"]?.toString() ?? "0"}",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            /// 💵 Bottom Row: Final Settlement
+                            bottomRow: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DocvedaText(
+                                    text: "Deposite",
+                                    style: TextStyleFont.caption
+                                        .copyWith(color: Colors.grey),
+                                  ),
+                                  DocvedaText(
+                                    text:
+                                        "₹${patient["Deposite"]?.toString() ?? "0"}",
+                                    style: TextStyleFont.body.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: DocvedaSizes.spaceBtwItemsS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DocvedaColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DocvedaColors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          if (patients.isEmpty ||
+                              selectedPatientIndex >= patients.length) return;
+
+                          final selected = patients[selectedPatientIndex];
+                          Get.to(
+                            () => ViewReportScreen(
+                              patientName: "${selected["Patient_Name"] ?? ''}",
+                              age:
+                                  int.tryParse(selected["Age"].toString()) ?? 0,
+                              gender: selected["Gender"] ?? "N/A",
+                              admissionDate: DateFormatter.formatDate(
+                                      selected["Admission Date"]) ??
+                                  "N/A",
+                              dischargeDate: DateFormatter.formatDate(
+                                      selected["Discharge Date"]) ??
+                                  "N/A",
+                              finalSettlement:
+                                  selected["Deposit"]?.toString() ?? "N/A",
+                              screenName: "Deposit",
+                            ),
+                          );
+                        },
+                        text: DocvedaTexts.viewReport,
+                        backgroundColor: DocvedaColors.primaryColor,
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -266,39 +361,4 @@ class _DepositsscreenState extends State<Depositsscreen> {
       ),
     );
   }
-
-// List<Map<String, dynamic>> patients = [
-//   {
-//     "name": "John Doe",
-//     "age": 45,
-//     "gender": "Male",
-//     "admission": "2025-01-01",
-//     "discharge": "2025-01-10",
-//     "finalSettlement": "Pending",
-//   },
-//   {
-//     "name": "Jane Smith",
-//     "age": 50,
-//     "gender": "Female",
-//     "admission": "2025-02-01",
-//     "discharge": "2025-02-12",
-//     "finalSettlement": "Completed",
-//   },
-//   {
-//     "name": "John Doe",
-//     "age": 45,
-//     "gender": "Male",
-//     "admission": "2025-01-01",
-//     "discharge": "2025-01-10",
-//     "finalSettlement": "Pending",
-//   },
-//   {
-//     "name": "Jane Smith",
-//     "age": 50,
-//     "gender": "Female",
-//     "admission": "2025-02-01",
-//     "discharge": "2025-02-12",
-//     "finalSettlement": "Completed",
-//   },
-// ];
 }

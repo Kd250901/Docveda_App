@@ -36,17 +36,22 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
   @override
   void initState() {
     super.initState();
-
-    patientData = fetchDashboardData(
-      isMonthly: isMonthly,
-      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-      pType: isMonthly ? 'MONTHLY' : 'DAILY',
-    );
+    loadOpdPaymentData();
   }
 
   void handlePatientSelection(int index) {
     setState(() {
       selectedPatientIndex = index;
+    });
+  }
+
+  void loadOpdPaymentData() {
+    setState(() {
+      patientData = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'Monthly' : 'Daily',
+      );
     });
   }
 
@@ -64,8 +69,8 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
           accessToken,
           context,
           isMonthly: isMonthly,
-          pDate: "2025-04-24",
-          pType: "DAILY",
+          pDate: pDate,
+          pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
         );
 
         if (response != null && response['data'] != null) {
@@ -94,6 +99,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
+    loadOpdPaymentData();
   }
 
   void _goToNext() {
@@ -103,12 +109,14 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
+    loadOpdPaymentData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
+    loadOpdPaymentData();
   }
 
   @override
@@ -184,25 +192,81 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                           itemBuilder: (context, index) {
                             final patient = patients[index];
                             return PatientCard(
-                              patient: {
-                                "name":
-                                    "${patient["Patient_Name"] ?? ""}".trim(),
-                                "age": patient["Age"]?.toString() ?? "N/A",
-                                "gender": patient["Gender"] ?? "N/A",
-                                "admission": DateFormatter.formatDate(
-                                        patient["Admission Date"]) ??
-                                    "N/A",
-                                "discharge": DateFormatter.formatDate(
-                                        patient["Discharge Date"]) ??
-                                    "N/A",
-                                "finalSettlement":
-                                    patient["Final Settle Amount"]
-                                            ?.toString() ??
-                                        "0",
-                              },
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
                               onPatientSelected: handlePatientSelection,
+
+                              // Custom topRow
+                              topRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 16,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text("${patient["Patient Name"] ?? ""}"
+                                          .trim()),
+                                    ],
+                                  ),
+                                  Text(
+                                    "${patient["Age"] ?? "N/A"} Yrs • ${patient["Gender"] ?? "N/A"}",
+                                  ),
+                                ],
+                              ),
+
+                              // Custom middleRow
+                              middleRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Admission"),
+                                      Text(DateFormatter.formatDate(
+                                              patient["Admission Date"]) ??
+                                          "N/A"),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text("Discharge"),
+                                      Text(DateFormatter.formatDate(
+                                              patient["Discharge Date"]) ??
+                                          "N/A"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              // Custom bottomRow
+                              bottomRow: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Final Settlement"),
+                                    Text("₹${patient["Bill Amount"] ?? "0"}"),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),

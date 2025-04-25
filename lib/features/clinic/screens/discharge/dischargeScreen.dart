@@ -222,24 +222,135 @@ class _DischargescreenState extends State<Dischargescreen> {
                         itemBuilder: (context, index) {
                           final patient = patients[index];
                           return PatientCard(
-                            patient: {
-                              "name": "${patient["Patient Name"] ?? ""}".trim(),
-                              "age": patient["Age"]?.toString() ?? "N/A",
-                              "gender": patient["Gender"] ?? "N/A",
-                              "admission": DateFormatter.formatDate(
-                                      patient["Admission Date"]) ??
-                                  "N/A",
-                              "registrationNumber":
-                                  patient["Registration_No"] ?? "N/A",
-                              "deposit":
-                                  patient["Deposite"]?.toString() ?? "₹0",
-                              "billAmount":
-                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
-                              "finalSettlement": "",
-                            },
                             index: index,
                             selectedPatientIndex: selectedPatientIndex,
                             onPatientSelected: handlePatientSelection,
+
+                            /// 👤 Top Row: Name, Age, Gender
+                            topRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      index == selectedPatientIndex
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      size: 16,
+                                      color: index == selectedPatientIndex
+                                          ? DocvedaColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    DocvedaText(
+                                      text: "${patient["Patient Name"] ?? ""}"
+                                          .trim(),
+                                      style: TextStyleFont.body.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                DocvedaText(
+                                  text:
+                                      "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                  style: TextStyleFont.caption
+                                      .copyWith(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+
+                            /// 📅 Middle Row: Admission Date & Registration No
+                            middleRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DocvedaText(
+                                      text: "ADMISSION",
+                                      style: TextStyleFont.caption
+                                          .copyWith(color: Colors.grey),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    DocvedaText(
+                                      text: DateFormatter.formatDate(
+                                              patient["Admission Date"]) ??
+                                          "N/A",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    DocvedaText(
+                                      text: "Discharge",
+                                      style: TextStyleFont.caption
+                                          .copyWith(color: Colors.grey),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    DocvedaText(
+                                      text: patient["Discharge Date"] ?? "N/A",
+                                      style: TextStyleFont.caption,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            /// 💵 Bottom Row: Deposit & Bill Amount
+                            bottomRow: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      DocvedaText(
+                                        text: "DEPOSIT",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Deposite"]?.toString() ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      DocvedaText(
+                                        text: "BILL AMOUNT",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Total IPD Bill"]?.toString() ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),

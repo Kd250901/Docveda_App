@@ -234,11 +234,46 @@ class ApiService {
     required String pType,
   }) async {
     try {
-      print('P_Date: $pDate');
-      print('P_Type: $pType');
       final response = await http.post(
         Uri.parse(
           '$baseUrl/frontdesk/app/getOPDPayments',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getOpdPaymnetData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getOpdPaymnetData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getDepositData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getDeposite',
         ),
         headers: {
           'Authorization': 'Bearer $accessToken',

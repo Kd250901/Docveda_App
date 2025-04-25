@@ -1,3 +1,4 @@
+import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/appbar/appbar.dart';
 import 'package:docveda_app/common/widgets/card/patient_card.dart';
 import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
@@ -179,22 +180,122 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                           itemBuilder: (context, index) {
                             final patient = patients[index];
                             return PatientCard(
-                              patient: {
-                                "name":
-                                    "${patient["Patient_Name"] ?? ""}".trim(),
-                                "age": patient["Age"]?.toString() ?? "N/A",
-                                "gender": patient["Gender"] ?? "N/A",
-                                "admission": DateFormatter.formatDate(
-                                        patient["Admission Date"]) ??
-                                    "N/A",
-                                "registrationNumber":
-                                    patient["Registration_No"] ?? "N/A",
-                                "discountGiven":
-                                    patient["Discount"]?.toString() ?? "0",
-                              },
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
                               onPatientSelected: handlePatientSelection,
+
+                              /// 👤 Top Row: Name, Age, Gender
+                              topRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 16,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      DocvedaText(
+                                        text: "${patient["Patient Name"] ?? ""}"
+                                            .trim(),
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  DocvedaText(
+                                    text:
+                                        "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                    style: TextStyleFont.caption
+                                        .copyWith(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+
+                              /// 📅 Middle Row: Admission Date & Registration No
+                              middleRow: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      DocvedaText(
+                                        text: "ADMISSION",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      DocvedaText(
+                                        text: DateFormatter.formatDate(
+                                                patient["Admission Date"]) ??
+                                            "N/A",
+                                        style: TextStyleFont.caption,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      DocvedaText(
+                                        text: "REG. NO",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      DocvedaText(
+                                        text:
+                                            patient["Registration_No"] ?? "N/A",
+                                        style: TextStyleFont.caption,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              /// 💰 Bottom Row: Discount Given
+                              bottomRow: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        DocvedaText(
+                                          text: "DISCOUNT GIVEN",
+                                          style: TextStyleFont.caption
+                                              .copyWith(color: Colors.grey),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        DocvedaText(
+                                          text:
+                                              "₹${patient["Discount Amount"]?.toString() ?? "0"}",
+                                          style: TextStyleFont.body.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),

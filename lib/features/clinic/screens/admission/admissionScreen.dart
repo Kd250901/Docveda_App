@@ -197,24 +197,67 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                         itemBuilder: (context, index) {
                           final patient = patients[index];
                           return PatientCard(
-                            patient: {
-                              "name": "${patient["Patient Name"] ?? ""}".trim(),
-                              "age": patient["Age"]?.toString() ?? "N/A",
-                              "gender": patient["Gender"] ?? "N/A",
-                              "admission": DateFormatter.formatDate(
-                                      patient["Admission Date"]) ??
-                                  "N/A",
-                              "registrationNumber":
-                                  patient["Registration_No"] ?? "N/A",
-                              "deposit":
-                                  patient["Deposite"]?.toString() ?? "₹0",
-                              "billAmount":
-                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
-                              "finalSettlement": "",
-                            },
                             index: index,
                             selectedPatientIndex: selectedPatientIndex,
                             onPatientSelected: handlePatientSelection,
+                            topRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      index == selectedPatientIndex
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      size: 16,
+                                      color: index == selectedPatientIndex
+                                          ? DocvedaColors.primaryColor
+                                          : Colors.grey,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(patient["Patient Name"] ?? "--"),
+                                  ],
+                                ),
+                                Text(
+                                  "${patient["Age"] ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                ),
+                              ],
+                            ),
+                            middleRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Admission"),
+                                    Text(patient["Admission Date"] ?? "--"),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text("Discharge"),
+                                    Text(patient["Discharge Date"] ?? "--"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            bottomRow: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Bill Amount"),
+                                  Text("₹${patient["Total IPD Bill"] ?? "0"}"),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
