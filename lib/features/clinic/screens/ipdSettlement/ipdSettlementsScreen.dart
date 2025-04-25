@@ -1,3 +1,4 @@
+import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/appbar/appbar.dart';
 import 'package:docveda_app/common/widgets/card/patient_card.dart';
 import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
@@ -8,27 +9,34 @@ import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportS
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
+import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/route_manager.dart';
+import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
+import 'package:intl/intl.dart';
 
-class Ipdsettlementsscreen extends StatefulWidget {
-  const Ipdsettlementsscreen({super.key});
+class IPDSettlementScreen extends StatefulWidget {
+  const IPDSettlementScreen({super.key});
 
   @override
-  _IpdsettlementsscreenState createState() => _IpdsettlementsscreenState();
+  State<IPDSettlementScreen> createState() => _IPDSettlementScreenState();
 }
 
-class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
+class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
+  final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
-  // final ApiService apiService = ApiService();
-  // late Future<List<Map<String, dynamic>>> patientData;
+  late Future<List<Map<String, dynamic>>> patientData;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   patientData = fetchDashboardData();
-  // }
+  DateTime selectedDate = DateTime.now();
+  bool isMonthly = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadIPDSettlementData();
+  }
 
   void handlePatientSelection(int index) {
     setState(() {
@@ -36,40 +44,49 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
     });
   }
 
-  // Future<List<Map<String, dynamic>>> fetchDashboardData() async {
-  //   final storage = FlutterSecureStorage();
-  //   String? accessToken = await storage.read(key: 'accessToken');
+  void loadIPDSettlementData() {
+    setState(() {
+      patientData = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'Monthly' : 'Daily',
+      );
+    });
+  }
 
-  //   if (accessToken != null) {
-  //     try {
-  //       final response = await apiService.dischargeData(accessToken);
+  Future<List<Map<String, dynamic>>> fetchDashboardData({
+    required bool isMonthly,
+    required String pType,
+    required String pDate,
+  }) async {
+    final storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: 'accessToken');
 
-  //       if (response != null && response['statusCode'] == 401) {
-  //         WidgetsBinding.instance.addPostFrameCallback((_) {
-  //           Get.offAll(() => const LoginScreen());
-  //         });
-  //         return [];
-  //       }
+    if (accessToken != null) {
+      try {
+        final response = await apiService.getIpdSettlementData(
+          accessToken,
+          context,
+          isMonthly: isMonthly,
+          pDate: pDate,
+          pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
+        );
 
-  //       if (response != null && response['data'] != null) {
-  //         return List<Map<String, dynamic>>.from(response['data']);
-  //       } else {
-  //         return [];
-  //       }
-  //     } catch (e) {
-  //       print('Error fetching dashboard data: $e');
-  //       return [];
-  //     }
-  //   } else {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       Get.offAll(() => const LoginScreen());
-  //     });
-  //     return [];
-  //   }
-  // }
-
-  DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
+        if (response != null && response['data'] != null) {
+          return List<Map<String, dynamic>>.from(response['data']);
+        } else {
+          print('Invalid data format or missing "data" field.');
+          return [];
+        }
+      } catch (e) {
+        print('Error fetching IPD settlement data: $e');
+        return [];
+      }
+    } else {
+      print('Access token is null. Please login.');
+      return [];
+    }
+  }
 
   void _goToPrevious() {
     setState(() {
@@ -78,6 +95,7 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
+    loadIPDSettlementData();
   }
 
   void _goToNext() {
@@ -87,32 +105,32 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
+    loadIPDSettlementData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
+    loadIPDSettlementData();
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Column(
         children: [
-          /// **Header Section**
           DocvedaPrimaryHeaderContainer(
             child: Column(
               children: [
                 DocvedaAppBar(
                   title: Center(
-                    child: Text(
-                      DocvedaTexts.ipdSettlement,
-                      style: TextStyleFont.subheading.copyWith(
-                        color: DocvedaColors.white,
-                      ),
+                    child: DocvedaText(
+                      text: "IPD Settlement",
+                      style: TextStyleFont.subheading
+                          .copyWith(color: DocvedaColors.white),
                     ),
                   ),
                   showBackArrow: true,
@@ -124,94 +142,127 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                   onNext: _goToNext,
                   isMonthly: isMonthly,
                   textColor: DocvedaColors.white,
-                  fontSize: DocvedaSizes.fontSizeSm,
+                  fontSize: 14,
                 ),
               ],
             ),
           ),
-
-          /// **Patient List and "View Report" Button**
           Expanded(
-            child: Column(
-              children: [
-                /// **Patient List Section**
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: DocvedaSizes.spaceBtwItems),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${patients.length} ${DocvedaTexts.patientFound}",
-                          style: TextStyleFont.subheading,
-                        ),
-                        Text(
-                          DocvedaTexts.depositePatientDesc,
-                          style: TextStyleFont.body,
-                        ),
-                        const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: patientData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: DocvedaText(text: 'Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: DocvedaText(text: "No settlement data found."));
+                }
 
-                        /// **Scrollable List of Patient Cards**
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: patients.length,
-                            itemBuilder: (context, index) {
-                              return PatientCard(
-                                patient: patients[index],
-                                index: index,
-                                selectedPatientIndex: selectedPatientIndex,
-                                onPatientSelected: handlePatientSelection,
-                              );
+                final patients = snapshot.data!;
+
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: DocvedaSizes.spaceBtwItems),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DocvedaText(
+                            text: "${patients.length} settlements found",
+                            style: TextStyleFont.subheading,
+                          ),
+                          DocvedaText(
+                            text: "Patients whose IPD bills are fully settled.",
+                            style: TextStyleFont.body,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: DocvedaSizes.spaceBtwItems),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientCard(
+                            patient: {
+                              "name": "${patient["Patient Name"] ?? ""}".trim(),
+                              "age": patient["Age"]?.toString() ?? "N/A",
+                              "gender": patient["Gender"] ?? "N/A",
+                              "admission": DateFormatter.formatDate(
+                                      patient["Admission Date"]) ??
+                                  "N/A",
+                              "registrationNumber":
+                                  patient["Registration_No"] ?? "N/A",
+                              "deposit":
+                                  patient["Deposite"]?.toString() ?? "₹0",
+                              "billAmount":
+                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
+                              "finalSettlement":
+                                  patient["Final Settlement"]?.toString() ??
+                                      "₹0",
                             },
-                          ),
-                        ),
-                      ],
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: DocvedaSizes.spaceBtwItemsS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DocvedaColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DocvedaColors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          if (patients.isEmpty ||
+                              selectedPatientIndex >= patients.length) return;
 
-                /// **Fixed "View Report" Button at Bottom**
-                SafeArea(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.05,
-                      vertical: DocvedaSizes.cardRadiusSm,
+                          final selected = patients[selectedPatientIndex];
+                          Get.to(
+                            () => ViewReportScreen(
+                              patientName: "${selected["Patient_Name"] ?? ''}",
+                              age:
+                                  int.tryParse(selected["Age"].toString()) ?? 0,
+                              gender: selected["Gender"] ?? "N/A",
+                              admissionDate: DateFormatter.formatDate(
+                                      selected["Admission Date"]) ??
+                                  "N/A",
+                              dischargeDate: DateFormatter.formatDate(
+                                      selected["Discharge Date"]) ??
+                                  "N/A",
+                              finalSettlement:
+                                  selected["Final Settlement"]?.toString() ??
+                                      "N/A",
+                              screenName: "IPD Settlement",
+                            ),
+                          );
+                        },
+                        text: DocvedaTexts.viewReport,
+                        backgroundColor: DocvedaColors.primaryColor,
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: DocvedaColors.black.withOpacity(0.1),
-                          blurRadius: DocvedaSizes.borderRadiusMd,
-                          spreadRadius: DocvedaSizes.spreadRadius,
-                        ),
-                      ],
-                    ),
-                    child: PrimaryButton(
-                      onPressed: () {
-                        Get.to(
-                          () => ViewReportScreen(
-                            patientName: patients[selectedPatientIndex]["name"],
-                            age: patients[selectedPatientIndex]["age"],
-                            gender: patients[selectedPatientIndex]["gender"],
-                            admissionDate: patients[selectedPatientIndex]
-                                ["admission"],
-                            dischargeDate: patients[selectedPatientIndex]
-                                ["discharge"],
-                            finalSettlement: patients[selectedPatientIndex]
-                                ["finalSettlement"],
-                            screenName: "IPD Settlements",
-                          ),
-                        );
-                      },
-                      text: DocvedaTexts.viewReport,
-                      backgroundColor: DocvedaColors.primaryColor,
-                    ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -219,55 +270,3 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
     );
   }
 }
-
-/// **Sample Patient Data**
-List<Map<String, dynamic>> patients = [
-  {
-    "name": "John Doe",
-    "age": 45,
-    "gender": "Male",
-    "admission": "2025-01-01",
-    "discharge": "2025-01-10",
-    "finalSettlement": "Pending",
-  },
-  {
-    "name": "Jane Smith",
-    "age": 50,
-    "gender": "Female",
-    "admission": "2025-02-01",
-    "discharge": "2025-02-12",
-    "finalSettlement": "Completed",
-  },
-  {
-    "name": "Michael Johnson",
-    "age": 60,
-    "gender": "Male",
-    "admission": "2025-03-01",
-    "discharge": "2025-03-15",
-    "finalSettlement": "Completed",
-  },
-  {
-    "name": "Emily Davis",
-    "age": 38,
-    "gender": "Female",
-    "admission": "2025-04-01",
-    "discharge": "2025-04-10",
-    "finalSettlement": "Pending",
-  },
-  {
-    "name": "Robert Brown",
-    "age": 70,
-    "gender": "Male",
-    "admission": "2025-04-05",
-    "discharge": "2025-04-20",
-    "finalSettlement": "Completed",
-  },
-  {
-    "name": "Laura Wilson",
-    "age": 29,
-    "gender": "Female",
-    "admission": "2025-04-08",
-    "discharge": "2025-04-18",
-    "finalSettlement": "Pending",
-  },
-];
