@@ -277,6 +277,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                                     (selectedPatient["BillAmt"] != null)
                                         ? selectedPatient["BillAmt"].toString()
                                         : "N/A",
+                                screenName: "Discharge",
                               ),
                             );
                           },

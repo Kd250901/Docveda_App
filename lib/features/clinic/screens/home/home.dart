@@ -9,6 +9,7 @@ import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/clinic/screens/admission/admissionScreen.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/dischargeScreen.dart';
+import 'package:docveda_app/features/clinic/screens/discount/discountScreen.dart';
 import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
 import 'package:docveda_app/features/clinic/screens/settings/settingScreen.dart';
 import 'package:docveda_app/features/clinic/screens/bedTransferScreen/bedTransferScreen.dart';
@@ -46,46 +47,15 @@ final List<String> dashboardItems = [
   DocvedaTexts.dashboardItems8, // "Discounts"
   DocvedaTexts.dashboardItems9, // "Refunds"
 ];
-// bool isLoading = true;
-
-// @override
-// void initState() {
-//   super.initState();
-//   loadDashboardData();
-// }
-
-// void loadDashboardData() async {
-//   final data = await fetchDashboardData();
-//   setState(() {
-//     dashboardData = data;
-//     isLoading = false;
-//   });
-// }
-
-// String Dashboard_Mst_Cd = '';
-
-// final List<Widget> pages = [
-//   AdmissionScreen(Dashboard_Mst_Cd),
-//   Dischargescreen(Dashboard_Mst_Cd),
-// ];
-
-// final List<Map<String, dynamic>> pages = [
-//   {'screen': AdmissionScreen, 'data': PageArgs(Dashboard_Mst_Cd: '')},
-//   {'screen': Dischargescreen, 'data': PageArgs(Dashboard_Mst_Cd: '')},
-// ];
 
 class _HomeScreenState extends State<HomeScreen> {
-  NotificationServices notificationServices = NotificationServices();
+  // NotificationServices notificationServices = NotificationServices();
   final ApiService apiService = ApiService();
 
   //  Declare the variable to store API response
-  // List<Map<String, dynamic>> dashboardData = [];
-  // late Future<List<Map<String, dynamic>>> dashboardData;
+
   late Future<List<Map<String, dynamic>>> dashboardDataFuture;
   bool isMonthly = false; // default to daily
-
-  //  Optional: A loading flag to show a loader while fetching data
-  //bool isLoading = true;
 
   @override
   void initState() {
@@ -99,14 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     print("dashboardDataFuture: $dashboardDataFuture");
 
-    notificationServices.requestNotificationPermission();
-    notificationServices.firebaseInit(context);
-    notificationServices.setupInteractMessage(context);
-    notificationServices.isTokenRefresh();
-    notificationServices.getDeviceToken().then((value) {
-      print("Device Token: ");
-      print(value);
-    });
+    // notificationServices.requestNotificationPermission();
+    // notificationServices.firebaseInit(context);
+    // notificationServices.setupInteractMessage(context);
+    // notificationServices.isTokenRefresh();
+    // notificationServices.getDeviceToken().then((value) {
+    //   print("Device Token: ");
+    //   print(value);
+    // });
   }
 
   //get item => null;
@@ -123,10 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (accessToken != null) {
       try {
         final response = await apiService.getCards(accessToken, context,
-            isMonthly: isMonthly,
-            pDate: pDate,
-            pType: pType // Pass isMonthly here
-            );
+            isMonthly: isMonthly, pDate: pDate, pType: pType);
         print("API Response from home: ${response}");
         if (response != null && response['statusCode'] == 401) {
           StorageHelper.clearTokens();
@@ -153,26 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //  Function to fetch data and store it in `dashboardData`
-  void loadDashboardData() async {
-    // print('load dashboard data triggered: $loadDashboardData');
-    // final data = await fetchDashboardData();
-    // print(
-    //   "API Response of d data: $data",
-    // ); //  this will print the full response in console
-
-    // setState(() {
-    //   dashboardData = data;
-    //   // isLoading = false;
-    // });
-  }
-
-  // String getDashboardValue(List<Map<String, dynamic>> data, String title) {
-  //   final item = data.firstWhere(
-  //     (item) => item['Dashboard_Title'] == title,
-  //     orElse: () => {},
-  //   );
-  //   return item['Records']?.toString() ?? '0';
-  // }
+  void loadDashboardData() async {}
 
   DateTime selectedDate = DateTime.now();
   //bool isMonthly = false;
@@ -248,9 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: dashboardDataFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+          bool isLoading = snapshot.connectionState == ConnectionState.waiting;
 
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -259,7 +205,10 @@ class _HomeScreenState extends State<HomeScreen> {
           final dashboardData = snapshot.data!;
           List<Map<String, dynamic>> patientDataArray = extractOptionsFromData(
             data: dashboardData[0],
-            keys: ["Total_Registrations", "Discharge"],
+            keys: [
+              "Total_Registrations",
+              "Discharge",
+            ],
           );
 
           List<Map<String, dynamic>> revenueDataArray = extractOptionsFromData(
@@ -272,122 +221,116 @@ class _HomeScreenState extends State<HomeScreen> {
             keys: ["Total_Discount", "Total_Refund"],
           );
           print('expenseDataArray: $expenseDataArray');
+
           List<Map<String, dynamic>> filteredData = snapshot.data!;
 
           return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DocvedaPrimaryHeaderContainer(
-                  child: Column(
-                    children: [
-                      DocvedaAppBar(
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: DocvedaColors.white,
-                                  child: Image.asset(DocvedaImages.clinicLogo),
-                                ),
-                                const SizedBox(
-                                  width: DocvedaSizes.spaceBtwItems,
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      DocvedaTexts.clinicNameTitle,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall!
-                                          .apply(color: DocvedaColors.white),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          DocvedaImages.protectLogo,
-                                          width: DocvedaSizes
-                                              .imageWidthS, // Set the width as per your requirement
-                                          height: DocvedaSizes
-                                              .imageHeightS, // Set the height as per your requirement
-                                          fit: BoxFit
-                                              .contain, // Ensures the image fits well
-                                        ),
-                                        const SizedBox(
-                                          width: DocvedaSizes.spaceBtwItemsSm,
-                                        ), // Adds spacing between image and text
-                                        Text(
-                                          DocvedaTexts.logo,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.labelMedium!.apply(
-                                                color: DocvedaColors.white,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        actions: [
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                right: DocvedaSizes.spaceBtwItemsSm,
-                              ), // Adjust as needed
-                              child: IconButton(
-                                icon: const Icon(
-                                  Iconsax.setting_25,
-                                  color: DocvedaColors.white,
-                                ),
-                                onPressed: () {
-                                  Get.to(() => const SettingsScreen());
-                                },
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              DocvedaPrimaryHeaderContainer(
+                child: Column(
+                  children: [
+                    DocvedaAppBar(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: DocvedaColors.white,
+                                child: Image.asset(DocvedaImages.clinicLogo),
                               ),
-                            ),
+                              const SizedBox(
+                                width: DocvedaSizes.spaceBtwItems,
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    DocvedaTexts.clinicNameTitle,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall!
+                                        .apply(color: DocvedaColors.white),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        DocvedaImages.protectLogo,
+                                        width: DocvedaSizes.imageWidthS,
+                                        height: DocvedaSizes.imageHeightS,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      const SizedBox(
+                                        width: DocvedaSizes.spaceBtwItemsSm,
+                                      ),
+                                      Text(
+                                        DocvedaTexts.logo,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.labelMedium!.apply(
+                                              color: DocvedaColors.white,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       ),
-
-                      const SizedBox(
-                        height: DocvedaSizes.spaceBtwItemsS,
-                      ), // Increased spacing before toggle
-                      // Increased spacing
-                      // Align(
-                      //   alignment: Alignment.center,
-                      //   child: DocvedaToggle(),
-                      // ),
-                      const SizedBox(
-                          height: DocvedaSizes
-                              .spaceBtwItemsS), // New spacing below toggle
-                      // const SizedBox(height: DocvedaSizes.spaceBtwItems,),
-                      DocvedaToggle(
-                        isMonthly: isMonthly,
-                        onToggle: _handleToggle,
-                      ),
-                      DateSwitcherBar(
-                        selectedDate: selectedDate,
-                        onPrevious: _goToPrevious,
-                        onNext: _goToNext,
-                        isMonthly: isMonthly,
-                        textColor: DocvedaColors.white,
-                        fontSize: DocvedaSizes.fontSizeSm,
-                      ),
-
-                      const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
-                    ],
+                      actions: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              right: DocvedaSizes.spaceBtwItemsSm,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Iconsax.setting_25,
+                                color: DocvedaColors.white,
+                              ),
+                              onPressed: () {
+                                Get.to(() => const SettingsScreen());
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: DocvedaSizes.spaceBtwItemsS,
+                    ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+                    DocvedaToggle(
+                      isMonthly: isMonthly,
+                      onToggle: _handleToggle,
+                    ),
+                    DateSwitcherBar(
+                      selectedDate: selectedDate,
+                      onPrevious: _goToPrevious,
+                      onNext: _goToNext,
+                      isMonthly: isMonthly,
+                      textColor: DocvedaColors.white,
+                      fontSize: DocvedaSizes.fontSizeSm,
+                    ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
+                  ],
+                ),
+              ),
+              if (isLoading) ...[
+                const SizedBox(height: 200),
+                const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: DocvedaColors.primaryColor,
                   ),
                 ),
-
-                //  Text('Data length: ${dashboardData.length}'),
+                const SizedBox(height: 100),
+              ] else if (snapshot.hasData) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: DocvedaSizes.defaultSpace,
-                  ),
+                      horizontal: DocvedaSizes.defaultSpace),
                   child: Column(
                     children: [
                       // PATIENT INFORMATION
@@ -396,10 +339,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
-                          fontWeight:
-                              FontWeight.bold, // Optional: Adjust weight
-                          color: DocvedaColors.black, // Optional: Change color
+                          fontSize: DocvedaSizes.fontSizeMd,
+                          fontWeight: FontWeight.bold,
+                          color: DocvedaColors.black,
                         ),
                       ),
 
@@ -416,12 +358,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return index == 0
-                                          ? AdmissionScreen(
-                                              patientDataArray[index]
-                                                  ['Total_Registrations'])
+                                          ? const AdmissionScreen() // No arguments now
                                           : Dischargescreen(
-                                              patientDataArray[index]
-                                                  ['Discharge']);
+                                              patientDataArray[index][
+                                                  'Discharge'], // assuming Dischargescreen still needs it
+                                            );
                                     },
                                   ),
                                 );
@@ -505,20 +446,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Iconsax.arrange_circle_2),
+                                  Icon(Iconsax.repeat),
                                   const SizedBox(
                                       width: DocvedaSizes.spaceBtwItemsS),
                                   Text(
-                                    "123",
-                                    style: TextStyle(
-                                      fontSize: DocvedaSizes
-                                          .cardNumberSize, // Increase font size
-                                      fontWeight:
-                                          FontWeight.bold, // Make text bold
-                                    ),
+                                    "${dashboardData[0]['Bed_Transfer'] ?? 0} Bed Transfer",
+                                    style: TextStyleFont.subheading,
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(DocvedaTexts.dashboardItems3),
                                 ],
                               ),
                               Icon(Iconsax.arrow_right_3),
@@ -533,10 +467,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
-                          fontWeight:
-                              FontWeight.bold, // Optional: Adjust weight
-                          color: DocvedaColors.black, // Optional: Change color
+                          fontSize: DocvedaSizes.fontSizeMd,
+                          fontWeight: FontWeight.bold,
+                          color: DocvedaColors.black,
                         ),
                       ),
 
@@ -545,41 +478,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: revenueDataArray.length,
                         itemBuilder: (_, index) => InkWell(
                           onTap: () {
-                            if (dashboardItems[index + 3] ==
-                                DocvedaTexts.dashboardItems5) {
-                              // Navigate to the OPD Payments Screen
+                            String tappedItem =
+                                dashboardItems[index + 3].trim();
+
+                            if (tappedItem ==
+                                DocvedaTexts.dashboardItems5.trim()) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      Opdpaymentscreen(), // Your target screen
-                                ),
+                                    builder: (context) => Opdpaymentscreen()),
                               );
-                            } else if (dashboardItems[index + 3] ==
-                                DocvedaTexts.dashboardItems4) {
+                            } else if (tappedItem ==
+                                DocvedaTexts.dashboardItems4.trim()) {
                               // Navigate to OPD Bills
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     // builder: (context) => Opdbillsscreen(),
-                              //   ),
-                              // );
-                            } else if (index + 3 == 6) {
-                              // IPD Settlements
+                            } else if (tappedItem ==
+                                DocvedaTexts.dashboardItems6.trim()) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Ipdsettlementsscreen(),
-                                ),
+                                    builder: (context) => Depositsscreen()),
                               );
-                            } else if (dashboardItems[index + 3] ==
-                                DocvedaTexts.dashboardItems6) {
-                              // Navigate to Deposits Screen
+                            } else if (tappedItem ==
+                                DocvedaTexts.dashboardItems7.trim()) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Depositsscreen(),
-                                ),
+                                    builder: (context) =>
+                                        Ipdsettlementsscreen()),
                               );
                             }
                           },
@@ -634,41 +559,60 @@ class _HomeScreenState extends State<HomeScreen> {
                         showActionButton: false,
                         textStyle: TextStyle(
                           fontFamily: "Manrope",
-                          fontSize: DocvedaSizes.fontSizeMd, // Adjust as needed
-                          fontWeight:
-                              FontWeight.bold, // Optional: Adjust weight
-                          color: DocvedaColors.black, // Optional: Change color
+                          fontSize: DocvedaSizes.fontSizeMd,
+                          fontWeight: FontWeight.bold,
+                          color: DocvedaColors.black,
                         ),
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaGridLayout(
                         itemCount: expenseDataArray.length,
-                        itemBuilder: (_, index) => DocvedaCard(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: DocvedaSizes.xs),
-                            child: SizedBox(
-                              height: double.infinity,
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    expenseDataArray[index]['label'] ?? "N/A",
-                                    style: TextStyleFont.dashboardcard,
-                                  ), // Using dynamic list
-                                  Text(
-                                    FormatAmount.formatAmount(
-                                        expenseDataArray[index]['value']),
-                                    style: TextStyleFont.subheading,
+                        itemBuilder: (_, index) {
+                          final label =
+                              expenseDataArray[index]['label'] ?? "N/A";
+
+                          return GestureDetector(
+                            onTap: () {
+                              if (label.toLowerCase().contains('discount')) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DiscountsScreen(), // Replace with your Discount screen
                                   ),
-                                ],
+                                );
+                              }
+                              // You can add more conditions here for Refund or others if needed
+                            },
+                            child: DocvedaCard(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: DocvedaSizes.xs),
+                                child: SizedBox(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        label,
+                                        style: TextStyleFont.dashboardcard,
+                                      ),
+                                      Text(
+                                        FormatAmount.formatAmount(
+                                            expenseDataArray[index]['value']),
+                                        style: TextStyleFont.subheading,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwSections),
@@ -676,7 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ],
-            ),
+            ]),
           );
         },
       ),
@@ -692,13 +636,12 @@ void _showLogoutDialog(BuildContext context) {
         contentPadding: const EdgeInsets.symmetric(
           vertical: DocvedaSizes.dialogBoxVertical,
           horizontal: DocvedaSizes.dialogBoxHorizontal,
-        ), // Adjust padding
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-              DocvedaSizes.cardRadiusMd), // Rounded corners
+          borderRadius: BorderRadius.circular(DocvedaSizes.cardRadiusMd),
         ),
         content: SizedBox(
-          width: DocvedaSizes.dialogBoxWidth, // Set a smaller width
+          width: DocvedaSizes.dialogBoxWidth,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

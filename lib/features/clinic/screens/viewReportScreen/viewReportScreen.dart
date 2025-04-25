@@ -1,7 +1,9 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/features/clinic/screens/patientlistScreen/patientListScreen.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
+import 'package:docveda_app/utils/pdf/pdf.dart';
 import 'package:flutter/material.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 
@@ -12,6 +14,7 @@ class ViewReportScreen extends StatelessWidget {
   final String admissionDate;
   final String dischargeDate;
   final String finalSettlement;
+  final String screenName;
 
   const ViewReportScreen({
     super.key,
@@ -21,10 +24,24 @@ class ViewReportScreen extends StatelessWidget {
     required this.admissionDate,
     required this.dischargeDate,
     required this.finalSettlement,
+    required this.screenName,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> reportData = {
+      "Name": patientName,
+      "Age": age,
+      "Gender": gender,
+      "Admission Date": admissionDate,
+      "Discharge Date": dischargeDate,
+      "Final Settlement": finalSettlement,
+    };
+
+    String convertToUnderscore(String input) {
+      return input.replaceAll(' ', '_');
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const DocvedaText(
@@ -81,7 +98,13 @@ class ViewReportScreen extends StatelessWidget {
               width: double.infinity,
               child: PrimaryButton(
                 onPressed: () {
-                  // Handle report download
+                  // Use the screenName parameter in the title
+                  Pdf.generateAndDownloadPDF(
+                    title: "$screenName Patient Report", // Dynamic title
+                    data: reportData,
+                    fileName:
+                        "${convertToUnderscore(patientName)}${convertToUnderscore(screenName)}_report.pdf", // Dynamic file name
+                  );
                 },
                 text: DocvedaTexts.downloadReport,
                 backgroundColor: DocvedaColors.primaryColor,

@@ -15,11 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/route_manager.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
+import 'package:intl/intl.dart';
 
 class AdmissionScreen extends StatefulWidget {
-  final String dashboard_mst_cd;
-
-  const AdmissionScreen(this.dashboard_mst_cd, {super.key});
+  const AdmissionScreen({super.key});
 
   @override
   State<AdmissionScreen> createState() => _AdmissionScreenState();
@@ -36,7 +35,12 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   @override
   void initState() {
     super.initState();
-    patientData = fetchDashboardData();
+
+    patientData = fetchDashboardData(
+      isMonthly: isMonthly,
+      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+      pType: isMonthly ? 'MONTHLY' : 'DAILY',
+    );
   }
 
   void handlePatientSelection(int index) {
@@ -45,7 +49,11 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> fetchDashboardData() async {
+  Future<List<Map<String, dynamic>>> fetchDashboardData({
+    required bool isMonthly,
+    required String pType,
+    required String pDate,
+  }) async {
     final storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: 'accessToken');
 
@@ -53,13 +61,16 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
       try {
         final response = await apiService.getAdmissionData(
           accessToken,
-          widget.dashboard_mst_cd,
+          context,
+          isMonthly: isMonthly,
+          pDate: "2025-04-24",
+          pType: "DAILY",
         );
 
         if (response != null && response['data'] != null) {
           return List<Map<String, dynamic>>.from(response['data']);
         } else {
-          print('Invalid data format or missing "results.data" field.');
+          print('Invalid data format or missing "data" field.');
           return [];
         }
       } catch (e) {
@@ -183,10 +194,14 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                               "age": patient["Age"]?.toString() ?? "N/A",
                               "gender": patient["Gender"] ?? "N/A",
                               "admission": DateFormatter.formatDate(
-                                      patient["Registration_Date"]) ??
+                                      patient["Admission Date"]) ??
                                   "N/A",
                               "registrationNumber":
                                   patient["Registration_No"] ?? "N/A",
+                              "deposit":
+                                  patient["Deposite"]?.toString() ?? "₹0",
+                              "billAmount":
+                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
                               "finalSettlement": "",
                             },
                             index: index,
@@ -240,6 +255,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                 finalSettlement: (selected["BillAmt"] != null)
                                     ? selected["BillAmt"].toString()
                                     : "N/A",
+                                screenName: "Admission",
                               ),
                             );
                           },

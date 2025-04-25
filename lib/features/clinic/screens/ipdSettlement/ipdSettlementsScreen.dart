@@ -202,6 +202,7 @@ class _IpdsettlementsscreenState extends State<Ipdsettlementsscreen> {
                                 ["discharge"],
                             finalSettlement: patients[selectedPatientIndex]
                                 ["finalSettlement"],
+                            screenName: "IPD Settlements",
                           ),
                         );
                       },

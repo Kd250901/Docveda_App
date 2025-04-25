@@ -16,14 +16,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
-class Opdbillsscreen extends StatefulWidget {
-  const Opdbillsscreen(revenueDataArray, {super.key});
+class DiscountsScreen extends StatefulWidget {
+  const DiscountsScreen({super.key});
 
   @override
-  _OpdbillsscreenState createState() => _OpdbillsscreenState();
+  State<DiscountsScreen> createState() => _DiscountsScreenState();
 }
 
-class _OpdbillsscreenState extends State<Opdbillsscreen> {
+class _DiscountsScreenState extends State<DiscountsScreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> patientData;
@@ -34,21 +34,14 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
   @override
   void initState() {
     super.initState();
-
-    patientData = fetchDashboardData(
+    patientData = fetchDiscountData(
       isMonthly: isMonthly,
       pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
       pType: isMonthly ? 'MONTHLY' : 'DAILY',
     );
   }
 
-  void handlePatientSelection(int index) {
-    setState(() {
-      selectedPatientIndex = index;
-    });
-  }
-
-  Future<List<Map<String, dynamic>>> fetchDashboardData({
+  Future<List<Map<String, dynamic>>> fetchDiscountData({
     required bool isMonthly,
     required String pType,
     required String pDate,
@@ -58,12 +51,12 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
 
     if (accessToken != null) {
       try {
-        final response = await apiService.getOpdBillsData(
+        final response = await apiService.getDiscountData(
           accessToken,
           context,
           isMonthly: isMonthly,
-          pDate: "2025-04-24",
-          pType: "DAILY",
+          pDate: pDate,
+          pType: pType,
         );
 
         if (response != null && response['data'] != null) {
@@ -73,7 +66,7 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
           return [];
         }
       } catch (e) {
-        print('Error fetching dashboard data: $e');
+        print('Error fetching discount data: $e');
         return [];
       }
     } else {
@@ -82,17 +75,11 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
     }
   }
 
-  // DateTime selectedDate = DateTime.now();
-  // bool isMonthly = false;
-
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month - 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
   }
@@ -101,10 +88,7 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month + 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
   }
@@ -115,6 +99,12 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
     });
   }
 
+  void handlePatientSelection(int index) {
+    setState(() {
+      selectedPatientIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -122,17 +112,15 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
     return Scaffold(
       body: Column(
         children: [
-          /// **Header Section**
           DocvedaPrimaryHeaderContainer(
             child: Column(
               children: [
                 DocvedaAppBar(
                   title: Center(
                     child: Text(
-                      DocvedaTexts.opdBills,
-                      style: TextStyleFont.subheading.copyWith(
-                        color: DocvedaColors.white,
-                      ),
+                      "Discounts",
+                      style: TextStyleFont.subheading
+                          .copyWith(color: DocvedaColors.white),
                     ),
                   ),
                   showBackArrow: true,
@@ -149,8 +137,6 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
               ],
             ),
           ),
-
-          /// **FutureBuilder Section**
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: patientData,
@@ -161,7 +147,7 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                      child: Text('No patient data available.'));
+                      child: Text('No discount data available.'));
                 }
 
                 final patients = snapshot.data!;
@@ -171,23 +157,14 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "${patients.length} ${DocvedaTexts.patientFound}",
-                        style: TextStyleFont.subheading,
-                      ),
-                      Text(
-                        DocvedaTexts.depositePatientDesc,
-                        style: TextStyleFont.body,
-                      ),
+                      Text("${patients.length} patients found with discounts",
+                          style: TextStyleFont.subheading),
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-
-                      /// **Patient List**
                       Expanded(
                         child: ListView.builder(
                           itemCount: patients.length,
                           itemBuilder: (context, index) {
                             final patient = patients[index];
-
                             return PatientCard(
                               patient: {
                                 "name":
@@ -199,18 +176,8 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                     "N/A",
                                 "registrationNumber":
                                     patient["Registration_No"] ?? "N/A",
-                                "deposit":
-                                    patient["Deposite"]?.toString() ?? "0",
-                                "billAmount":
-                                    patient["Total IPD Bill"]?.toString() ??
-                                        "0",
-                                "discharge": DateFormatter.formatDate(
-                                        patient["Discharge Date"]) ??
-                                    "N/A",
-                                "finalSettlement":
-                                    patient["Final Settle Amount"]
-                                            ?.toString() ??
-                                        "0",
+                                "discountGiven":
+                                    patient["Discount"]?.toString() ?? "0",
                               },
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
@@ -219,14 +186,10 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                           },
                         ),
                       ),
-
-                      /// **"View Report" Button**
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05,
-                          vertical: 10,
-                        ),
+                            horizontal: screenWidth * 0.05, vertical: 10),
                         decoration: BoxDecoration(
                           color: DocvedaColors.white,
                           boxShadow: [
@@ -249,10 +212,11 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                 age: selectedPatient["age"],
                                 gender: selectedPatient["gender"],
                                 admissionDate: selectedPatient["admission"],
-                                dischargeDate: selectedPatient["discharge"],
+                                dischargeDate:
+                                    selectedPatient["discharge"] ?? "N/A",
                                 finalSettlement:
-                                    selectedPatient["finalSettlement"],
-                                screenName: "OPD Bills",
+                                    selectedPatient["discountGiven"],
+                                screenName: "Discounts",
                               ),
                             );
                           },
@@ -268,56 +232,4 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
       ),
     );
   }
-
-  /// **Sample Patient Data**
-// List<Map<String, dynamic>> patients = [
-//   {
-//     "name": "John Doe",
-//     "age": 45,
-//     "gender": "Male",
-//     "admission": "2025-01-01",
-//     "discharge": "2025-01-10",
-//     "finalSettlement": "Pending",
-//   },
-//   {
-//     "name": "Jane Smith",
-//     "age": 50,
-//     "gender": "Female",
-//     "admission": "2025-02-01",
-//     "discharge": "2025-02-12",
-//     "finalSettlement": "Completed",
-//   },
-//   {
-//     "name": "Mark Johnson",
-//     "age": 38,
-//     "gender": "Male",
-//     "admission": "2025-03-10",
-//     "discharge": "2025-03-20",
-//     "finalSettlement": "Completed",
-//   },
-//   {
-//     "name": "Emily Davis",
-//     "age": 29,
-//     "gender": "Female",
-//     "admission": "2025-04-01",
-//     "discharge": "2025-04-08",
-//     "finalSettlement": "Pending",
-//   },
-//   {
-//     "name": "George Miller",
-//     "age": 60,
-//     "gender": "Male",
-//     "admission": "2025-04-12",
-//     "discharge": "2025-04-22",
-//     "finalSettlement": "Completed",
-//   },
-//   {
-//     "name": "Rachel Green",
-//     "age": 33,
-//     "gender": "Female",
-//     "admission": "2025-05-01",
-//     "discharge": "2025-05-09",
-//     "finalSettlement": "Pending",
-//   },
-// ];
 }

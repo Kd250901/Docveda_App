@@ -1,7 +1,9 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
+import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
+//import 'package:docveda_app/utils/helpers/date_formatter.dart'; // <-- Make sure this path matches your file structure
 
 class DateSwitcherBar extends StatelessWidget {
   final DateTime selectedDate;
@@ -23,7 +25,9 @@ class DateSwitcherBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDate);
+    // ✅ Use the new formatter based on toggle
+    final String formattedDate =
+        DateFormatter.formatForToggle(selectedDate, isMonthly);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

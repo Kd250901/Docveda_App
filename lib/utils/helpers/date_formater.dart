@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class DateFormatter {
   static String formatDate(String? inputDate) {
     if (inputDate == null || inputDate.isEmpty) return "N/A";
@@ -5,7 +7,6 @@ class DateFormatter {
     try {
       DateTime parsedDate;
 
-      // Handle dd/MM/yyyy or dd/MM/yyyy HH:mm:ss
       if (inputDate.contains('/')) {
         List<String> parts = inputDate.split(' ');
         List<String> dateParts = parts[0].split('/');
@@ -17,20 +18,24 @@ class DateFormatter {
         int year = int.parse(dateParts[2]);
 
         parsedDate = DateTime(year, month, day);
-      }
-      // Handle yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss
-      else if (inputDate.contains('-')) {
+      } else if (inputDate.contains('-')) {
         parsedDate = DateTime.parse(inputDate);
       } else {
-        return inputDate; // unknown format
+        return inputDate;
       }
 
-      // New format: yyyy-MM-dd
       return '${parsedDate.year.toString().padLeft(4, '0')}-'
           '${parsedDate.month.toString().padLeft(2, '0')}-'
           '${parsedDate.day.toString().padLeft(2, '0')}';
     } catch (e) {
       return "N/A";
     }
+  }
+
+  /// ✅ New method for toggle switch (monthly/daily)
+  static String formatForToggle(DateTime date, bool isMonthly) {
+    return isMonthly
+        ? DateFormat('MMMM yyyy').format(date) // e.g., "April 2025"
+        : DateFormat('yyyy-MM-dd').format(date); // e.g., "2025-04-22"
   }
 }
