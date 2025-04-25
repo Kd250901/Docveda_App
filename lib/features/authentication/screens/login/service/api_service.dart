@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.0.105:4000/api';
+  static const String baseUrl = 'http://192.168.0.100:4000/api';
   // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
@@ -154,17 +154,24 @@ class ApiService {
 
   Future<Map<String, dynamic>?> getAdmissionData(
     String accessToken,
-    Dashboard_Mst_Cd,
-  ) async {
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
     try {
-      final response = await http.get(
+      final response = await http.post(
         Uri.parse(
-          '$baseUrl/dashboard/getCards/getCardDashboardData/$Dashboard_Mst_Cd',
+          '$baseUrl/frontdesk/app/getAdmission',
         ),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json', // Ensure correct headers
         },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -178,6 +185,117 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching getAdmissionData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getOpdBillsData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getOpdBills',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getOpdBillsData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getOpdBillsData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getOpdPaymnetData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getOPDPayments',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getOpdPaymnetData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getOpdPaymnetData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getDiscountData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app//getDiscount',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getOpdPaymnetData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getOpdPaymnetData: $e');
       return null;
     }
   }
