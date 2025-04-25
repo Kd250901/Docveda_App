@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.0.100:4000/api';
+  static const String baseUrl = 'http://192.168.10.132:4000/api';
   // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
@@ -234,6 +234,8 @@ class ApiService {
     required String pType,
   }) async {
     try {
+      print('P_Date: $pDate');
+      print('P_Type: $pType');
       final response = await http.post(
         Uri.parse(
           '$baseUrl/frontdesk/app/getOPDPayments',
@@ -273,7 +275,7 @@ class ApiService {
     try {
       final response = await http.post(
         Uri.parse(
-          '$baseUrl/frontdesk/app//getDiscount',
+          '$baseUrl/frontdesk/app/getDiscount',
         ),
         headers: {
           'Authorization': 'Bearer $accessToken',
@@ -300,42 +302,116 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> dischargeData(String accessToken) async {
-    final Uri apiUrl = Uri.parse(
-      '$baseUrl/frontdesk/ipdRegistration/getIpdRegistration',
-    );
-
+  Future<Map<String, dynamic>?> getRefundData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
     try {
       final response = await http.post(
-        apiUrl,
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getRefund',
+        ),
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
         },
-        body: json.encode({
-          "Reg_Date_From": "2025-2-5",
-          "Reg_Date_To": "2025-4-8",
-          "IsDischarge": 1,
-          "Admission_Type": null,
-          "IN_SeachText": "",
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
         }),
       );
-      print("API Response (${response.statusCode}): ${response.body}");
-      if (response.statusCode == 401) {
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
         UnauthorizedHelper.handle();
-        return {'statusCode': 401};
+        return null;
+      } else {
+        print('Failed to load getOpdPaymnetData: ${response.statusCode}');
+        return null;
       }
-
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      jsonResponse['statusCode'] = response.statusCode; // 👈 Add this line
-
-      return jsonResponse; // 👈 Return full response including statusCode
     } catch (e) {
-      print('API error: $e');
-      return {
-        'statusCode': 500,
-        'error': e.toString(),
-      }; // 👈 Return error format
+      print('Error fetching getOpdPaymnetData: $e');
+      return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getDischargaeData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getIPDDischarge',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getOpdPaymnetData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getOpdPaymnetData: $e');
+      return null;
+    }
+  }
+
+  // Future<Map<String, dynamic>> dischargeData(String accessToken) async {
+  //   final Uri apiUrl = Uri.parse(
+  //     '$baseUrl/frontdesk/ipdRegistration/getIpdRegistration',
+  //   );
+
+  //   try {
+  //     final response = await http.post(
+  //       apiUrl,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $accessToken',
+  //       },
+  //       body: json.encode({
+  //         "Reg_Date_From": "2025-2-5",
+  //         "Reg_Date_To": "2025-4-8",
+  //         "IsDischarge": 1,
+  //         "Admission_Type": null,
+  //         "IN_SeachText": "",
+  //       }),
+  //     );
+  //     print("API Response (${response.statusCode}): ${response.body}");
+  //     if (response.statusCode == 401) {
+  //       UnauthorizedHelper.handle();
+  //       return {'statusCode': 401};
+  //     }
+
+  //     final Map<String, dynamic> jsonResponse = json.decode(response.body);
+  //     jsonResponse['statusCode'] = response.statusCode; // 👈 Add this line
+
+  //     return jsonResponse; // 👈 Return full response including statusCode
+  //   } catch (e) {
+  //     print('API error: $e');
+  //     return {
+  //       'statusCode': 500,
+  //       'error': e.toString(),
+  //     }; // 👈 Return error format
+  //   }
+  // }
 }

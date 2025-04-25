@@ -11,6 +11,7 @@ import 'package:docveda_app/features/clinic/screens/admission/admissionScreen.da
 import 'package:docveda_app/features/clinic/screens/discharge/dischargeScreen.dart';
 import 'package:docveda_app/features/clinic/screens/discount/discountScreen.dart';
 import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
+import 'package:docveda_app/features/clinic/screens/refund/refundScreen.dart';
 import 'package:docveda_app/features/clinic/screens/settings/settingScreen.dart';
 import 'package:docveda_app/features/clinic/screens/bedTransferScreen/bedTransferScreen.dart';
 import 'package:docveda_app/features/clinic/screens/depositScreen/depositsScreen.dart';
@@ -359,10 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context) {
                                       return index == 0
                                           ? const AdmissionScreen() // No arguments now
-                                          : Dischargescreen(
-                                              patientDataArray[index][
-                                                  'Discharge'], // assuming Dischargescreen still needs it
-                                            );
+                                          : const Dischargescreen(); // No arguments now
                                     },
                                   ),
                                 );
@@ -579,11 +577,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        DiscountsScreen(), // Replace with your Discount screen
+                                        DiscountsScreen(), // Navigate to DiscountsScreen
+                                  ),
+                                );
+                              } else if (label
+                                  .toLowerCase()
+                                  .contains('refund')) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RefundsScreen(), // Navigate to RefundsScreen
                                   ),
                                 );
                               }
-                              // You can add more conditions here for Refund or others if needed
+                              // Add more conditions for other labels if needed
                             },
                             child: DocvedaCard(
                               child: Padding(

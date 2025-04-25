@@ -35,17 +35,22 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   @override
   void initState() {
     super.initState();
-
-    patientData = fetchDashboardData(
-      isMonthly: isMonthly,
-      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-      pType: isMonthly ? 'MONTHLY' : 'DAILY',
-    );
+    loadAdmissionData();
   }
 
   void handlePatientSelection(int index) {
     setState(() {
       selectedPatientIndex = index;
+    });
+  }
+
+  void loadAdmissionData() {
+    setState(() {
+      patientData = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'Monthly' : 'Daily',
+      );
     });
   }
 
@@ -63,8 +68,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
           accessToken,
           context,
           isMonthly: isMonthly,
-          pDate: "2025-04-24",
-          pType: "DAILY",
+          pDate: pDate,
+          pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
         );
 
         if (response != null && response['data'] != null) {
@@ -90,6 +95,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
+    loadAdmissionData();
   }
 
   void _goToNext() {
@@ -99,12 +105,14 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
+    loadAdmissionData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
+    loadAdmissionData();
   }
 
   @override
@@ -190,7 +198,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                           final patient = patients[index];
                           return PatientCard(
                             patient: {
-                              "name": "${patient["Patient_Name"] ?? ""}".trim(),
+                              "name": "${patient["Patient Name"] ?? ""}".trim(),
                               "age": patient["Age"]?.toString() ?? "N/A",
                               "gender": patient["Gender"] ?? "N/A",
                               "admission": DateFormatter.formatDate(
@@ -214,54 +222,52 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
 
                     /// View Report Button (Sticky to bottom)
                     Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.05,
-                          vertical: DocvedaSizes.spaceBtwItemsS,
-                        ),
-                        decoration: BoxDecoration(
-                          color: DocvedaColors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: DocvedaColors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: PrimaryButton(
-                          onPressed: () {
-                            if (patients.isEmpty ||
-                                selectedPatientIndex >= patients.length) return;
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: DocvedaSizes.spaceBtwItemsS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DocvedaColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DocvedaColors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: PrimaryButton(
+                        onPressed: () {
+                          if (patients.isEmpty ||
+                              selectedPatientIndex >= patients.length) return;
 
-                            final selected = patients[
-                                selectedPatientIndex]; // Corrected this line
-                            Get.to(
-                              () => ViewReportScreen(
-                                patientName:
-                                    "${selected["Patient_Name"] ?? ''}",
-                                age: selected["Age"] != null
-                                    ? int.tryParse(
-                                            selected["Age"].toString()) ??
-                                        0
-                                    : 0,
-                                gender: selected["Gender"] ?? "N/A",
-                                admissionDate: DateFormatter.formatDate(
-                                        selected["Registration_Date"]) ??
-                                    "N/A",
-                                dischargeDate: DateFormatter.formatDate(
-                                        selected["f_HIS_IPD_DischargeDate"]) ??
-                                    "N/A",
-                                finalSettlement: (selected["BillAmt"] != null)
-                                    ? selected["BillAmt"].toString()
-                                    : "N/A",
-                                screenName: "Admission",
-                              ),
-                            );
-                          },
-                          text: DocvedaTexts.viewReport,
-                          backgroundColor: DocvedaColors.primaryColor,
-                        )),
+                          final selected = patients[selectedPatientIndex];
+                          Get.to(
+                            () => ViewReportScreen(
+                              patientName: "${selected["Patient_Name"] ?? ''}",
+                              age: selected["Age"] != null
+                                  ? int.tryParse(selected["Age"].toString()) ??
+                                      0
+                                  : 0,
+                              gender: selected["Gender"] ?? "N/A",
+                              admissionDate: DateFormatter.formatDate(
+                                      selected["Registration_Date"]) ??
+                                  "N/A",
+                              dischargeDate: DateFormatter.formatDate(
+                                      selected["f_HIS_IPD_DischargeDate"]) ??
+                                  "N/A",
+                              finalSettlement: (selected["BillAmt"] != null)
+                                  ? selected["BillAmt"].toString()
+                                  : "N/A",
+                              screenName: "Admission",
+                            ),
+                          );
+                        },
+                        text: DocvedaTexts.viewReport,
+                        backgroundColor: DocvedaColors.primaryColor,
+                      ),
+                    ),
                   ],
                 );
               },

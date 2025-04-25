@@ -16,14 +16,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
-class DiscountsScreen extends StatefulWidget {
-  const DiscountsScreen({super.key});
+class RefundsScreen extends StatefulWidget {
+  const RefundsScreen({super.key});
 
   @override
-  State<DiscountsScreen> createState() => _DiscountsScreenState();
+  State<RefundsScreen> createState() => _RefundsScreenState();
 }
 
-class _DiscountsScreenState extends State<DiscountsScreen> {
+class _RefundsScreenState extends State<RefundsScreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> patientData;
@@ -34,12 +34,12 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
   @override
   void initState() {
     super.initState();
-    loadDiscountData();
+    loadRefundData();
   }
 
-  void loadDiscountData() {
+  void loadRefundData() {
     setState(() {
-      patientData = fetchDiscountData(
+      patientData = fetchRefundData(
         isMonthly: isMonthly,
         pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
         pType: isMonthly ? 'Monthly' : 'Daily',
@@ -47,7 +47,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> fetchDiscountData({
+  Future<List<Map<String, dynamic>>> fetchRefundData({
     required bool isMonthly,
     required String pType,
     required String pDate,
@@ -57,26 +57,21 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
 
     if (accessToken != null) {
       try {
-        print('pDate: $pDate');
-        print('pType: $pType');
-        final response = await apiService.getDiscountData(
+        final response = await apiService.getRefundData(
           accessToken,
           context,
           isMonthly: isMonthly,
           pDate: pDate,
           pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
         );
-        print(
-            'Sending pType: ${pType[0].toUpperCase() + pType.substring(1).toLowerCase()}');
 
         if (response != null && response['data'] != null) {
           return List<Map<String, dynamic>>.from(response['data']);
         } else {
-          print('Invalid data format or missing "data" field.');
           return [];
         }
       } catch (e) {
-        print('Error fetching discount data: $e');
+        print('Error fetching refund data: $e');
         return [];
       }
     } else {
@@ -92,7 +87,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
-    loadDiscountData(); // 🔁 Re-fetch when date changes
+    loadRefundData();
   }
 
   void _goToNext() {
@@ -102,14 +97,14 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
-    loadDiscountData(); // 🔁 Re-fetch when date changes
+    loadRefundData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
-    loadDiscountData(); // 🔁 Re-fetch on toggle change
+    loadRefundData();
   }
 
   void handlePatientSelection(int index) {
@@ -131,7 +126,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                 DocvedaAppBar(
                   title: Center(
                     child: Text(
-                      "Discounts",
+                      "Refunds",
                       style: TextStyleFont.subheading
                           .copyWith(color: DocvedaColors.white),
                     ),
@@ -159,8 +154,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No discount data available.'));
+                  return const Center(child: Text('No refund data available.'));
                 }
 
                 final patients = snapshot.data!;
@@ -170,7 +164,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${patients.length} patients found with discounts",
+                      Text("${patients.length} patients found with refunds",
                           style: TextStyleFont.subheading),
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                       Expanded(
@@ -190,7 +184,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                 "registrationNumber":
                                     patient["Registration_No"] ?? "N/A",
                                 "discountGiven":
-                                    patient["Discount"]?.toString() ?? "0",
+                                    patient["RefundAmount"]?.toString() ?? "0",
                               },
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
@@ -219,19 +213,17 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                           onPressed: () {
                             final selectedPatient =
                                 patients[selectedPatientIndex];
-                            Get.to(
-                              () => ViewReportScreen(
-                                patientName: selectedPatient["name"],
-                                age: selectedPatient["age"],
-                                gender: selectedPatient["gender"],
-                                admissionDate: selectedPatient["admission"],
-                                dischargeDate:
-                                    selectedPatient["discharge"] ?? "N/A",
-                                finalSettlement:
-                                    selectedPatient["discountGiven"],
-                                screenName: "Discounts",
-                              ),
-                            );
+                            Get.to(() => ViewReportScreen(
+                                  patientName: selectedPatient["name"],
+                                  age: selectedPatient["age"],
+                                  gender: selectedPatient["gender"],
+                                  admissionDate: selectedPatient["admission"],
+                                  dischargeDate:
+                                      selectedPatient["discharge"] ?? "N/A",
+                                  finalSettlement:
+                                      selectedPatient["discountGiven"],
+                                  screenName: "Refunds",
+                                ));
                           },
                         ),
                       ),

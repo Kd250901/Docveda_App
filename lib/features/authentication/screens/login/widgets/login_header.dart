@@ -15,11 +15,16 @@ class DocvedaLoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          dark ? DocvedaImages.darkAppLogo : DocvedaImages.darkAppLogo,
-          height: DocvedaSizes.imgHeightMd,
+        // SvgPicture.asset(
+        //   dark ? DocvedaImages.darkAppLogo : DocvedaImages.darkAppLogo,
+        //   height: DocvedaSizes.imgHeightMd,
+        //   width: double.infinity,
+        //   fit: BoxFit.contain,
+        // ),
+        Image.asset(
+          DocvedaImages.darkAppLogo,
+          height: DocvedaSizes.imgHeightMd, // Adjust size as needed
           width: double.infinity,
-          fit: BoxFit.contain,
         ),
         const SizedBox(height: DocvedaSizes.lg),
         // DocvedaText(

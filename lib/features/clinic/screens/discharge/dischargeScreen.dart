@@ -16,10 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 
 class Dischargescreen extends StatefulWidget {
-  final String dashboard_mst_cd;
-  Dischargescreen(this.dashboard_mst_cd, {super.key});
+  const Dischargescreen({super.key});
 
   @override
   _DischargescreenState createState() => _DischargescreenState();
@@ -30,10 +30,13 @@ class _DischargescreenState extends State<Dischargescreen> {
   final ApiService apiService = ApiService();
   late Future<List<Map<String, dynamic>>> patientData;
 
+  DateTime selectedDate = DateTime.now();
+  bool isMonthly = false;
+
   @override
   void initState() {
     super.initState();
-    patientData = fetchDashboardData();
+    loadAdmissionData();
   }
 
   void handlePatientSelection(int index) {
@@ -42,13 +45,33 @@ class _DischargescreenState extends State<Dischargescreen> {
     });
   }
 
-  Future<List<Map<String, dynamic>>> fetchDashboardData() async {
+  void loadAdmissionData() {
+    setState(() {
+      patientData = fetchDashboardData(
+        isMonthly: isMonthly,
+        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pType: isMonthly ? 'Monthly' : 'Daily',
+      );
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> fetchDashboardData({
+    required bool isMonthly,
+    required String pType,
+    required String pDate,
+  }) async {
     final storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: 'accessToken');
 
     if (accessToken != null) {
       try {
-        final response = await apiService.dischargeData(accessToken);
+        final response = await apiService.getDischargaeData(
+          accessToken,
+          context,
+          isMonthly: isMonthly,
+          pDate: pDate,
+          pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
+        );
 
         if (response != null && response['statusCode'] == 401) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -74,37 +97,31 @@ class _DischargescreenState extends State<Dischargescreen> {
     }
   }
 
-  DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
-
   void _goToPrevious() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month - 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
     });
+    loadAdmissionData();
   }
 
   void _goToNext() {
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
-              selectedDate.year,
-              selectedDate.month + 1,
-              selectedDate.day,
-            )
+              selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
     });
+    loadAdmissionData();
   }
 
   void _handleToggle(bool value) {
     setState(() {
       isMonthly = value;
     });
+    loadAdmissionData();
   }
 
   @override
@@ -128,7 +145,6 @@ class _DischargescreenState extends State<Dischargescreen> {
                   ),
                   showBackArrow: true,
                 ),
-                // Center the remaining widgets
                 Expanded(
                   child: Center(
                     child: Column(
@@ -136,7 +152,6 @@ class _DischargescreenState extends State<Dischargescreen> {
                       children: [
                         DocvedaToggle(
                             isMonthly: isMonthly, onToggle: _handleToggle),
-                        // const SizedBox(height: 10),
                         DateSwitcherBar(
                           selectedDate: selectedDate,
                           onPrevious: _goToPrevious,
@@ -200,40 +215,33 @@ class _DischargescreenState extends State<Dischargescreen> {
                     ),
                     const SizedBox(height: 8),
                     Expanded(
-                      child: Padding(
+                      child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: DocvedaSizes
-                                .spaceBtwItemsS), // changed 14 to 10
-                        child: ListView.builder(
-                          itemCount: patients.length,
-                          itemBuilder: (context, index) {
-                            final patient = patients[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: DocvedaSizes.spaceBtwItemsS),
-                              child: PatientCard(
-                                patient: {
-                                  "name":
-                                      "${patient["f_DV_First_Name"] ?? ''} ${patient["f_DV_Last_Name"] ?? ''}",
-                                  "age": patient["Ageyear"] ?? "N/A",
-                                  "gender": patient["VisitType"] ?? "N/A",
-                                  "admission": DateFormatter.formatDate(
-                                        patient["f_HIS_IPD_Reg_Date"],
-                                      ) ??
-                                      "N/A",
-                                  "discharge": DateFormatter.formatDate(
-                                        patient["f_HIS_IPD_Reg_Date"],
-                                      ) ??
-                                      "N/A",
-                                  "billAmount": patient["BillAmt"],
-                                },
-                                index: index,
-                                selectedPatientIndex: selectedPatientIndex,
-                                onPatientSelected: handlePatientSelection,
-                              ),
-                            );
-                          },
-                        ),
+                            horizontal: DocvedaSizes.spaceBtwItems),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientCard(
+                            patient: {
+                              "name": "${patient["Patient Name"] ?? ""}".trim(),
+                              "age": patient["Age"]?.toString() ?? "N/A",
+                              "gender": patient["Gender"] ?? "N/A",
+                              "admission": DateFormatter.formatDate(
+                                      patient["Admission Date"]) ??
+                                  "N/A",
+                              "registrationNumber":
+                                  patient["Registration_No"] ?? "N/A",
+                              "deposit":
+                                  patient["Deposite"]?.toString() ?? "₹0",
+                              "billAmount":
+                                  patient["Total IPD Bill"]?.toString() ?? "₹0",
+                              "finalSettlement": "",
+                            },
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+                          );
+                        },
                       ),
                     ),
                     SafeArea(
