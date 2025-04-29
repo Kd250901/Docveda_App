@@ -19,23 +19,20 @@ class DateFormatter {
 
         parsedDate = DateTime(year, month, day);
       } else if (inputDate.contains('-')) {
-        parsedDate = DateTime.parse(inputDate);
+        parsedDate = DateTime.parse(inputDate).toLocal();
       } else {
         return inputDate;
       }
 
-      return '${parsedDate.year.toString().padLeft(4, '0')}-'
-          '${parsedDate.month.toString().padLeft(2, '0')}-'
-          '${parsedDate.day.toString().padLeft(2, '0')}';
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
     } catch (e) {
       return "N/A";
     }
   }
 
-  /// ✅ New method for toggle switch (monthly/daily)
   static String formatForToggle(DateTime date, bool isMonthly) {
     return isMonthly
-        ? DateFormat('MMMM yyyy').format(date) // e.g., "April 2025"
-        : DateFormat('yyyy-MM-dd').format(date); // e.g., "2025-04-22"
+        ? DateFormat('MMMM yyyy').format(date)
+        : DateFormat('yyyy-MM-dd').format(date);
   }
 }

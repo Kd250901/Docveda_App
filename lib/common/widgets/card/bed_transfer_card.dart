@@ -1,9 +1,10 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
+import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart'; // Add for date and time formatting
+import 'package:intl/intl.dart';
 
 class BedTransferCard extends StatelessWidget {
   final Map<String, dynamic> patient;
@@ -19,15 +20,26 @@ class BedTransferCard extends StatelessWidget {
     required this.onPatientSelected,
   });
 
-  // Format the date and time coming from JSON
-  String getFormattedDateTime(String dateTime) {
-    final DateFormat dateFormat = DateFormat('dd MMM yyyy, hh:mm a');
+  // Using the formatted date and time
+  String getFormattedDate(String date) {
+    final DateFormat dateFormat = DateFormat('dd MMM yyyy');
     try {
-      final DateTime parsedDate = DateTime.parse(
-          dateTime); // Assuming the date is in ISO8601 format (e.g. '2025-04-28T16:45:00')
+      final DateTime parsedDate = DateFormat('dd/MM/yyyy')
+          .parse(date); // Assuming the date is in 'dd/MM/yyyy' format
       return dateFormat.format(parsedDate);
     } catch (e) {
       return 'Invalid Date'; // Handle invalid date format
+    }
+  }
+
+  String getFormattedTime(String time) {
+    final DateFormat timeFormat = DateFormat('hh:mm a');
+    try {
+      final DateTime parsedTime = DateFormat('HH:mm')
+          .parse(time); // Assuming the time is in 'HH:mm' format
+      return timeFormat.format(parsedTime);
+    } catch (e) {
+      return 'Invalid Time'; // Handle invalid time format
     }
   }
 
@@ -38,9 +50,12 @@ class BedTransferCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPatientSelected(index),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(
+            vertical: DocvedaSizes.spaceBtwItemsSm,
+            horizontal: DocvedaSizes.spaceBtwItems),
+        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
         decoration: BoxDecoration(
+          color: DocvedaColors.white, // Keep the background white
           border: Border.all(
             color:
                 isSelected ? DocvedaColors.primaryColor : Colors.grey.shade300,
@@ -62,13 +77,14 @@ class BedTransferCard extends StatelessWidget {
                       isSelected
                           ? Icons.radio_button_checked
                           : Icons.radio_button_unchecked,
-                      color:
-                          isSelected ? DocvedaColors.primaryColor : Colors.grey,
-                      size: 18,
+                      color: isSelected
+                          ? DocvedaColors.primaryColor
+                          : DocvedaColors.grey,
+                      size: DocvedaSizes.iconXlg,
                     ),
                     const SizedBox(width: 8),
                     DocvedaText(
-                      text: patient["name"] ?? "",
+                      text: patient["Patient Name"] ?? "",
                       style: TextStyleFont.body.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -80,68 +96,93 @@ class BedTransferCard extends StatelessWidget {
                 /// Age • Gender
                 DocvedaText(
                   text:
-                      "${patient["age"]?.toString().replaceAll("Y", "") ?? "--"} Yrs • ${patient["gender"] ?? "--"}",
+                      "${patient["Age"]?.toString().replaceAll("Y", "") ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
                   style: TextStyleFont.caption.copyWith(
-                    color: Colors.grey,
-                    // fontSize: 12,
+                    color: DocvedaColors.grey,
                   ),
                 ),
               ],
             ),
 
             const SizedBox(height: 12),
-            Divider(color: Colors.grey.shade100, thickness: 1),
+            Divider(color: DocvedaColors.grey, thickness: 1),
             const SizedBox(height: 12),
 
-            /// --- Date and Time (above the Bed Info) ---
-            if (patient["dateTime"] != null) ...[
-              Align(
-                alignment: Alignment.center,
-                child: DocvedaText(
-                  text: getFormattedDateTime(patient["dateTime"]),
-                  style: TextStyleFont.body.copyWith(
-                    fontWeight: FontWeight.w400,
-                    // fontSize: 12,
-                    color: Colors.grey,
-                  ),
+            Align(
+              alignment: Alignment.center,
+              child: DocvedaText(
+                text:
+                    '${getFormattedDate(patient["Bed_Start_Date"] ?? "")}, ${getFormattedTime(patient["f_HIS_Bed_Start_Time"] ?? "")}',
+                style: TextStyleFont.body.copyWith(
+                  fontWeight: FontWeight.w400,
+                  color: DocvedaColors.grey,
                 ),
               ),
-              const SizedBox(height: 12),
-            ],
+            ),
 
-            /// --- Bed Transfer Info ---
+            /// --- Ward Info ---
             Row(
               children: [
-                /// From Bed (left aligned)
-                DocvedaText(
-                  text: patient["fromBed"] ?? "--",
-                  style:
-                      TextStyleFont.body.copyWith(fontWeight: FontWeight.w500),
+                /// From Ward (top)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DocvedaText(
+                      text: patient["FROM WARD"] ?? "--",
+                      style: TextStyleFont.body
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 4),
+
+                    /// From Bed (below ward)
+                    DocvedaText(
+                      text: patient["FROM BED"] ?? "--",
+                      style: TextStyleFont.body
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
 
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
 
-                /// Arrow in the center taking full space
+                /// Arrow in the center
                 Expanded(
                   child: Center(
                     child: Icon(
                       Iconsax.arrow_right_1,
-                      size: 32,
-                      color: Colors.grey,
+                      size: DocvedaSizes.iconXlg,
+                      color: DocvedaColors.grey,
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
 
-                /// To Bed (right aligned)
-                DocvedaText(
-                  text: patient["toBed"] ?? "--",
-                  style:
-                      TextStyleFont.body.copyWith(fontWeight: FontWeight.w500),
+                /// To Ward (top) and To Bed (below it)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    DocvedaText(
+                      text: patient["TO WARD"] ?? "--",
+                      style: TextStyleFont.body
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 4),
+
+                    /// To Bed (below ward)
+                    DocvedaText(
+                      text: patient["TO BED"] ?? "--",
+                      style: TextStyleFont.body
+                          .copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ],
                 ),
               ],
             ),
+
+            const SizedBox(height: 12),
+
+            /// --- Date and Time Info ---
           ],
         ),
       ),

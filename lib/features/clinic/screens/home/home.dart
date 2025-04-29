@@ -1,30 +1,20 @@
 import 'package:docveda_app/common/widgets/appbar/appbar.dart';
-import 'package:docveda_app/common/widgets/card/card.dart';
 import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
-import 'package:docveda_app/common/widgets/layouts/grid_layout.dart';
 import 'package:docveda_app/common/widgets/section_heading/section_heading.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
-import 'package:docveda_app/features/clinic/screens/admission/admissionScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discharge/dischargeScreen.dart';
-import 'package:docveda_app/features/clinic/screens/discount/discountScreen.dart';
-import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
-import 'package:docveda_app/features/clinic/screens/refund/refundScreen.dart';
+import 'package:docveda_app/features/clinic/screens/home/widgets/bedTransferCard.dart';
+import 'package:docveda_app/features/clinic/screens/home/widgets/expensesSection.dart';
+import 'package:docveda_app/features/clinic/screens/home/widgets/patientInformationSection.dart';
+import 'package:docveda_app/features/clinic/screens/home/widgets/revenueSection.dart';
 import 'package:docveda_app/features/clinic/screens/settings/settingScreen.dart';
-import 'package:docveda_app/features/clinic/screens/bedTransferScreen/bedTransferScreen.dart';
-import 'package:docveda_app/features/clinic/screens/depositScreen/depositsScreen.dart';
-import 'package:docveda_app/features/clinic/screens/ipdSettlement/ipdSettlementsScreen.dart';
-import 'package:docveda_app/features/clinic/screens/opdBills/opdBillsScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
-import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
-import 'package:docveda_app/utils/notification/notification_services.dart';
-import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -199,31 +189,34 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           bool isLoading = snapshot.connectionState == ConnectionState.waiting;
 
+          if (isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No dashboard data found.'));
+          }
+
           final dashboardData = snapshot.data!;
+
           List<Map<String, dynamic>> patientDataArray = extractOptionsFromData(
             data: dashboardData[0],
-            keys: [
-              "Total_Registrations",
-              "Discharge",
-            ],
+            keys: ["Total_Registrations", "Discharge"],
           );
 
           List<Map<String, dynamic>> revenueDataArray = extractOptionsFromData(
             data: dashboardData[0],
             keys: ["Deposite", "OPD_Payment", "OPD_Bill", "IPD_Settlement"],
           );
-          print('revenueDataArray: $revenueDataArray');
+
           List<Map<String, dynamic>> expenseDataArray = extractOptionsFromData(
             data: dashboardData[0],
             keys: ["Total_Discount", "Total_Refund"],
           );
-          print('expenseDataArray: $expenseDataArray');
-
-          List<Map<String, dynamic>> filteredData = snapshot.data!;
 
           return SingleChildScrollView(
             child:
@@ -347,117 +340,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
-                      DocvedaGridLayout(
-                        itemCount: patientDataArray.length,
-                        itemBuilder: (_, index) => Material(
-                          color: DocvedaColors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              if (index < patientDataArray.length) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return index == 0
-                                          ? const AdmissionScreen() // No arguments now
-                                          : const Dischargescreen(); // No arguments now
-                                    },
-                                  ),
-                                );
-                              } else {
-                                print(
-                                  "Index $index is out of bounds for dashboardData length ${dashboardData.length}",
-                                );
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            splashColor:
-                                DocvedaColors.buttonPrimary.withOpacity(0.2),
-                            child: SizedBox(
-                              height: DocvedaSizes.pieChartHeight,
-                              child: DocvedaCard(
-                                child: Container(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: DocvedaSizes.spaceBtwItemsS,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(Iconsax.activity),
-                                      const SizedBox(
-                                          width: DocvedaSizes.spaceBtwItemsS),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              patientDataArray[index]
-                                                      ['label'] ??
-                                                  "N/A",
-                                              style: TextStyleFont.dashboardcard
-                                                  .copyWith(
-                                                      fontSize: DocvedaSizes
-                                                          .fontSize),
-                                              softWrap: true,
-                                              maxLines: 2,
-                                            ),
-                                            const SizedBox(
-                                                height: DocvedaSizes.xs),
-                                            Text(
-                                              patientDataArray[index]['value']
-                                                      ?.toString() ??
-                                                  '0',
-                                              style: TextStyleFont.subheading,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+
+                      PatientInformationSection(
+                          patientDataArray: patientDataArray),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
 
-                      DocvedaCard(
-                        width: double.infinity,
-                        height: DocvedaSizes.cardHeightLg,
-                        child: GestureDetector(
-                          onTap: () {
-                            // Navigate to BedTransferScreen when tapped
-                            Get.to(() => BedTransferScreen());
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Iconsax.repeat),
-                                  const SizedBox(
-                                      width: DocvedaSizes.spaceBtwItemsS),
-                                  Text(
-                                    "${dashboardData[0]['Bed_Transfer'] ?? 0} Bed Transfer",
-                                    style: TextStyleFont.subheading,
-                                  ),
-                                ],
-                              ),
-                              Icon(Iconsax.arrow_right_3),
-                            ],
-                          ),
-                        ),
-                      ),
+                      BedTransferCard(
+                          bedTransferCount:
+                              dashboardData[0]['Bed_Transfer'] ?? 0),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaSectionHeading(
@@ -473,79 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
-                      DocvedaGridLayout(
-                        itemCount: revenueDataArray.length,
-                        itemBuilder: (_, index) {
-                          final label =
-                              revenueDataArray[index]['label']?.toLowerCase() ??
-                                  '';
-
-                          // Define map of keywords to corresponding screens
-                          final Map<String, Widget Function()> revenueScreens =
-                              {
-                            'deposit': () => DepositScreen(),
-                            'opd payment': () => Opdpaymentscreen(),
-                            'opd bill': () =>
-                                Opdbillsscreen(), // Replace with your actual screen
-                            'ipd settlement': () => IPDSettlementScreen(),
-                          };
-
-                          return GestureDetector(
-                            onTap: () {
-                              for (final key in revenueScreens.keys) {
-                                if (label.contains(key)) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            revenueScreens[key]!()),
-                                  );
-                                  break;
-                                }
-                              }
-                            },
-                            child: DocvedaCard(
-                              child: Container(
-                                height: double.infinity,
-                                width: double.infinity,
-                                alignment: Alignment.center,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(Iconsax.activity),
-                                    const SizedBox(
-                                        width: DocvedaSizes.spaceBtwItemsS),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            revenueDataArray[index]['label'] ??
-                                                "N/A",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyleFont.dashboardcard,
-                                          ),
-                                          Text(
-                                            FormatAmount.formatAmount(
-                                              revenueDataArray[index]['value'],
-                                            ).toString(),
-                                            style: TextStyleFont.subheading,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      RevenueSection(revenueDataArray: revenueDataArray),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
@@ -562,64 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
-                      DocvedaGridLayout(
-                        itemCount: expenseDataArray.length,
-                        itemBuilder: (_, index) {
-                          final label =
-                              expenseDataArray[index]['label'] ?? "N/A";
-
-                          return GestureDetector(
-                            onTap: () {
-                              if (label.toLowerCase().contains('discount')) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        DiscountsScreen(), // Navigate to DiscountsScreen
-                                  ),
-                                );
-                              } else if (label
-                                  .toLowerCase()
-                                  .contains('refund')) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RefundsScreen(), // Navigate to RefundsScreen
-                                  ),
-                                );
-                              }
-                              // Add more conditions for other labels if needed
-                            },
-                            child: DocvedaCard(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: DocvedaSizes.xs),
-                                child: SizedBox(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        label,
-                                        style: TextStyleFont.dashboardcard,
-                                      ),
-                                      Text(
-                                        FormatAmount.formatAmount(
-                                            expenseDataArray[index]['value']),
-                                        style: TextStyleFont.subheading,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      ExpensesSection(expenseDataArray: expenseDataArray),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwSections),
                     ],
@@ -632,62 +394,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
-
-void _showLogoutDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: DocvedaSizes.dialogBoxVertical,
-          horizontal: DocvedaSizes.dialogBoxHorizontal,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DocvedaSizes.cardRadiusMd),
-        ),
-        content: SizedBox(
-          width: DocvedaSizes.dialogBoxWidth,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Log Out Form?",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: DocvedaSizes.spaceBtwItems),
-              Divider(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "All Devices",
-                  style: TextStyle(color: DocvedaColors.error),
-                ),
-              ),
-              Divider(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Current Device",
-                  style: TextStyle(color: DocvedaColors.error),
-                ),
-              ),
-              Divider(),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Cancel"),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
 }

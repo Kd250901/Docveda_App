@@ -1,6 +1,5 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
-import 'package:docveda_app/features/clinic/screens/patientlistScreen/patientListScreen.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/pdf/pdf.dart';

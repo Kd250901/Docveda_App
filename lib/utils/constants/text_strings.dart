@@ -63,6 +63,7 @@ class DocvedaTexts {
 
   // OPD Payments
   static const String opdPayments = "OPD Payments";
+  static const String bedTransfer = "Bed Transfer";
 
   // Settings
   static const String settings = "Settings";

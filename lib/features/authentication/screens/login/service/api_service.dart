@@ -34,7 +34,6 @@ class ApiService {
           'source': 'App',
         }),
       );
-      print(" API Response (${response.statusCode}): ${response.body}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -69,7 +68,6 @@ class ApiService {
           'code_verifier': codeVerifer,
         }),
       );
-      print(" Token API Response (${response.statusCode}): ${response.body}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -120,8 +118,6 @@ class ApiService {
     required String pType,
   }) async {
     try {
-      String mode = isMonthly ? 'monthly' : 'daily';
-
       final response = await http.post(
         Uri.parse('$baseUrl/frontdesk/app/getDashboardCount'),
         headers: {
@@ -134,7 +130,41 @@ class ApiService {
         }),
       );
 
-      print("API Response (${response.statusCode}): ${response.body}");
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        print("unAuthorized...");
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load cards: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching cards: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getBedTransfer(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/frontdesk/app/getBedTransfer'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
 
       if (response.statusCode == 200) {
         return json.decode(response.body);

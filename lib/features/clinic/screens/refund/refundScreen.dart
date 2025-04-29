@@ -164,8 +164,14 @@ class _RefundsScreenState extends State<RefundsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${patients.length} patients found with refunds",
-                          style: TextStyleFont.subheading),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: DocvedaSizes.spaceBtwItems), // Left padding
+                        child: Text(
+                          "${patients.length} patients found with refunds",
+                          style: TextStyleFont.subheading,
+                        ),
+                      ),
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                       Expanded(
                         child: ListView.builder(
@@ -176,76 +182,138 @@ class _RefundsScreenState extends State<RefundsScreen> {
                               index: index,
                               selectedPatientIndex: selectedPatientIndex,
                               onPatientSelected: handlePatientSelection,
-
-                              // Custom topRow
-                              topRow: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        index == selectedPatientIndex
-                                            ? Icons.radio_button_checked
-                                            : Icons.radio_button_unchecked,
-                                        size: 16,
-                                        color: index == selectedPatientIndex
-                                            ? DocvedaColors.primaryColor
-                                            : Colors.grey,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text("${patient["Patient Name"] ?? ""}"
-                                          .trim()),
-                                    ],
-                                  ),
-                                  Text(
-                                    "${patient["Age"] ?? "N/A"} Yrs • ${patient["Gender"] ?? "N/A"}",
-                                  ),
-                                ],
-                              ),
-
-                              // Custom middleRow
-                              middleRow: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Admission"),
-                                      Text(DateFormatter.formatDate(
-                                              patient["Admission Date"]) ??
-                                          "N/A"),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text("Reg No."),
-                                      Text(patient["Registration_No"] ?? "N/A"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-
-                              // Custom bottomRow
-                              bottomRow: Container(
+                              topRow: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                                    horizontal: 8.0, vertical: 8),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Refund Amount"),
-                                    Text("₹${patient["Refund Amount"] ?? "0"}"),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          index == selectedPatientIndex
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_unchecked,
+                                          size: 20,
+                                          color: index == selectedPatientIndex
+                                              ? DocvedaColors.primaryColor
+                                              : Colors.grey,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          patient["Patient Name"] ?? "--",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      "${patient["Age"] ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 14),
+                                    ),
                                   ],
                                 ),
                               ),
+                              middleRow: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 34.0, right: 8.0, top: 8, bottom: 8),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("Admission",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey)),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              patient["Admission Date"] ?? "--",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text("Discharge",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey)),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              patient["Discharge Date"] ?? "--",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      height: 24,
+                                      color: Colors.grey.shade300,
+                                      thickness: 1,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Bill Amount",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey.shade700),
+                                        ),
+                                        Text(
+                                          "₹${patient["Total IPD Bill"] ?? "0"}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color:
+                                                  DocvedaColors.primaryColor),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 4),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Bill Amount",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey.shade700),
+                                        ),
+                                        Text(
+                                          "₹${patient["Total IPD Bill"] ?? "0"}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color:
+                                                  DocvedaColors.primaryColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              bottomRow:
+                                  SizedBox.shrink(), // Not needed anymore
                             );
                           },
                         ),
@@ -268,19 +336,41 @@ class _RefundsScreenState extends State<RefundsScreen> {
                           text: DocvedaTexts.viewReport,
                           backgroundColor: DocvedaColors.primaryColor,
                           onPressed: () {
-                            final selectedPatient =
-                                patients[selectedPatientIndex];
-                            Get.to(() => ViewReportScreen(
-                                  patientName: selectedPatient["name"],
-                                  age: selectedPatient["age"],
-                                  gender: selectedPatient["gender"],
-                                  admissionDate: selectedPatient["admission"],
-                                  dischargeDate:
-                                      selectedPatient["discharge"] ?? "N/A",
-                                  finalSettlement:
-                                      selectedPatient["discountGiven"],
-                                  screenName: "Refunds",
-                                ));
+                            if (patients.isEmpty ||
+                                selectedPatientIndex >= patients.length) return;
+
+                            final selected = patients[selectedPatientIndex];
+
+                            // Strip the "Y" from the Age string and convert it to an integer
+                            String ageString = selected["Age"] ?? "0";
+                            int age = 0;
+
+                            // Check if the age string contains 'Y' and remove it
+                            if (ageString.contains('Y')) {
+                              ageString = ageString.replaceAll('Y', '').trim();
+                            }
+
+                            // Parse the age as an integer
+                            age = int.tryParse(ageString) ?? 0;
+
+                            print('Age: $age'); // Debugging line
+
+                            Get.to(
+                              () => ViewReportScreen(
+                                patientName: selected["Patient Name"] ?? "N/A",
+                                age: age,
+                                gender: selected["Gender"] ?? "N/A",
+                                admissionDate: DateFormatter.formatDate(
+                                    selected["Admission Date"]),
+                                dischargeDate: DateFormatter.formatDate(
+                                    selected["Discharge Date"]),
+                                finalSettlement:
+                                    (selected["Total IPD Bill"] != null)
+                                        ? selected["Total IPD Bill"].toString()
+                                        : "N/A",
+                                screenName: "Admission",
+                              ),
+                            );
                           },
                         ),
                       ),

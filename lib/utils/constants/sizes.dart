@@ -1,6 +1,4 @@
-
 class DocvedaSizes {
-
   // Padding and margin sizes
   static const double xs = 4.0;
   static const double sm = 8.0;
@@ -13,6 +11,8 @@ class DocvedaSizes {
   static const double iconSm = 16.0;
   static const double iconMd = 24.0;
   static const double iconLg = 32.0;
+  static const double iconXlg = 18.0;
+  static const double iconXxlg = 20.0;
 
   // Font sizes
   static const double fontSizeXsm = 10.0;
@@ -22,13 +22,12 @@ class DocvedaSizes {
   static const double fontSizeLg = 18.0;
   static const double fontSizeXlg = 20.0;
 
-  
   // Button sizes
   static const double buttonHeight = 18.0;
   static const double buttonRadius = 12.0;
   static const double buttonWidth = 120.0;
   static const double buttonElevation = 4.0;
-  
+
   // AppBar height
   static const double appBarHeight = 56.0;
 
@@ -39,7 +38,6 @@ class DocvedaSizes {
   static const double imgHeight = 60.0;
   static const double imgHeightMd = 80.0;
   static const double imgHeightLs = 150.0;
-  
 
   // Default spacing between sections
   static const double defaultSpace = 24.0;
@@ -47,6 +45,7 @@ class DocvedaSizes {
   static const double spaceBtwItemsSsm = 4.0;
   static const double spaceBtwItemsSm = 8.0;
   static const double spaceBtwItemsS = 10.0;
+  static const double spaceBtwItemsSs = 12.0;
   static const double spaceBtwItems = 16.0;
   static const double spaceBtwItemsLg = 20.0;
   static const double spaceBtwItemsXlg = 24.0;
@@ -103,7 +102,7 @@ class DocvedaSizes {
   // Chart
   static const double pieChartHeight = 200.0;
 
-  // PieChart 
+  // PieChart
   static const double sec1 = 40;
   static const double sec2 = 30;
   static const double sec3 = 20;
@@ -113,7 +112,7 @@ class DocvedaSizes {
   static const double dialogBoxVertical = 20.0;
   static const double dialogBoxHorizontal = 30.0;
   static const double dialogBoxWidth = 75.0;
-  
+
   // Profile
   static const double profileAvatarRadius = 36.0;
 
@@ -121,6 +120,4 @@ class DocvedaSizes {
   static const double bottomSize = 16.0;
   static const double leftSize = 16.0;
   static const double rightSize = 16.0;
-
-
 }

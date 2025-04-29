@@ -4,10 +4,7 @@ import 'package:docveda_app/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class DocvedaPrimaryHeaderContainer extends StatelessWidget {
-  const DocvedaPrimaryHeaderContainer({
-    super.key,
-    required this.child
-  });
+  const DocvedaPrimaryHeaderContainer({super.key, required this.child});
 
   final Widget child;
 
@@ -16,13 +13,14 @@ class DocvedaPrimaryHeaderContainer extends StatelessWidget {
     return DocvedaCurvedEdgesWidget(
       child: Container(
         color: DocvedaColors.primaryColor,
-        height: DocvedaHelperFunctions.screenHeight() * 0.3,
+        height: 220,
+
+        // height: DocvedaHelperFunctions.screenHeight() * 0.3,
         padding: const EdgeInsets.all(0),
         child: Stack(
-          children: [
-            child
-          ],
+          children: [child],
         ),
-      ),);
+      ),
+    );
   }
 }

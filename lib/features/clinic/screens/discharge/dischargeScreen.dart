@@ -188,28 +188,41 @@ class _DischargescreenState extends State<Dischargescreen> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: DocvedaSizes.spaceBtwItems),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start, // Ensures left alignment
                         children: [
-                          DocvedaText(
-                            text:
-                                "${patients.length} ${DocvedaTexts.patientFound}",
-                            style: TextStyleFont.subheading.copyWith(
-                              fontSize: screenWidth < 360
-                                  ? DocvedaSizes.fontSize
-                                  : DocvedaSizes.fontSizeSm,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: DocvedaSizes
+                                      .spaceBtwItems), // Add left padding here
+                              child: DocvedaText(
+                                text:
+                                    "${patients.length} ${DocvedaTexts.patientFound}",
+                                style: TextStyleFont.subheading,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-                          DocvedaText(
-                            text: DocvedaTexts.depositePatientDesc,
-                            style: TextStyleFont.body.copyWith(
-                              fontSize: screenWidth < 360
-                                  ? DocvedaSizes.fontSizeXsm
-                                  : DocvedaSizes.fontSize,
-                            ),
-                          ),
+
+                          const SizedBox(
+                              height: DocvedaSizes
+                                  .xs), // Optional space between texts
+                          Align(
+                              alignment: Alignment
+                                  .centerLeft, // Ensures alignment of subtext on the left
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: DocvedaSizes
+                                        .spaceBtwItems), // Add left padding here
+                                child: DocvedaText(
+                                  text: DocvedaTexts.depositePatientDesc,
+                                  style: TextStyleFont.body,
+                                ),
+                              )),
                         ],
                       ),
                     ),
@@ -277,8 +290,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                                     const SizedBox(height: 4),
                                     DocvedaText(
                                       text: DateFormatter.formatDate(
-                                              patient["Admission Date"]) ??
-                                          "N/A",
+                                          patient["Admission Date"]),
                                       style: TextStyleFont.caption,
                                     ),
                                   ],
@@ -293,7 +305,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     DocvedaText(
-                                      text: patient["Discharge Date"] ?? "N/A",
+                                      text: DateFormatter.formatDate(
+                                          patient["Discharge Date"]),
                                       style: TextStyleFont.caption,
                                     ),
                                   ],
@@ -375,28 +388,39 @@ class _DischargescreenState extends State<Dischargescreen> {
                         ),
                         child: PrimaryButton(
                           onPressed: () {
-                            final selectedPatient =
-                                patients[selectedPatientIndex];
+                            if (patients.isEmpty ||
+                                selectedPatientIndex >= patients.length) return;
+
+                            final selected = patients[selectedPatientIndex];
+
+                            // Strip the "Y" from the Age string and convert it to an integer
+                            String ageString = selected["Age"] ?? "0";
+                            int age = 0;
+
+                            // Check if the age string contains 'Y' and remove it
+                            if (ageString.contains('Y')) {
+                              ageString = ageString.replaceAll('Y', '').trim();
+                            }
+
+                            // Parse the age as an integer
+                            age = int.tryParse(ageString) ?? 0;
+
+                            print('Age: $age'); // Debugging line
 
                             Get.to(
                               () => ViewReportScreen(
-                                patientName:
-                                    "${selectedPatient["f_DV_First_Name"] ?? ''} ${selectedPatient["f_DV_Last_Name"] ?? ''}",
-                                age: selectedPatient["Ageyear"] ?? "N/A",
-                                gender: selectedPatient["VisitType"] ?? "N/A",
+                                patientName: selected["Patient Name"] ?? "N/A",
+                                age: age,
+                                gender: selected["Gender"] ?? "N/A",
                                 admissionDate: DateFormatter.formatDate(
-                                        selectedPatient[
-                                            "f_HIS_IPD_Reg_Date"]) ??
-                                    "N/A",
+                                    selected["Admission Date"]),
                                 dischargeDate: DateFormatter.formatDate(
-                                        selectedPatient[
-                                            "f_HIS_IPD_DischargeDate"]) ??
-                                    "N/A",
+                                    selected["Discharge Date"]),
                                 finalSettlement:
-                                    (selectedPatient["BillAmt"] != null)
-                                        ? selectedPatient["BillAmt"].toString()
+                                    (selected["Total IPD Bill"] != null)
+                                        ? selected["Total IPD Bill"].toString()
                                         : "N/A",
-                                screenName: "Discharge",
+                                screenName: "Admission",
                               ),
                             );
                           },

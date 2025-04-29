@@ -1,9 +1,7 @@
-import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class DocvedaLoginHeader extends StatelessWidget {
   const DocvedaLoginHeader({super.key});

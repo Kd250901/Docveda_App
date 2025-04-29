@@ -169,16 +169,37 @@ class _DepositScreenState extends State<DepositScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: DocvedaSizes.spaceBtwItems),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start, // Ensures left alignment
                         children: [
-                          DocvedaText(
-                            text: "${patients.length} deposits found",
-                            style: TextStyleFont.subheading,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: DocvedaSizes
+                                      .spaceBtwItems), // Add left padding here
+                              child: DocvedaText(
+                                text: "${patients.length} deposits found",
+                                style: TextStyleFont.subheading,
+                              ),
+                            ),
                           ),
-                          DocvedaText(
-                            text: "Patients with advance deposits made.",
-                            style: TextStyleFont.body,
-                          ),
+
+                          const SizedBox(
+                              height: DocvedaSizes
+                                  .xs), // Optional space between texts
+                          Align(
+                              alignment: Alignment
+                                  .centerLeft, // Ensures alignment of subtext on the left
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: DocvedaSizes
+                                        .spaceBtwItems), // Add left padding here
+                                child: DocvedaText(
+                                  text: "Patients with advance deposits made.",
+                                  style: TextStyleFont.body,
+                                ),
+                              )),
                         ],
                       ),
                     ),
@@ -196,114 +217,131 @@ class _DepositScreenState extends State<DepositScreen> {
                             onPatientSelected: handlePatientSelection,
 
                             /// 👤 Top Row: Name, Age, Gender
-                            topRow: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      index == selectedPatientIndex
-                                          ? Icons.radio_button_checked
-                                          : Icons.radio_button_unchecked,
-                                      size: 16,
-                                      color: index == selectedPatientIndex
-                                          ? DocvedaColors.primaryColor
-                                          : Colors.grey,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    DocvedaText(
-                                      text: "${patient["Patient Name"] ?? ""}"
-                                          .trim(),
-                                      style: TextStyleFont.body.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                                DocvedaText(
-                                  text:
-                                      "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
-                                  style: TextStyleFont.caption.copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              ],
-                            ),
-
-                            /// 📅 Middle Row: Admission & Discharge
-                            middleRow: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DocvedaText(
-                                      text: "ADMISSION",
-                                      style: TextStyleFont.caption
-                                          .copyWith(color: Colors.grey),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    DocvedaText(
-                                      text: DateFormatter.formatDate(
-                                              patient["Admission Date"]) ??
-                                          "N/A",
-                                      style: TextStyleFont.caption,
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    DocvedaText(
-                                      text: "UHID No",
-                                      style: TextStyleFont.caption
-                                          .copyWith(color: Colors.grey),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    DocvedaText(
-                                      text:
-                                          "₹${patient["UHID No"]?.toString() ?? "0"}",
-                                      style: TextStyleFont.caption,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                            /// 💵 Bottom Row: Final Settlement
-                            bottomRow: Container(
+                            topRow: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                                  horizontal: 8.0, vertical: 8),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  DocvedaText(
-                                    text: "Deposite",
-                                    style: TextStyleFont.caption
-                                        .copyWith(color: Colors.grey),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 16,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      DocvedaText(
+                                        text: "${patient["Patient Name"] ?? ""}"
+                                            .trim(),
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
                                   DocvedaText(
                                     text:
-                                        "₹${patient["Deposite"]?.toString() ?? "0"}",
-                                    style: TextStyleFont.body.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
+                                        "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                    style: TextStyleFont.caption.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12,
                                     ),
+                                    textAlign: TextAlign.right,
                                   ),
                                 ],
                               ),
                             ),
+
+                            /// 📅 Middle Row: Discharge & UHID & Final Bill
+                            middleRow: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 32.0, right: 8.0, top: 8, bottom: 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          DocvedaText(
+                                            text: "DISCHARGE",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: DateFormatter.formatDate(
+                                                patient["Discharge Date"]),
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          DocvedaText(
+                                            text: "UHID No",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: patient["UHID No"]
+                                                    ?.toString() ??
+                                                "--",
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(
+                                    height: 24,
+                                    color: Colors.grey.shade300,
+                                    thickness: 1,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "Deposit",
+                                        style: TextStyleFont.body.copyWith(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      DocvedaText(
+                                        text: "₹${patient["Deposite"] ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            /// Bottom row not used here
+                            bottomRow: const SizedBox.shrink(),
                           );
                         },
                       ),
@@ -330,21 +368,35 @@ class _DepositScreenState extends State<DepositScreen> {
                               selectedPatientIndex >= patients.length) return;
 
                           final selected = patients[selectedPatientIndex];
+
+                          // Strip the "Y" from the Age string and convert it to an integer
+                          String ageString = selected["Age"] ?? "0";
+                          int age = 0;
+
+                          // Check if the age string contains 'Y' and remove it
+                          if (ageString.contains('Y')) {
+                            ageString = ageString.replaceAll('Y', '').trim();
+                          }
+
+                          // Parse the age as an integer
+                          age = int.tryParse(ageString) ?? 0;
+
+                          print('Age: $age'); // Debugging line
+
                           Get.to(
                             () => ViewReportScreen(
-                              patientName: "${selected["Patient_Name"] ?? ''}",
-                              age:
-                                  int.tryParse(selected["Age"].toString()) ?? 0,
+                              patientName: selected["Patient Name"] ?? "N/A",
+                              age: age,
                               gender: selected["Gender"] ?? "N/A",
                               admissionDate: DateFormatter.formatDate(
-                                      selected["Admission Date"]) ??
-                                  "N/A",
+                                  selected["Admission Date"]),
                               dischargeDate: DateFormatter.formatDate(
-                                      selected["Discharge Date"]) ??
-                                  "N/A",
+                                  selected["Discharge Date"]),
                               finalSettlement:
-                                  selected["Deposit"]?.toString() ?? "N/A",
-                              screenName: "Deposit",
+                                  (selected["Total IPD Bill"] != null)
+                                      ? selected["Total IPD Bill"].toString()
+                                      : "N/A",
+                              screenName: "Admission",
                             ),
                           );
                         },
