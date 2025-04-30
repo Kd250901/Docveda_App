@@ -8,6 +8,7 @@ class DocvedaText extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? overflow;
   final FontWeight? fontWeight;
+  final bool? softWrap;
 
   const DocvedaText({
     super.key,
@@ -18,6 +19,7 @@ class DocvedaText extends StatelessWidget {
     this.textAlign,
     this.overflow,
     this.fontWeight,
+    this.softWrap,
   });
 
   @override
@@ -33,6 +35,7 @@ class DocvedaText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       textAlign: textAlign,
+      softWrap: softWrap,
     );
   }
 }

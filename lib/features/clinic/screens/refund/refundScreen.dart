@@ -1,18 +1,22 @@
+import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/appbar/appbar.dart';
 import 'package:docveda_app/common/widgets/card/patient_card.dart';
 import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/common/widgets/toggle/toggleController.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
@@ -29,7 +33,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
+  // bool isMonthly = false;
 
   @override
   void initState() {
@@ -38,11 +42,13 @@ class _RefundsScreenState extends State<RefundsScreen> {
   }
 
   void loadRefundData() {
+    final toggleController = Get.find<ToggleController>();
+
     setState(() {
       patientData = fetchRefundData(
-        isMonthly: isMonthly,
+        isMonthly: toggleController.isMonthly.value, // Use global toggle state
         pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: isMonthly ? 'Monthly' : 'Daily',
+        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
       );
     });
   }
@@ -81,8 +87,9 @@ class _RefundsScreenState extends State<RefundsScreen> {
   }
 
   void _goToPrevious() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
@@ -91,8 +98,9 @@ class _RefundsScreenState extends State<RefundsScreen> {
   }
 
   void _goToNext() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
@@ -100,12 +108,12 @@ class _RefundsScreenState extends State<RefundsScreen> {
     loadRefundData();
   }
 
-  void _handleToggle(bool value) {
-    setState(() {
-      isMonthly = value;
-    });
-    loadRefundData();
-  }
+  // void _handleToggle(bool value) {
+  //   setState(() {
+  //     isMonthly = value;
+  //   });
+  //   loadRefundData();
+  // }
 
   void handlePatientSelection(int index) {
     setState(() {
@@ -116,6 +124,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    final toggleController = Get.find<ToggleController>();
 
     return Scaffold(
       body: Column(
@@ -133,12 +142,18 @@ class _RefundsScreenState extends State<RefundsScreen> {
                   ),
                   showBackArrow: true,
                 ),
-                DocvedaToggle(isMonthly: isMonthly, onToggle: _handleToggle),
+                DocvedaToggle(
+                  onToggle: (value) {
+                    toggleController.isMonthly.value = value;
+                    loadRefundData(); // or any other action you need
+                  },
+                ),
                 DateSwitcherBar(
                   selectedDate: selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
-                  isMonthly: isMonthly,
+                  isMonthly:
+                      toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,
                   fontSize: DocvedaSizes.fontSizeSm,
                 ),
@@ -159,169 +174,139 @@ class _RefundsScreenState extends State<RefundsScreen> {
 
                 final patients = snapshot.data!;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: DocvedaSizes.spaceBtwItems), // Left padding
-                        child: Text(
-                          "${patients.length} patients found with refunds",
-                          style: TextStyleFont.subheading,
-                        ),
-                      ),
-                      const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: patients.length,
-                          itemBuilder: (context, index) {
-                            final patient = patients[index];
-                            return PatientCard(
-                              index: index,
-                              selectedPatientIndex: selectedPatientIndex,
-                              onPatientSelected: handlePatientSelection,
-                              topRow: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          index == selectedPatientIndex
-                                              ? Icons.radio_button_checked
-                                              : Icons.radio_button_unchecked,
-                                          size: 20,
-                                          color: index == selectedPatientIndex
-                                              ? DocvedaColors.primaryColor
-                                              : Colors.grey,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          patient["Patient Name"] ?? "--",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "${patient["Age"] ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
-                                      style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14),
-                                    ),
-                                  ],
-                                ),
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: DocvedaSizes
+                                      .spaceBtwItems), // Add left padding here
+                              child: DocvedaText(
+                                text:
+                                    "${patients.length} ${DocvedaTexts.patientFound}",
+                                style: TextStyleFont.subheading,
                               ),
-                              middleRow: Padding(
+                            ),
+                          ),
+
+                          const SizedBox(
+                              height: DocvedaSizes
+                                  .xs), // Optional space between texts
+                          Align(
+                              alignment: Alignment
+                                  .centerLeft, // Ensures alignment of subtext on the left
+                              child: Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 34.0, right: 8.0, top: 8, bottom: 8),
-                                child: Column(
+                                    left: DocvedaSizes
+                                        .spaceBtwItems), // Add left padding here
+                                child: DocvedaText(
+                                  text: DocvedaTexts.depositePatientDesc,
+                                  style: TextStyleFont.body,
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: DocvedaSizes.spaceBtwItems),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientCard(
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+
+                            // Custom topRow
+                            topRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Admission",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              patient["Admission Date"] ?? "--",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 14),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text("Discharge",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                              patient["Discharge Date"] ?? "--",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 14),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                    Icon(
+                                      index == selectedPatientIndex
+                                          ? Icons.radio_button_checked
+                                          : Icons.radio_button_unchecked,
+                                      size: 16,
+                                      color: index == selectedPatientIndex
+                                          ? DocvedaColors.primaryColor
+                                          : Colors.grey,
                                     ),
-                                    Divider(
-                                      height: 24,
-                                      color: Colors.grey.shade300,
-                                      thickness: 1,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Bill Amount",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade700),
-                                        ),
-                                        Text(
-                                          "₹${patient["Total IPD Bill"] ?? "0"}",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color:
-                                                  DocvedaColors.primaryColor),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 4),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Bill Amount",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade700),
-                                        ),
-                                        Text(
-                                          "₹${patient["Total IPD Bill"] ?? "0"}",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color:
-                                                  DocvedaColors.primaryColor),
-                                        ),
-                                      ],
-                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      formatPatientName(
+                                          "${patient["Patient Name"] ?? ""}"
+                                              .trim()),
+                                    )
                                   ],
                                 ),
+                                Text(
+                                  "${patient["Age"] ?? "N/A"} • ${patient["Gender"] ?? "N/A"}",
+                                ),
+                              ],
+                            ),
+
+                            // Custom middleRow
+                            middleRow: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Admission"),
+                                    Text(DateFormatter.formatDate(
+                                        patient["Admission Date"])),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text("Refund Date."),
+                                    Text(DateFormatter.formatDate(
+                                        patient["Date Of Refund"] ?? "N/A")),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            // Custom bottomRow
+                            bottomRow: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              bottomRow:
-                                  SizedBox.shrink(), // Not needed anymore
-                            );
-                          },
-                        ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Refund Amount"),
+                                  Text("₹${patient["Refund Amount"] ?? "0"}"),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      Container(
+                    ),
+                    SafeArea(
+                      top: false,
+                      child: Container(
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05, vertical: 10),
+                          horizontal: screenWidth * 0.05,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           color: DocvedaColors.white,
                           boxShadow: [
@@ -345,12 +330,10 @@ class _RefundsScreenState extends State<RefundsScreen> {
                             String ageString = selected["Age"] ?? "0";
                             int age = 0;
 
-                            // Check if the age string contains 'Y' and remove it
                             if (ageString.contains('Y')) {
                               ageString = ageString.replaceAll('Y', '').trim();
                             }
 
-                            // Parse the age as an integer
                             age = int.tryParse(ageString) ?? 0;
 
                             print('Age: $age'); // Debugging line
@@ -365,17 +348,16 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                 dischargeDate: DateFormatter.formatDate(
                                     selected["Discharge Date"]),
                                 finalSettlement:
-                                    (selected["Total IPD Bill"] != null)
-                                        ? selected["Total IPD Bill"].toString()
-                                        : "N/A",
+                                    selected["Total IPD Bill"]?.toString() ??
+                                        "N/A",
                                 screenName: "Admission",
                               ),
                             );
                           },
                         ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 );
               },
             ),

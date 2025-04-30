@@ -1,5 +1,6 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:flutter/material.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
@@ -84,7 +85,7 @@ class BedTransferCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     DocvedaText(
-                      text: patient["Patient Name"] ?? "",
+                      text: formatPatientName(patient["Patient Name"] ?? ""),
                       style: TextStyleFont.body.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -96,9 +97,10 @@ class BedTransferCard extends StatelessWidget {
                 /// Age • Gender
                 DocvedaText(
                   text:
-                      "${patient["Age"]?.toString().replaceAll("Y", "") ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                      "${patient["Age"]?.toString() ?? "--"} • ${patient["Gender"] ?? "--"}",
                   style: TextStyleFont.caption.copyWith(
-                    color: DocvedaColors.grey,
+                    color: DocvedaColors.darkGrey,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -114,8 +116,8 @@ class BedTransferCard extends StatelessWidget {
                 text:
                     '${getFormattedDate(patient["Bed_Start_Date"] ?? "")}, ${getFormattedTime(patient["f_HIS_Bed_Start_Time"] ?? "")}',
                 style: TextStyleFont.body.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: DocvedaColors.grey,
+                  fontWeight: FontWeight.w700,
+                  color: DocvedaColors.darkGrey,
                 ),
               ),
             ),
@@ -124,23 +126,33 @@ class BedTransferCard extends StatelessWidget {
             Row(
               children: [
                 /// From Ward (top)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    DocvedaText(
-                      text: patient["FROM WARD"] ?? "--",
-                      style: TextStyleFont.body
-                          .copyWith(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 4),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // FROM WARD
+                      DocvedaText(
+                        text: patient["FROM WARD"] ?? "--",
+                        style: TextStyleFont.body
+                            .copyWith(fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        // Let text wrap naturally
+                      ),
+                      const SizedBox(height: 4),
 
-                    /// From Bed (below ward)
-                    DocvedaText(
-                      text: patient["FROM BED"] ?? "--",
-                      style: TextStyleFont.body
-                          .copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ],
+                      // FROM BED
+                      DocvedaText(
+                        text: patient["FROM BED"] ?? "--",
+                        style: TextStyleFont.body
+                            .copyWith(fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(width: 12),
@@ -159,24 +171,30 @@ class BedTransferCard extends StatelessWidget {
                 const SizedBox(width: 12),
 
                 /// To Ward (top) and To Bed (below it)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    DocvedaText(
-                      text: patient["TO WARD"] ?? "--",
-                      style: TextStyleFont.body
-                          .copyWith(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 4),
-
-                    /// To Bed (below ward)
-                    DocvedaText(
-                      text: patient["TO BED"] ?? "--",
-                      style: TextStyleFont.body
-                          .copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DocvedaText(
+                        text: patient["TO WARD"] ?? "--",
+                        style: TextStyleFont.body
+                            .copyWith(fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
+                      const SizedBox(height: 4),
+                      DocvedaText(
+                        text: patient["TO BED"] ?? "--",
+                        style: TextStyleFont.body
+                            .copyWith(fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
 

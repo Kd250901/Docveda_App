@@ -5,6 +5,7 @@ import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/common/widgets/toggle/toggleController.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
@@ -30,7 +31,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   late Future<List<Map<String, dynamic>>> bedTransferData;
 
   DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
+  // bool isMonthly = false;
 
   @override
   void initState() {
@@ -45,11 +46,12 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   }
 
   void loadBedTransferData() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
       bedTransferData = fetchBedTransferData(
-        isMonthly: isMonthly,
+        isMonthly: toggleController.isMonthly.value, // Use global toggle state
         pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: isMonthly ? 'Monthly' : 'Daily',
+        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
       );
     });
   }
@@ -89,8 +91,9 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   }
 
   void _goToPrevious() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
@@ -99,8 +102,9 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   }
 
   void _goToNext() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
@@ -108,17 +112,17 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
     loadBedTransferData();
   }
 
-  void _handleToggle(bool value) {
-    setState(() {
-      isMonthly = value;
-    });
-    loadBedTransferData();
-  }
+  // void _handleToggle(bool value) {
+  //   setState(() {
+  //     isMonthly = value;
+  //   });
+  //   loadBedTransferData();
+  // }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
+    final toggleController = Get.find<ToggleController>();
     return Scaffold(
       body: Column(
         children: [
@@ -137,12 +141,18 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                   ),
                   showBackArrow: true,
                 ),
-                DocvedaToggle(isMonthly: isMonthly, onToggle: _handleToggle),
+                DocvedaToggle(
+                  onToggle: (value) {
+                    toggleController.isMonthly.value = value;
+                    loadBedTransferData(); // or any other action you need
+                  },
+                ),
                 DateSwitcherBar(
                   selectedDate: selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
-                  isMonthly: isMonthly,
+                  isMonthly:
+                      toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,
                   fontSize: DocvedaSizes.fontSizeSm,
                 ),
@@ -268,12 +278,21 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                               admissionDate: DateFormatter.formatDate(
                                   selected["Admission Date"]),
                               dischargeDate: DateFormatter.formatDate(
-                                  selected["Bed_End_Date"]), // <-- FIXED
+                                  selected["Bed_End_Date"]),
                               finalSettlement:
-                                  (selected["Total IPD Bill"] != null)
-                                      ? selected["Total IPD Bill"].toString()
-                                      : "N/A",
-                              screenName: "Admission",
+                                  selected["Total IPD Bill"]?.toString() ??
+                                      "N/A",
+                              screenName: "Bed Transfer",
+
+                              // 💡 Bed transfer-specific fields
+                              bedTransferDate: DateFormatter.formatDate(
+                                  selected["Bed_Start_Date"] ?? ""),
+                              bedTransferTime:
+                                  selected["f_HIS_Bed_Start_Time"] ?? "N/A",
+                              fromWard: selected["FROM WARD"] ?? "N/A",
+                              toWard: selected["TO WARD"] ?? "N/A",
+                              fromBed: selected["FROM BED"] ?? "N/A",
+                              toBed: selected["TO BED"] ?? "N/A",
                             ),
                           );
                         },

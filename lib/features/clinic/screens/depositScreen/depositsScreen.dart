@@ -5,14 +5,17 @@ import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/common/widgets/toggle/toggleController.dart';
 import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +33,7 @@ class _DepositScreenState extends State<DepositScreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
-  bool isMonthly = false;
+  // bool isMonthly = false;
 
   @override
   void initState() {
@@ -45,11 +48,13 @@ class _DepositScreenState extends State<DepositScreen> {
   }
 
   void loadDepositData() {
+    final toggleController = Get.find<ToggleController>();
+
     setState(() {
       patientData = fetchDashboardData(
-        isMonthly: isMonthly,
+        isMonthly: toggleController.isMonthly.value, // Use global toggle state
         pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: isMonthly ? 'Monthly' : 'Daily',
+        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
       );
     });
   }
@@ -89,8 +94,9 @@ class _DepositScreenState extends State<DepositScreen> {
   }
 
   void _goToPrevious() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month - 1, selectedDate.day)
           : selectedDate.subtract(const Duration(days: 1));
@@ -99,8 +105,9 @@ class _DepositScreenState extends State<DepositScreen> {
   }
 
   void _goToNext() {
+    final toggleController = Get.find<ToggleController>();
     setState(() {
-      selectedDate = isMonthly
+      selectedDate = toggleController.isMonthly.value
           ? DateTime(
               selectedDate.year, selectedDate.month + 1, selectedDate.day)
           : selectedDate.add(const Duration(days: 1));
@@ -108,15 +115,16 @@ class _DepositScreenState extends State<DepositScreen> {
     loadDepositData();
   }
 
-  void _handleToggle(bool value) {
-    setState(() {
-      isMonthly = value;
-    });
-    loadDepositData();
-  }
+  // void _handleToggle(bool value) {
+  //   setState(() {
+  //     isMonthly = value;
+  //   });
+  //   loadDepositData();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final toggleController = Get.find<ToggleController>();
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -135,14 +143,20 @@ class _DepositScreenState extends State<DepositScreen> {
                   ),
                   showBackArrow: true,
                 ),
-                DocvedaToggle(isMonthly: isMonthly, onToggle: _handleToggle),
+                DocvedaToggle(
+                  onToggle: (value) {
+                    toggleController.isMonthly.value = value;
+                    loadDepositData(); // or any other action you need
+                  },
+                ),
                 DateSwitcherBar(
                   selectedDate: selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
-                  isMonthly: isMonthly,
+                  isMonthly:
+                      toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,
-                  fontSize: 14,
+                  fontSize: DocvedaSizes.fontSizeSm,
                 ),
               ],
             ),
@@ -240,8 +254,9 @@ class _DepositScreenState extends State<DepositScreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       DocvedaText(
-                                        text: "${patient["Patient Name"] ?? ""}"
-                                            .trim(),
+                                        text: formatPatientName(
+                                            "${patient["Patient Name"] ?? ""}"
+                                                .trim()),
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 14,
@@ -252,7 +267,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                   ),
                                   DocvedaText(
                                     text:
-                                        "${patient["Age"]?.toString() ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                        "${patient["Age"]?.toString() ?? "--"} • ${patient["Gender"] ?? "--"}",
                                     style: TextStyleFont.caption.copyWith(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -278,14 +293,14 @@ class _DepositScreenState extends State<DepositScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           DocvedaText(
-                                            text: "DISCHARGE",
-                                            style: TextStyleFont.caption
+                                            text: "Admission Date",
+                                            style: TextStyleFont.dashboardcard
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
                                           DocvedaText(
                                             text: DateFormatter.formatDate(
-                                                patient["Discharge Date"]),
+                                                patient["Admission Date"]),
                                             style: TextStyleFont.caption,
                                           ),
                                         ],
@@ -296,7 +311,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                         children: [
                                           DocvedaText(
                                             text: "UHID No",
-                                            style: TextStyleFont.caption
+                                            style: TextStyleFont.dashboardcard
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
@@ -336,6 +351,28 @@ class _DepositScreenState extends State<DepositScreen> {
                                       ),
                                     ],
                                   ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "Total IPD Bill",
+                                        style: TextStyleFont.body.copyWith(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Total IPD Bill"] ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -346,64 +383,76 @@ class _DepositScreenState extends State<DepositScreen> {
                         },
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.05,
-                        vertical: DocvedaSizes.spaceBtwItemsS,
-                      ),
-                      decoration: BoxDecoration(
-                        color: DocvedaColors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: DocvedaColors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            spreadRadius: 2,
+                    SafeArea(
+                      top:
+                          false, // Ensures the button stays within the safe area at the bottom
+                      child: Align(
+                        alignment: Alignment
+                            .bottomCenter, // Stick the button to the bottom
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: DocvedaSizes.spaceBtwItemsS,
                           ),
-                        ],
+                          decoration: BoxDecoration(
+                            color: DocvedaColors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: DocvedaColors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: PrimaryButton(
+                            onPressed: () {
+                              if (patients.isEmpty ||
+                                  selectedPatientIndex >= patients.length)
+                                return;
+
+                              final selected = patients[selectedPatientIndex];
+
+                              // Strip the "Y" from the Age string and convert it to an integer
+                              String ageString = selected["Age"] ?? "0";
+                              int age = 0;
+
+                              // Check if the age string contains 'Y' and remove it
+                              if (ageString.contains('Y')) {
+                                ageString =
+                                    ageString.replaceAll('Y', '').trim();
+                              }
+
+                              // Parse the age as an integer
+                              age = int.tryParse(ageString) ?? 0;
+
+                              print('Age: $age'); // Debugging line
+
+                              Get.to(
+                                () => ViewReportScreen(
+                                  patientName:
+                                      selected["Patient Name"] ?? "N/A",
+                                  age: age,
+                                  gender: selected["Gender"] ?? "N/A",
+                                  admissionDate: DateFormatter.formatDate(
+                                      selected["Admission Date"]),
+                                  dischargeDate: DateFormatter.formatDate(
+                                      selected["Discharge Date"]),
+                                  finalSettlement:
+                                      (selected["Total IPD Bill"] != null)
+                                          ? selected["Total IPD Bill"]
+                                              .toString()
+                                          : "N/A",
+                                  screenName: "Admission",
+                                ),
+                              );
+                            },
+                            text: DocvedaTexts.viewReport,
+                            backgroundColor: DocvedaColors.primaryColor,
+                          ),
+                        ),
                       ),
-                      child: PrimaryButton(
-                        onPressed: () {
-                          if (patients.isEmpty ||
-                              selectedPatientIndex >= patients.length) return;
-
-                          final selected = patients[selectedPatientIndex];
-
-                          // Strip the "Y" from the Age string and convert it to an integer
-                          String ageString = selected["Age"] ?? "0";
-                          int age = 0;
-
-                          // Check if the age string contains 'Y' and remove it
-                          if (ageString.contains('Y')) {
-                            ageString = ageString.replaceAll('Y', '').trim();
-                          }
-
-                          // Parse the age as an integer
-                          age = int.tryParse(ageString) ?? 0;
-
-                          print('Age: $age'); // Debugging line
-
-                          Get.to(
-                            () => ViewReportScreen(
-                              patientName: selected["Patient Name"] ?? "N/A",
-                              age: age,
-                              gender: selected["Gender"] ?? "N/A",
-                              admissionDate: DateFormatter.formatDate(
-                                  selected["Admission Date"]),
-                              dischargeDate: DateFormatter.formatDate(
-                                  selected["Discharge Date"]),
-                              finalSettlement:
-                                  (selected["Total IPD Bill"] != null)
-                                      ? selected["Total IPD Bill"].toString()
-                                      : "N/A",
-                              screenName: "Admission",
-                            ),
-                          );
-                        },
-                        text: DocvedaTexts.viewReport,
-                        backgroundColor: DocvedaColors.primaryColor,
-                      ),
-                    ),
+                    )
                   ],
                 );
               },

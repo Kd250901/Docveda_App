@@ -28,7 +28,7 @@ class PatientCard extends StatelessWidget {
       onTap: () => onPatientSelected(index),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 2),
         decoration: BoxDecoration(
           border: Border.all(
             color:

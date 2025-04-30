@@ -3,6 +3,7 @@ import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_head
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
 import 'package:docveda_app/common/widgets/section_heading/section_heading.dart';
 import 'package:docveda_app/common/widgets/toggle/toggle.dart';
+import 'package:docveda_app/common/widgets/toggle/toggleController.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/clinic/screens/home/widgets/bedTransferCard.dart';
@@ -42,6 +43,7 @@ final List<String> dashboardItems = [
 class _HomeScreenState extends State<HomeScreen> {
   // NotificationServices notificationServices = NotificationServices();
   final ApiService apiService = ApiService();
+  final ToggleController toggleController = Get.put(ToggleController());
 
   //  Declare the variable to store API response
 
@@ -51,6 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // Listen for toggle changes
+    toggleController.isMonthly.listen((newValue) {
+      _handleToggle(newValue); // re-fetch data
+    });
     //dashboardData = fetchDashboardData();
     // loadDashboardData(); // Call API when screen initializes
     dashboardDataFuture = fetchDashboardData(
@@ -117,6 +123,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //bool isMonthly = false;
 
   void _goToPrevious() {
+    final isMonthly = toggleController.isMonthly.value;
+
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
@@ -189,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           bool isLoading = snapshot.connectionState == ConnectionState.waiting;
 
-          if (isLoading) {
+          if (isLoading && !snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -296,15 +304,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: DocvedaSizes.spaceBtwItemsS,
                     ),
                     const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
-                    DocvedaToggle(
-                      isMonthly: isMonthly,
-                      onToggle: _handleToggle,
-                    ),
+                    const DocvedaToggle(),
                     DateSwitcherBar(
                       selectedDate: selectedDate,
                       onPrevious: _goToPrevious,
                       onNext: _goToNext,
-                      isMonthly: isMonthly,
+                      isMonthly:
+                          toggleController.isMonthly.value, // Use global state
                       textColor: DocvedaColors.white,
                       fontSize: DocvedaSizes.fontSizeSm,
                     ),
