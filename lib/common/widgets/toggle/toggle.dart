@@ -1,4 +1,5 @@
 import 'package:docveda_app/common/widgets/toggle/toggleController.dart';
+import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
@@ -17,10 +18,10 @@ class DocvedaToggle extends StatelessWidget {
         width: 200,
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: DocvedaColors.white,
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: const Color.fromARGB(255, 248, 246, 248),
+            color: DocvedaColors.white,
             width: 2,
           ),
         ),
@@ -35,7 +36,7 @@ class DocvedaToggle extends StatelessWidget {
                 width: 100,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.purple,
+                  color: DocvedaColors.primaryColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
@@ -55,8 +56,8 @@ class DocvedaToggle extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: toggleController.isMonthly.value
-                              ? Colors.white
-                              : Colors.purple,
+                              ? DocvedaColors.white
+                              : DocvedaColors.primaryColor,
                         ),
                       ),
                     ),
@@ -75,8 +76,8 @@ class DocvedaToggle extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: toggleController.isMonthly.value
-                              ? Colors.purple
-                              : Colors.white,
+                              ? DocvedaColors.primaryColor
+                              : DocvedaColors.white,
                         ),
                       ),
                     ),

@@ -23,7 +23,7 @@ class NavigationMenu extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: darkMode ? DocvedaColors.black : Colors.white,
+          color: darkMode ? DocvedaColors.black : DocvedaColors.white,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20), // Rounded corners
             topRight: Radius.circular(20),
@@ -71,23 +71,30 @@ class NavigationMenu extends StatelessWidget {
               NavigationDestination(
                 icon: Icon(
                   Iconsax.chart_1,
-                  color: Colors.deepPurple,
+                  color: DocvedaColors.primaryColor,
                 ), // Default icon color
                 selectedIcon: Icon(
                   Iconsax.chart_1,
-                  color: Colors.white,
+                  color: DocvedaColors.white,
                 ), // Selected icon color
-                label: 'Analytics',
+                // label: 'Analytics',
+                label: '',
               ),
               NavigationDestination(
-                icon: Icon(Iconsax.element_3, color: Colors.deepPurple),
-                selectedIcon: Icon(Iconsax.element_3, color: Colors.white),
-                label: 'Dashboard',
+                icon:
+                    Icon(Iconsax.element_3, color: DocvedaColors.primaryColor),
+                selectedIcon:
+                    Icon(Iconsax.element_3, color: DocvedaColors.white),
+                // label: 'Dashboard',
+                label: '',
               ),
               NavigationDestination(
-                icon: Icon(Iconsax.notification, color: Colors.deepPurple),
-                selectedIcon: Icon(Iconsax.notification, color: Colors.white),
-                label: 'Notifications',
+                icon: Icon(Iconsax.notification,
+                    color: DocvedaColors.primaryColor),
+                selectedIcon:
+                    Icon(Iconsax.notification, color: DocvedaColors.white),
+                // label: 'Notifications',
+                label: '',
               ),
             ],
           ),

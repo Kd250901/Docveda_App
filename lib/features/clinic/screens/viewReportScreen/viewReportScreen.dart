@@ -30,6 +30,8 @@ class ViewReportScreen extends StatelessWidget {
   final String? dateOfRefund;
   final String? dateOfDiscount;
   final String? totalIpdBill;
+  final String? wardName;
+  final String? bedName;
 
   const ViewReportScreen({
     super.key,
@@ -54,6 +56,8 @@ class ViewReportScreen extends StatelessWidget {
     this.dateOfRefund,
     this.dateOfDiscount,
     this.totalIpdBill,
+    this.wardName,
+    this.bedName,
   });
 
   @override
@@ -70,8 +74,11 @@ class ViewReportScreen extends StatelessWidget {
       case "admission":
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
-          "Bill Amount": finalSettlement ?? "-",
+          "UHID No": uhidno ?? "-",
           "Deposit": deposit ?? "-",
+          "Total Bill": totalIpdBill ?? "-",
+          "Ward Name": wardName ?? "-",
+          "Bed Name": bedName ?? "-",
         });
         break;
       case "discharge":
@@ -96,6 +103,7 @@ class ViewReportScreen extends StatelessWidget {
           "Admission Date": admissionDate ?? "-",
           "UHID No": uhidno ?? "-",
           "Total Ipd Bill": totalIpdBill ?? "-",
+          "Deposit": deposit ?? "-",
         });
         break;
       case "opd payments":
@@ -202,16 +210,16 @@ class ViewReportScreen extends StatelessWidget {
             label,
             style: const TextStyle(
               fontFamily: "Manrope",
-              fontWeight: FontWeight.bold,
-              fontSize: DocvedaSizes.fontSizeMd,
-              color: DocvedaColors.grey,
+              fontWeight: FontWeight.w900,
+              fontSize: DocvedaSizes.fontSizeSm,
+              color: DocvedaColors.darkGrey,
             ),
           ),
           Text(
             value,
             style: const TextStyle(
               fontFamily: "Manrope",
-              fontSize: DocvedaSizes.fontSizeMd,
+              fontSize: DocvedaSizes.fontSizeSm,
               color: DocvedaColors.black,
             ),
           ),

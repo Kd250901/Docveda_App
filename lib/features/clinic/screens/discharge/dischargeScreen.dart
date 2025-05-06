@@ -249,139 +249,129 @@ class _DischargescreenState extends State<Dischargescreen> {
                         itemCount: patients.length,
                         itemBuilder: (context, index) {
                           final patient = patients[index];
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: index == selectedPatientIndex
-                                    ? DocvedaColors.primaryColor
-                                    : Colors.transparent,
-                                width: 1.5,
+
+                          return PatientCard(
+                            index: index,
+                            selectedPatientIndex: selectedPatientIndex,
+                            onPatientSelected: handlePatientSelection,
+                            topRow: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 18,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      DocvedaText(
+                                        text: formatPatientName(
+                                            "${patients[index]["Patient Name"] ?? ""}"
+                                                .trim()),
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  DocvedaText(
+                                    text:
+                                        "${patients[index]["Age"]?.toString() ?? "--"}  • ${patients[index]["Gender"] ?? "--"}",
+                                    style: TextStyleFont.caption.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// 👤 Name and Gender Row
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          index == selectedPatientIndex
-                                              ? Icons.radio_button_checked
-                                              : Icons.radio_button_unchecked,
-                                          size: 18,
-                                          color: index == selectedPatientIndex
-                                              ? DocvedaColors.primaryColor
-                                              : Colors.grey,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          formatPatientName(
-                                              patient["Patient Name"]
-                                                      ?.toString()
-                                                      .trim() ??
-                                                  "--"),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
+                            middleRow: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 34.0, right: 8.0, top: 4, bottom: 4),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          DocvedaText(
+                                            text: "Admission Date",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "${patient["Age"] ?? "--"} • ${patient["Gender"] ?? "--"}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey.shade600,
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: DateFormatter.formatDate(
+                                                patients[index]
+                                                    ["Admission Date"]),
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 12),
-
-                                /// 📅 Admission & Discharge Dates
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Admission Date",
-                                          style: TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          DateFormatter.formatDate(
-                                              patient["Admission Date"]),
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          "Discharge Date",
-                                          style: TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          DateFormatter.formatDate(
-                                              patient["Discharge Date"]),
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 12),
-                                Divider(color: Colors.grey.shade300),
-
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Bill Amount",
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.grey.shade700),
-                                    ),
-                                    Text(
-                                      "₹${patient["Total IPD Bill"] ?? "0"}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: DocvedaColors.primaryColor,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          DocvedaText(
+                                            text: "Discharge Date",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: DateFormatter.formatDate(
+                                                patients[index]
+                                                    ["Discharge Date"]),
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: Colors.grey.shade300),
+                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "Bill Amount",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Total IPD Bill"] ?? "0"}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
+                            bottomRow: const SizedBox
+                                .shrink(), // Can be extended later if needed
                           );
                         },
                       ),

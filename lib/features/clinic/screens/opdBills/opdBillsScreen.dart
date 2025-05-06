@@ -12,6 +12,7 @@ import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -261,8 +262,9 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                       ),
                                       const SizedBox(width: 8),
                                       DocvedaText(
-                                        text: "${patient["Patient Name"] ?? ""}"
-                                            .trim(),
+                                        text: formatPatientName(
+                                            "${patients[index]["Patient Name"] ?? ""}"
+                                                .trim()),
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 14,
@@ -299,7 +301,7 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           DocvedaText(
-                                            text: "ADMISSION",
+                                            text: "Visit Date",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
@@ -316,14 +318,14 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           DocvedaText(
-                                            text: "DISCHARGE",
+                                            text: "Doctor Name",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
                                           DocvedaText(
                                             text: DateFormatter.formatDate(
-                                                patient["Discharge Date"]),
+                                                patient["Doctor Name"]),
                                             style: TextStyleFont.caption,
                                           ),
                                         ],
@@ -341,10 +343,8 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                                     children: [
                                       DocvedaText(
                                         text: "Final Settlement",
-                                        style: TextStyleFont.body.copyWith(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                        ),
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
                                       ),
                                       DocvedaText(
                                         text:

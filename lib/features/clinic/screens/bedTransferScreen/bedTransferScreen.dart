@@ -195,7 +195,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                                   left: DocvedaSizes
                                       .spaceBtwItems), // Add left padding here
                               child: DocvedaText(
-                                text: "${patients.length} deposits found",
+                                text: "${patients.length} Bed Transfer found",
                                 style: TextStyleFont.subheading,
                               ),
                             ),
@@ -212,7 +212,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                                     left: DocvedaSizes
                                         .spaceBtwItems), // Add left padding here
                                 child: DocvedaText(
-                                  text: "Patients with advance deposits made.",
+                                  text: "Patients with Bed Transfer Found.",
                                   style: TextStyleFont.body,
                                 ),
                               )),
@@ -279,16 +279,16 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                                   selected["Admission Date"]),
                               dischargeDate: DateFormatter.formatDate(
                                   selected["Bed_End_Date"]),
-                              finalSettlement:
+                              totalIpdBill:
                                   selected["Total IPD Bill"]?.toString() ??
                                       "N/A",
                               screenName: "Bed Transfer",
 
                               // 💡 Bed transfer-specific fields
                               bedTransferDate: DateFormatter.formatDate(
-                                  selected["Bed_Start_Date"] ?? ""),
+                                  selected["Bed_End_Date"] ?? ""),
                               bedTransferTime:
-                                  selected["f_HIS_Bed_Start_Time"] ?? "N/A",
+                                  selected["f_HIS_Bed_End_Time"] ?? "N/A",
                               fromWard: selected["FROM WARD"] ?? "N/A",
                               toWard: selected["TO WARD"] ?? "N/A",
                               fromBed: selected["FROM BED"] ?? "N/A",

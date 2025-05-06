@@ -262,7 +262,7 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                   ),
                                   DocvedaText(
                                     text:
-                                        "${patients[index]["Age"]?.toString() ?? "--"} Yrs • ${patients[index]["Gender"] ?? "--"}",
+                                        "${patients[index]["Age"]?.toString() ?? "--"}  • ${patients[index]["Gender"] ?? "--"}",
                                     style: TextStyleFont.caption.copyWith(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -287,7 +287,7 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           DocvedaText(
-                                            text: "ADMISSION",
+                                            text: "Admission Date",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
@@ -305,7 +305,7 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           DocvedaText(
-                                            text: "DISCHARGE",
+                                            text: "Discharge Date",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
@@ -330,18 +330,36 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DocvedaText(
-                                        text: "TOTAL BILL",
-                                        style: TextStyleFont.body.copyWith(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                        ),
+                                        text: "Total Bill",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
                                       ),
                                       DocvedaText(
                                         text:
-                                            "₹${patients[index]["Total IPD Bill"] ?? "0"}",
+                                            "₹${patients[index]["IPD Bill"] ?? "0"}",
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                          fontSize: 14,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "Final Settlement",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patients[index]["Final Settlement"] ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
                                           color: DocvedaColors.primaryColor,
                                         ),
                                       ),
@@ -406,7 +424,7 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                 finalSettlement:
                                     selected["Total IPD Bill"]?.toString() ??
                                         "N/A",
-                                screenName: "Admission",
+                                screenName: "IPD Settlement",
                               ),
                             );
                           },

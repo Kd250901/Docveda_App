@@ -11,6 +11,7 @@ import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportS
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
+import 'package:docveda_app/utils/helpers/date_controller.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
@@ -50,6 +51,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
 
   void loadOpdPaymentData() {
     final toggleController = Get.find<ToggleController>();
+    final DateController dateController = Get.put(DateController());
 
     setState(() {
       patientData = fetchDashboardData(
@@ -300,7 +302,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           DocvedaText(
-                                            text: "ADMISSION",
+                                            text: "Visit Date",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
@@ -317,15 +319,15 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           DocvedaText(
-                                            text: "UHID No",
+                                            text: "Date Of Payment",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
                                           DocvedaText(
-                                            text: patient["UHID No"]
-                                                    ?.toString() ??
-                                                "--",
+                                            text: DateFormatter.formatDate(
+                                                patient["Date Of Payment"]
+                                                    ?.toString()),
                                             style: TextStyleFont.caption,
                                           ),
                                         ],
@@ -342,15 +344,33 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DocvedaText(
-                                        text: "Bill Amount",
-                                        style: TextStyleFont.body.copyWith(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                        ),
+                                        text: "Total Bill Amount",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
                                       ),
                                       DocvedaText(
                                         text:
                                             "₹${patient["Bill Amount"] ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "Paid Amount",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
+                                      ),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Paid Amount"] ?? "0"}",
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -425,14 +445,17 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                   gender: selected["Gender"] ?? "N/A",
                                   admissionDate: DateFormatter.formatDate(
                                       selected["Admission Date"]),
-                                  dischargeDate: DateFormatter.formatDate(
-                                      selected["Discharge Date"]),
+                                  dischargeDate:
+                                      "", // Not required for OPD Payments
                                   finalSettlement:
-                                      (selected["Total IPD Bill"] != null)
-                                          ? selected["Total IPD Bill"]
-                                              .toString()
-                                          : "N/A",
-                                  screenName: "Admission",
+                                      "", // Not required for OPD Payments
+                                  screenName: "Opd Payments",
+                                  dateOfPayment: DateFormatter.formatDate(
+                                          selected["Date Of Payment"]) ??
+                                      "-",
+                                  billAmount:
+                                      selected["Bill Amount"]?.toString() ??
+                                          "-",
                                 ),
                               );
                             },

@@ -96,7 +96,7 @@ class DocvedaTexts {
   static const String homeAppBarSubTitle = "Docveda Sub Title";
 
   static const String clinicNameTitle = "Samarth Hospital";
-  static const String logo = "Powered by DocVeda";
+  static const String logo = "Powered by Docveda";
   static const String dashboardItems1 = " Admissions";
   static const String dashboardItems2 = " Discharges";
   static const String dashboardItems3 = " Bed Transfers";

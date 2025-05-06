@@ -255,7 +255,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                       const SizedBox(width: 8),
                                       DocvedaText(
                                         text: formatPatientName(
-                                            "${patient["Patient Name"] ?? ""}"
+                                            "${patients[index]["Patient Name"] ?? ""}"
                                                 .trim()),
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.w600,
@@ -294,7 +294,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                         children: [
                                           DocvedaText(
                                             text: "Admission Date",
-                                            style: TextStyleFont.dashboardcard
+                                            style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
@@ -311,7 +311,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                         children: [
                                           DocvedaText(
                                             text: "UHID No",
-                                            style: TextStyleFont.dashboardcard
+                                            style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
@@ -336,10 +336,8 @@ class _DepositScreenState extends State<DepositScreen> {
                                     children: [
                                       DocvedaText(
                                         text: "Deposit",
-                                        style: TextStyleFont.body.copyWith(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                        ),
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
                                       ),
                                       DocvedaText(
                                         text: "₹${patient["Deposite"] ?? "0"}",
@@ -356,11 +354,9 @@ class _DepositScreenState extends State<DepositScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DocvedaText(
-                                        text: "Total IPD Bill",
-                                        style: TextStyleFont.body.copyWith(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 14,
-                                        ),
+                                        text: "Total Bill",
+                                        style: TextStyleFont.caption
+                                            .copyWith(color: Colors.grey),
                                       ),
                                       DocvedaText(
                                         text:
@@ -436,14 +432,11 @@ class _DepositScreenState extends State<DepositScreen> {
                                   gender: selected["Gender"] ?? "N/A",
                                   admissionDate: DateFormatter.formatDate(
                                       selected["Admission Date"]),
-                                  dischargeDate: DateFormatter.formatDate(
-                                      selected["Discharge Date"]),
-                                  finalSettlement:
-                                      (selected["Total IPD Bill"] != null)
-                                          ? selected["Total IPD Bill"]
-                                              .toString()
-                                          : "N/A",
-                                  screenName: "Admission",
+                                  uhidno: selected["UHID No"] ?? "N/A",
+                                  deposit: selected["Deposite"].toString(),
+                                  totalIpdBill:
+                                      selected["Total IPD Bill"].toString(),
+                                  screenName: "Deposit",
                                 ),
                               );
                             },

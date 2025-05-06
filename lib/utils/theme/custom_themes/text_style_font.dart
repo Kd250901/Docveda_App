@@ -16,7 +16,7 @@ class TextStyleFont {
   static const TextStyle body = TextStyle(
     fontFamily: "Manrope",
     fontSize: 12,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w500,
   );
 
   static const TextStyle button = TextStyle(

@@ -188,8 +188,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                   left: DocvedaSizes
                                       .spaceBtwItems), // Add left padding here
                               child: DocvedaText(
-                                text:
-                                    "${patients.length} ${DocvedaTexts.patientFound}",
+                                text: "${patients.length} Refunds found",
                                 style: TextStyleFont.subheading,
                               ),
                             ),
@@ -226,75 +225,132 @@ class _RefundsScreenState extends State<RefundsScreen> {
                             selectedPatientIndex: selectedPatientIndex,
                             onPatientSelected: handlePatientSelection,
 
-                            // Custom topRow
-                            topRow: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      index == selectedPatientIndex
-                                          ? Icons.radio_button_checked
-                                          : Icons.radio_button_unchecked,
-                                      size: 16,
-                                      color: index == selectedPatientIndex
-                                          ? DocvedaColors.primaryColor
-                                          : Colors.grey,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      formatPatientName(
-                                          "${patient["Patient Name"] ?? ""}"
-                                              .trim()),
-                                    )
-                                  ],
-                                ),
-                                Text(
-                                  "${patient["Age"] ?? "N/A"} • ${patient["Gender"] ?? "N/A"}",
-                                ),
-                              ],
-                            ),
-
-                            // Custom middleRow
-                            middleRow: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Admission"),
-                                    Text(DateFormatter.formatDate(
-                                        patient["Admission Date"])),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text("Refund Date."),
-                                    Text(DateFormatter.formatDate(
-                                        patient["Date Of Refund"] ?? "N/A")),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                            // Custom bottomRow
-                            bottomRow: Container(
+                            /// 👤 Top Row: Name, Age, Gender
+                            topRow: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                                  horizontal: 8.0, vertical: 8),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Refund Amount"),
-                                  Text("₹${patient["Refund Amount"] ?? "0"}"),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        index == selectedPatientIndex
+                                            ? Icons.radio_button_checked
+                                            : Icons.radio_button_unchecked,
+                                        size: 16,
+                                        color: index == selectedPatientIndex
+                                            ? DocvedaColors.primaryColor
+                                            : Colors.grey,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      DocvedaText(
+                                        text: formatPatientName(
+                                            "${patient["Patient Name"] ?? ""}"
+                                                .trim()),
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  DocvedaText(
+                                    text:
+                                        "${patient["Age"]?.toString() ?? "--"} • ${patient["Gender"] ?? "--"}",
+                                    style: TextStyleFont.caption
+                                        .copyWith(color: Colors.grey),
+                                  ),
                                 ],
                               ),
                             ),
+
+                            /// 📅 Middle Row: Admission, Reg No, Discount
+                            middleRow: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 32.0, right: 8.0, top: 8, bottom: 8),
+                              child: Column(
+                                children: [
+                                  /// Admission & Reg No
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          DocvedaText(
+                                            text: "Admission Date",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: DateFormatter.formatDate(
+                                                patient["Admission Date"]),
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          DocvedaText(
+                                            text: "REG. NO",
+                                            style: TextStyleFont.caption
+                                                .copyWith(color: Colors.grey),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          DocvedaText(
+                                            text: patient["Registration_No"] ??
+                                                "N/A",
+                                            style: TextStyleFont.caption,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
+                                  /// Divider
+                                  Divider(
+                                    height: 24,
+                                    color: Colors.grey.shade300,
+                                    thickness: 1,
+                                  ),
+
+                                  /// Discount Given Row
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DocvedaText(
+                                        text: "DISCOUNT GIVEN",
+                                        style: TextStyleFont.body.copyWith(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      DocvedaText(
+                                        text:
+                                            "₹${patient["Discount Amount"]?.toString() ?? "0"}",
+                                        style: TextStyleFont.body.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: DocvedaColors.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            /// No need for bottomRow now
+                            bottomRow: const SizedBox.shrink(),
                           );
                         },
                       ),

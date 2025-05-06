@@ -114,7 +114,7 @@ class BedTransferCard extends StatelessWidget {
               alignment: Alignment.center,
               child: DocvedaText(
                 text:
-                    '${getFormattedDate(patient["Bed_Start_Date"] ?? "")}, ${getFormattedTime(patient["f_HIS_Bed_Start_Time"] ?? "")}',
+                    '${getFormattedDate(patient["Bed_End_Date"] ?? "")}, ${getFormattedTime(patient["f_HIS_Bed_End_Time"] ?? "")}',
                 style: TextStyleFont.body.copyWith(
                   fontWeight: FontWeight.w700,
                   color: DocvedaColors.darkGrey,

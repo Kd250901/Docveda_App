@@ -4,7 +4,7 @@ class DocvedaColors {
   DocvedaColors._();
 
   // APP Basic Colors
-  static const Color primaryColor = Color(0xFF75479D);
+  static const Color primaryColor = Color(0xFF4D4790);
 
   // Gradient Colors
   static const Gradient linerGradient = LinearGradient(
