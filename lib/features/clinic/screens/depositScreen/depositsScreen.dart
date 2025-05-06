@@ -21,7 +21,14 @@ import 'package:docveda_app/features/authentication/screens/login/service/api_se
 import 'package:intl/intl.dart';
 
 class DepositScreen extends StatefulWidget {
-  const DepositScreen({super.key});
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
+
+  const DepositScreen({
+    super.key,
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate
+    });
 
   @override
   State<DepositScreen> createState() => _DepositScreenState();
@@ -33,11 +40,14 @@ class _DepositScreenState extends State<DepositScreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
-  // bool isMonthly = false;
+  DateTime _selectedDate = DateTime.now();
+  bool isMonthly = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedDate = widget.prevSelectedDate;
+    isMonthly = widget.isSelectedMonthly;
     loadDepositData();
   }
 
@@ -122,6 +132,13 @@ class _DepositScreenState extends State<DepositScreen> {
   //   loadDepositData();
   // }
 
+  void _updateDate(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    // You can navigate or pass the new date to another screen here
+  }
+
   @override
   Widget build(BuildContext context) {
     final toggleController = Get.find<ToggleController>();
@@ -150,9 +167,10 @@ class _DepositScreenState extends State<DepositScreen> {
                   },
                 ),
                 DateSwitcherBar(
-                  selectedDate: selectedDate,
+                  selectedDate: _selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
+                  onDateChanged: _updateDate,
                   isMonthly:
                       toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,

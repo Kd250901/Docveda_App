@@ -9,8 +9,15 @@ import 'package:flutter/material.dart';
 
 class ExpensesSection extends StatelessWidget {
   final List<Map<String, dynamic>> expenseDataArray;
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
 
-  const ExpensesSection({Key? key, required this.expenseDataArray})
+  const ExpensesSection({
+    Key? key, 
+    required this.expenseDataArray,
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate
+    })
       : super(key: key);
 
   @override
@@ -27,7 +34,7 @@ class ExpensesSection extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      DiscountsScreen(), // Navigate to DiscountsScreen
+                      DiscountsScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,), // Navigate to DiscountsScreen
                 ),
               );
             } else if (label.toLowerCase().contains('refund')) {
@@ -35,7 +42,7 @@ class ExpensesSection extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      RefundsScreen(), // Navigate to RefundsScreen
+                      RefundsScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,), // Navigate to RefundsScreen
                 ),
               );
             }
