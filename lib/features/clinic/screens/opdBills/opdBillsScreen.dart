@@ -21,7 +21,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class Opdbillsscreen extends StatefulWidget {
-  const Opdbillsscreen({super.key});
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
+
+  const Opdbillsscreen({
+    super.key,
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate
+    });
 
   @override
   _OpdbillsscreenState createState() => _OpdbillsscreenState();
@@ -33,11 +40,14 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
-  // bool isMonthly = false;
+  DateTime _selectedDate = DateTime.now();
+  bool isMonthly = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedDate = widget.prevSelectedDate;
+    isMonthly = widget.isSelectedMonthly;
     loadOpdBillsData();
   }
 
@@ -125,6 +135,13 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
   //   loadOpdBillsData();
   // }
 
+  void _updateDate(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    // You can navigate or pass the new date to another screen here
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -155,9 +172,10 @@ class _OpdbillsscreenState extends State<Opdbillsscreen> {
                   },
                 ),
                 DateSwitcherBar(
-                  selectedDate: selectedDate,
+                  selectedDate: _selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
+                  onDateChanged: _updateDate,
                   isMonthly:
                       toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,

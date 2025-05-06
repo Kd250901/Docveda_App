@@ -48,7 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
   //  Declare the variable to store API response
 
   late Future<List<Map<String, dynamic>>> dashboardDataFuture;
+  DateTime _selectedDate = DateTime.now();
   bool isMonthly = false; // default to daily
+
+
+  void _updateDate(DateTime newDate) {
+    setState(() {
+      print("Home updateDate triggered");
+      _selectedDate = newDate;
+    });
+    // You can navigate or pass the new date to another screen here
+  }
 
   @override
   void initState() {
@@ -124,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _goToPrevious() {
     final isMonthly = toggleController.isMonthly.value;
-
+    print("Home _goToPrevious triggered");
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
@@ -140,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _goToNext() {
+    print("Home _goToNext triggered");
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
@@ -160,6 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
       final type = isMonthly ? 'MONTHLY' : 'DAILY';
+
+      if (!mounted) return;
 
       dashboardDataFuture = fetchDashboardData(
         isMonthly: isMonthly,
@@ -213,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           List<Map<String, dynamic>> patientDataArray = extractOptionsFromData(
             data: dashboardData[0],
-            keys: ["Total_Registrations", "Discharge"],
+            keys: ["Admission", "Discharge"],
           );
 
           List<Map<String, dynamic>> revenueDataArray = extractOptionsFromData(
@@ -306,9 +319,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
                     const DocvedaToggle(),
                     DateSwitcherBar(
-                      selectedDate: selectedDate,
+                      selectedDate: _selectedDate,
                       onPrevious: _goToPrevious,
                       onNext: _goToNext,
+                      onDateChanged: _updateDate,
                       isMonthly:
                           toggleController.isMonthly.value, // Use global state
                       textColor: DocvedaColors.white,
@@ -348,13 +362,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
 
                       PatientInformationSection(
-                          patientDataArray: patientDataArray),
+                          patientDataArray: patientDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate,),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
 
                       BedTransferCard(
                           bedTransferCount:
-                              dashboardData[0]['Bed_Transfer'] ?? 0),
+                              dashboardData[0]['Bed_Transfer'] ?? 0, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaSectionHeading(
@@ -370,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
-                      RevenueSection(revenueDataArray: revenueDataArray),
+                      RevenueSection(revenueDataArray: revenueDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
@@ -387,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
-                      ExpensesSection(expenseDataArray: expenseDataArray),
+                      ExpensesSection(expenseDataArray: expenseDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwSections),
                     ],

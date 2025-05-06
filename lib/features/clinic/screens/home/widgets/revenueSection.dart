@@ -12,8 +12,11 @@ import 'package:iconsax/iconsax.dart';
 
 class RevenueSection extends StatelessWidget {
   final List<Map<String, dynamic>> revenueDataArray;
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
 
-  const RevenueSection({Key? key, required this.revenueDataArray})
+  const RevenueSection({Key? key, required this.revenueDataArray, required this.isSelectedMonthly,
+    required this.prevSelectedDate})
       : super(key: key);
 
   @override
@@ -25,10 +28,10 @@ class RevenueSection extends StatelessWidget {
 
         // Map of keywords to corresponding screens
         final Map<String, Widget Function()> revenueScreens = {
-          'deposit': () => DepositScreen(),
-          'opd payment': () => Opdpaymentscreen(),
-          'opd bill': () => Opdbillsscreen(),
-          'ipd settlement': () => IPDSettlementScreen(),
+          'deposit': () => DepositScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          'opd payment': () => Opdpaymentscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          'opd bill': () => Opdbillsscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          'ipd settlement': () => IPDSettlementScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
         };
 
         return GestureDetector(

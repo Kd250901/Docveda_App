@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 
 class DateSwitcherBar extends StatelessWidget {
   final DateTime selectedDate;
+  final ValueChanged<DateTime> onDateChanged;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
   final bool isMonthly;
@@ -14,6 +15,7 @@ class DateSwitcherBar extends StatelessWidget {
   const DateSwitcherBar({
     super.key,
     required this.selectedDate,
+    required this.onDateChanged,
     required this.onPrevious,
     required this.onNext,
     required this.isMonthly,
@@ -23,7 +25,6 @@ class DateSwitcherBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Use the new formatter based on toggle
     final String formattedDate =
         DateFormatter.formatForToggle(selectedDate, isMonthly);
 
@@ -32,7 +33,13 @@ class DateSwitcherBar extends StatelessWidget {
       children: [
         IconButton(
           icon: const Icon(Iconsax.arrow_left_2),
-          onPressed: onPrevious,
+          onPressed: () {
+            final newDate = isMonthly
+                ? DateTime(selectedDate.year, selectedDate.month - 1, 1)
+                : selectedDate.subtract(const Duration(days: 1));
+            onDateChanged(newDate);
+            onPrevious(); // optional
+          },
           style: ButtonStyle(iconColor: MaterialStateProperty.all(textColor)),
         ),
         const SizedBox(width: 12),
@@ -47,7 +54,13 @@ class DateSwitcherBar extends StatelessWidget {
         const SizedBox(width: 12),
         IconButton(
           icon: const Icon(Iconsax.arrow_right_3),
-          onPressed: onNext,
+          onPressed: () {
+            final newDate = isMonthly
+                ? DateTime(selectedDate.year, selectedDate.month + 1, 1)
+                : selectedDate.add(const Duration(days: 1));
+            onDateChanged(newDate);
+            onNext(); // optional
+          },
           style: ButtonStyle(iconColor: MaterialStateProperty.all(textColor)),
         ),
       ],

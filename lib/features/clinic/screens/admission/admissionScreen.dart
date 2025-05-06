@@ -21,7 +21,15 @@ import 'package:docveda_app/features/authentication/screens/login/service/api_se
 import 'package:intl/intl.dart';
 
 class AdmissionScreen extends StatefulWidget {
-  const AdmissionScreen({super.key});
+
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
+
+  const AdmissionScreen({
+    super.key, 
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate
+    });
 
   @override
   State<AdmissionScreen> createState() => _AdmissionScreenState();
@@ -33,11 +41,14 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
   bool isMonthly = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedDate = widget.prevSelectedDate;
+    isMonthly = widget.isSelectedMonthly;
     loadAdmissionData();
   }
 
@@ -123,6 +134,13 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
     loadAdmissionData();
   }
 
+  void _updateDate(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    // You can navigate or pass the new date to another screen here
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -152,9 +170,10 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                   },
                 ),
                 DateSwitcherBar(
-                  selectedDate: selectedDate,
+                  selectedDate: _selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
+                  onDateChanged: _updateDate,
                   isMonthly:
                       toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,

@@ -8,8 +8,11 @@ import 'package:iconsax/iconsax.dart';
 
 class BedTransferCard extends StatelessWidget {
   final int bedTransferCount;
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
 
-  const BedTransferCard({Key? key, required this.bedTransferCount})
+  const BedTransferCard({Key? key, required this.bedTransferCount, required this.isSelectedMonthly,
+    required this.prevSelectedDate})
       : super(key: key);
 
   @override
@@ -20,7 +23,7 @@ class BedTransferCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           // Navigate to BedTransferScreen when tapped
-          Get.to(() => BedTransferScreen());
+          Get.to(() => BedTransferScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

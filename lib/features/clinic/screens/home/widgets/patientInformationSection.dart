@@ -10,8 +10,11 @@ import 'package:iconsax/iconsax.dart';
 
 class PatientInformationSection extends StatelessWidget {
   final List<dynamic> patientDataArray;
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
 
-  const PatientInformationSection({Key? key, required this.patientDataArray})
+  const PatientInformationSection({Key? key, required this.patientDataArray, required this.isSelectedMonthly,
+    required this.prevSelectedDate,})
       : super(key: key);
 
   @override
@@ -28,8 +31,8 @@ class PatientInformationSection extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) {
                     return index == 0
-                        ? const AdmissionScreen()
-                        : const Dischargescreen();
+                        ? AdmissionScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,)
+                        : Dischargescreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,);
                   },
                 ),
               );

@@ -21,7 +21,13 @@ import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
 class DiscountsScreen extends StatefulWidget {
-  const DiscountsScreen({super.key});
+  final bool isSelectedMonthly;
+  final DateTime prevSelectedDate;
+  const DiscountsScreen({
+    super.key,
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate
+    });
 
   @override
   State<DiscountsScreen> createState() => _DiscountsScreenState();
@@ -33,11 +39,14 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
   late Future<List<Map<String, dynamic>>> patientData;
 
   DateTime selectedDate = DateTime.now();
-//  bool isMonthly = false;
+  DateTime _selectedDate = DateTime.now();
+  bool isMonthly = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedDate = widget.prevSelectedDate;
+    isMonthly = widget.isSelectedMonthly;
     loadDiscountData();
   }
 
@@ -126,6 +135,13 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
     });
   }
 
+  void _updateDate(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    // You can navigate or pass the new date to another screen here
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -154,9 +170,10 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                   },
                 ),
                 DateSwitcherBar(
-                  selectedDate: selectedDate,
+                  selectedDate: _selectedDate,
                   onPrevious: _goToPrevious,
                   onNext: _goToNext,
+                  onDateChanged: _updateDate,
                   isMonthly:
                       toggleController.isMonthly.value, // Use global state
                   textColor: DocvedaColors.white,
