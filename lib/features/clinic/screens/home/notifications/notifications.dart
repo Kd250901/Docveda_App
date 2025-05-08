@@ -1,5 +1,4 @@
 import 'package:docveda_app/utils/constants/colors.dart';
-import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 
@@ -15,30 +14,34 @@ class NotificationsScreen extends StatelessWidget {
           style: TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,
-        foregroundColor: DocvedaColors.white,
         iconTheme: const IconThemeData(color: DocvedaColors.white),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(DocvedaSizes.spaceBtwItems),
-        itemCount: 20, // Number of notifications (replace with dynamic data)
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ListTile(
-              leading: const Icon(
-                Icons.notifications,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.notifications_none,
+              color: DocvedaColors.primaryColor,
+              size: 80,
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Coming Up!",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
                 color: DocvedaColors.primaryColor,
               ),
-              title: Text("${DocvedaTexts.notificationTitle} ${index + 1}"),
-              subtitle: const Text(DocvedaTexts.notificationsDesc),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                // Handle notification click
-              },
             ),
-          );
-        },
+            SizedBox(height: 10),
+            Text(
+              "We're working on bringing you notifications soon.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }

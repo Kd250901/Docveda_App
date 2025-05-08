@@ -22,15 +22,13 @@ import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 
 class Opdpaymentscreen extends StatefulWidget {
-
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const Opdpaymentscreen({
-    super.key,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    });
+  const Opdpaymentscreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   _OpdpaymentscreenState createState() => _OpdpaymentscreenState();
@@ -62,13 +60,15 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
 
   void loadOpdPaymentData() {
     final toggleController = Get.find<ToggleController>();
-    final DateController dateController = Get.put(DateController());
 
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }

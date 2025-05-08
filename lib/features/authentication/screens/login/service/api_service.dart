@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.10.187:4000/api';
+  static const String baseUrl = 'http://192.168.10.132:4000/api';
   // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
@@ -293,6 +293,43 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>?> getOpdVisitData(
+    String accessToken,
+    BuildContext context, {
+    required bool isMonthly,
+    required String pDate,
+    required String pType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app//getVisit',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'P_Date': pDate,
+          'P_Type': pType,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getVisit: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getVisit: $e');
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>?> getDepositData(
     String accessToken,
     BuildContext context, {
@@ -474,6 +511,76 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching getOpdPaymnetData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getProfileData(
+    String accessToken,
+    BuildContext context, {
+    required String mobile_no,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/getProfile',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'mobile_no': mobile_no,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getProfileData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getProfileData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getDeviceId(
+    String accessToken,
+    BuildContext context, {
+    required String mobile_no,
+    required String deviceId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/frontdesk/app/checkDeviceId',
+        ),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'mobile_no': mobile_no,
+          'deviceId': deviceId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getProfileData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getProfileData: $e');
       return null;
     }
   }

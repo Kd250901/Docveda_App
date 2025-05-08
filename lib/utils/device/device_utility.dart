@@ -1,41 +1,44 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:get/get.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+
 // import 'package:intl/intl.dart';
 
 class DocvedaDeviceUtils {
-  static void hideKeyboard(BuildContext context){
+  static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
   static Future<void> setStatusBarColor(Color color) async {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: color)
-    );
+        SystemUiOverlayStyle(statusBarColor: color));
   }
 
-  static bool isLandscapeOrientation(BuildContext context){
+  static bool isLandscapeOrientation(BuildContext context) {
     final viewInsets = View.of(context).viewInsets;
     return viewInsets.bottom == 0;
   }
 
-  static bool isPortaitOrientation(BuildContext context){
+  static bool isPortaitOrientation(BuildContext context) {
     final viewInsets = View.of(context).viewInsets;
     return viewInsets.bottom != 0;
   }
 
-  static void setFullScreen(bool enable){
-    SystemChrome.setEnabledSystemUIMode(enable ? SystemUiMode.immersiveSticky : SystemUiMode.edgeToEdge);
+  static void setFullScreen(bool enable) {
+    SystemChrome.setEnabledSystemUIMode(
+        enable ? SystemUiMode.immersiveSticky : SystemUiMode.edgeToEdge);
   }
 
   static double getScreenHeight() {
     return MediaQuery.of(Get.context!).size.height;
   }
 
-  static double getScreenWidth(BuildContext context){
+  static double getScreenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
   }
 
@@ -67,7 +70,8 @@ class DocvedaDeviceUtils {
 
   static Future<bool> isPhysicalDevice() async {
     var defaultTargetPlatform;
-    return defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
   }
 
   static void vibrate(Duration duration) {
@@ -75,7 +79,8 @@ class DocvedaDeviceUtils {
     Future.delayed(duration, () => HapticFeedback.vibrate());
   }
 
-  static Future<void> setPreferredOrientations(List<DeviceOrientation> orientations) async {
+  static Future<void> setPreferredOrientations(
+      List<DeviceOrientation> orientations) async {
     await SystemChrome.setPreferredOrientations(orientations);
   }
 
@@ -84,14 +89,15 @@ class DocvedaDeviceUtils {
   }
 
   static void showStatusBar() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
   }
 
   static Future<bool> hasInternetConnection() async {
-    try{
+    try {
       final result = await InternetAddress.lookup('example.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch(_) {
+    } on SocketException catch (_) {
       return false;
     }
   }
@@ -105,12 +111,30 @@ class DocvedaDeviceUtils {
   }
 
   static void launchUrl(String url) async {
-    if(await canLaunchUrlString(url)) {
+    if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     } else {
       throw 'Could not launch $url';
     }
   }
 
-}
+  static final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
 
+  /// Fetches a unique device ID (Android: androidId, iOS: identifierForVendor).
+  static Future<String?> getDeviceId() async {
+    try {
+      if (Platform.isAndroid) {
+        final androidInfo = await _deviceInfoPlugin.androidInfo;
+        return androidInfo.id;
+      } else if (Platform.isIOS) {
+        final iosInfo = await _deviceInfoPlugin.iosInfo;
+        return iosInfo.identifierForVendor;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching device ID: $e');
+      return null;
+    }
+  }
+}

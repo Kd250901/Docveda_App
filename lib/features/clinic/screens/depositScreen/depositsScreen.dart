@@ -24,11 +24,10 @@ class DepositScreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const DepositScreen({
-    super.key,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    });
+  const DepositScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<DepositScreen> createState() => _DepositScreenState();
@@ -63,7 +62,7 @@ class _DepositScreenState extends State<DepositScreen> {
     setState(() {
       patientData = fetchDashboardData(
         isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
         pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
       );
     });
@@ -452,7 +451,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                       selected["Admission Date"]),
                                   uhidno: selected["UHID No"] ?? "N/A",
                                   deposit: selected["Deposite"].toString(),
-                                  totalIpdBill:
+                                  totalBill:
                                       selected["Total IPD Bill"].toString(),
                                   screenName: "Deposit",
                                 ),

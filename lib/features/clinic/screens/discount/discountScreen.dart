@@ -12,6 +12,7 @@ import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,10 @@ import 'package:intl/intl.dart';
 class DiscountsScreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
-  const DiscountsScreen({
-    super.key,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    });
+  const DiscountsScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<DiscountsScreen> createState() => _DiscountsScreenState();
@@ -54,10 +54,13 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDiscountData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }
@@ -307,7 +310,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           DocvedaText(
-                                            text: "ADMISSION",
+                                            text: "Admission Date",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
@@ -324,14 +327,13 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           DocvedaText(
-                                            text: "REG. NO",
+                                            text: "UHID.No",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
                                           DocvedaText(
-                                            text: patient["Registration_No"] ??
-                                                "N/A",
+                                            text: patient["UHID No"] ?? "N/A",
                                             style: TextStyleFont.caption,
                                           ),
                                         ],
@@ -352,7 +354,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DocvedaText(
-                                        text: "DISCOUNT GIVEN",
+                                        text: "Discount Given",
                                         style: TextStyleFont.body.copyWith(
                                           color: Colors.grey.shade700,
                                           fontSize: 14,
@@ -422,14 +424,14 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                 patientName: selected["Patient Name"] ?? "N/A",
                                 age: age,
                                 gender: selected["Gender"] ?? "N/A",
+                                uhidno: selected["UHID No"] ?? "N/A",
                                 admissionDate: DateFormatter.formatDate(
                                     selected["Admission Date"]),
-                                dischargeDate: DateFormatter.formatDate(
-                                    selected["Discharge Date"]),
-                                finalSettlement:
-                                    selected["Total IPD Bill"]?.toString() ??
-                                        "N/A",
-                                screenName: "Admission",
+                                dateOfDiscount: DateFormatter.formatDate(
+                                    selected["Date Of Discount"]),
+                                discountAmount: FormatAmount.formatAmount(
+                                    selected["Discount Amount"] ?? "0"),
+                                screenName: "Discount",
                               ),
                             );
                           },

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:docveda_app/common/widgets/appbar/appbar.dart';
 import 'package:docveda_app/common/widgets/custom_shapes/containers/primary_header_container.dart';
 import 'package:docveda_app/common/widgets/date_switcher_bar/date_switcher_bar.dart';
@@ -11,12 +13,14 @@ import 'package:docveda_app/features/clinic/screens/home/widgets/expensesSection
 import 'package:docveda_app/features/clinic/screens/home/widgets/patientInformationSection.dart';
 import 'package:docveda_app/features/clinic/screens/home/widgets/revenueSection.dart';
 import 'package:docveda_app/features/clinic/screens/settings/settingScreen.dart';
+import 'package:docveda_app/utils/base64/base64_utility.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -38,7 +42,10 @@ final List<String> dashboardItems = [
   DocvedaTexts.dashboardItems7, // "IPD Settlements"
   DocvedaTexts.dashboardItems8, // "Discounts"
   DocvedaTexts.dashboardItems9, // "Refunds"
+  DocvedaTexts.dashboardItems10, // "opdVisit"
 ];
+
+Map<String, dynamic>? profileData;
 
 class _HomeScreenState extends State<HomeScreen> {
   // NotificationServices notificationServices = NotificationServices();
@@ -51,10 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _selectedDate = DateTime.now();
   bool isMonthly = false; // default to daily
 
-
   void _updateDate(DateTime newDate) {
     setState(() {
-      print("Home updateDate triggered");
+      if (!mounted) return;
+
+      // print("Home updateDate triggered");
       _selectedDate = newDate;
     });
     // You can navigate or pass the new date to another screen here
@@ -63,18 +71,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    fetchProfileData();
     // Listen for toggle changes
     toggleController.isMonthly.listen((newValue) {
+      if (!mounted) return; // ✅ Prevent listener from calling after dispose
       _handleToggle(newValue); // re-fetch data
     });
-    //dashboardData = fetchDashboardData();
-    // loadDashboardData(); // Call API when screen initializes
+
+    // Load dashboard data after profile is fetched
     dashboardDataFuture = fetchDashboardData(
       isMonthly: isMonthly,
-      pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+      pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
       pType: isMonthly ? 'MONTHLY' : 'DAILY',
     );
-    print("dashboardDataFuture: $dashboardDataFuture");
+    setState(() {}); // Rebuild UI with new future
 
     // notificationServices.requestNotificationPermission();
     // notificationServices.firebaseInit(context);
@@ -87,6 +98,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //get item => null;
+
+  Future<void> fetchProfileData() async {
+    final storage = FlutterSecureStorage();
+    final accessToken = await storage.read(key: 'accessToken');
+    final mobileNo = "7248960414"; // Replace with dynamic value if needed
+
+    if (accessToken != null) {
+      final data = await apiService.getProfileData(
+        accessToken,
+        context,
+        mobile_no: mobileNo,
+      );
+      setState(() {
+        profileData = data?['data'][0];
+        // print("Profile data fetched: $profileData");
+      });
+      // if (mounted) {
+      //   setState(() {
+      //     profileData = data;
+      //   });
+      // }
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAll(() => const LoginScreen());
+      });
+    }
+  }
 
   Future<List<Map<String, dynamic>>> fetchDashboardData({
     required bool isMonthly,
@@ -101,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         final response = await apiService.getCards(accessToken, context,
             isMonthly: isMonthly, pDate: pDate, pType: pType);
-        print("API Response from home: ${response}");
+        // print("API Response from home: ${response}");
         if (response != null && response['statusCode'] == 401) {
           StorageHelper.clearTokens();
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -166,13 +204,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleToggle(bool newValue) {
+    if (!mounted) return;
+
     setState(() {
       isMonthly = newValue;
 
       final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
       final type = isMonthly ? 'MONTHLY' : 'DAILY';
-
-      if (!mounted) return;
 
       dashboardDataFuture = fetchDashboardData(
         isMonthly: isMonthly,
@@ -204,6 +242,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Prepare the logo image inside build method
+    ImageProvider logoImage;
+
+    try {
+      final base64Logo = profileData?['Base64_Logo_Path'];
+      if (base64Logo != null && base64Logo.isNotEmpty) {
+        final cleanString = cleanBase64(base64Logo);
+        final decodedBytes = base64Decode(cleanString);
+        logoImage = MemoryImage(decodedBytes);
+      } else {
+        logoImage = const AssetImage(DocvedaImages.clinicLogo);
+      }
+    } catch (e) {
+      print('Error decoding logo: $e');
+      logoImage = const AssetImage(DocvedaImages.clinicLogo);
+    }
     return Scaffold(
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: dashboardDataFuture,
@@ -226,12 +280,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
           List<Map<String, dynamic>> patientDataArray = extractOptionsFromData(
             data: dashboardData[0],
-            keys: ["Admission", "Discharge"],
+            keys: ["Admission", "Discharge", "OPD_Visits"],
           );
 
           List<Map<String, dynamic>> revenueDataArray = extractOptionsFromData(
             data: dashboardData[0],
-            keys: ["Deposite", "OPD_Payment", "OPD_Bill", "IPD_Settlement"],
+            keys: ["Deposit", "OPD_Payment", "IPD_Settlement"],
           );
 
           List<Map<String, dynamic>> expenseDataArray = extractOptionsFromData(
@@ -253,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: DocvedaColors.white,
-                                child: Image.asset(DocvedaImages.clinicLogo),
+                                backgroundImage: logoImage,
                               ),
                               const SizedBox(
                                 width: DocvedaSizes.spaceBtwItems,
@@ -261,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Column(
                                 children: [
                                   Text(
-                                    DocvedaTexts.clinicNameTitle,
+                                    profileData?['f_DV_Display_Name'] ?? " ",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!
@@ -362,13 +416,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsLg),
 
                       PatientInformationSection(
-                          patientDataArray: patientDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate,),
+                        patientDataArray: patientDataArray,
+                        isSelectedMonthly: toggleController.isMonthly.value,
+                        prevSelectedDate: _selectedDate,
+                      ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
 
                       BedTransferCard(
                           bedTransferCount:
-                              dashboardData[0]['Bed_Transfer'] ?? 0, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
+                              dashboardData[0]['Bed_Transfer'] ?? 0,
+                          isSelectedMonthly: toggleController.isMonthly.value,
+                          prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
                       DocvedaSectionHeading(
@@ -384,7 +443,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
-                      RevenueSection(revenueDataArray: revenueDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
+                      RevenueSection(
+                          revenueDataArray: revenueDataArray,
+                          isSelectedMonthly: toggleController.isMonthly.value,
+                          prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
 
@@ -401,7 +463,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
-                      ExpensesSection(expenseDataArray: expenseDataArray, isSelectedMonthly: toggleController.isMonthly.value, prevSelectedDate: _selectedDate),
+                      ExpensesSection(
+                          expenseDataArray: expenseDataArray,
+                          isSelectedMonthly: toggleController.isMonthly.value,
+                          prevSelectedDate: _selectedDate),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwSections),
                     ],

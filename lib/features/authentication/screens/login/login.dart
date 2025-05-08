@@ -5,6 +5,7 @@ import 'package:docveda_app/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:docveda_app/utils/device/device_utility.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,11 +17,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final storage = const FlutterSecureStorage();
   bool _checkingAuth = true;
+  RxString deviceId = ''.obs;
 
   @override
   void initState() {
     super.initState();
     _checkAccessToken();
+  }
+
+  void fetchDeviceId() async {
+    deviceId.value = await DocvedaDeviceUtils.getDeviceId() ?? 'Unknown';
+    print("deviceId ${deviceId}");
   }
 
   Future<void> _checkAccessToken() async {

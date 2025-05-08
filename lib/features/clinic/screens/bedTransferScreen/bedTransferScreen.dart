@@ -22,9 +22,10 @@ class BedTransferScreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  
-  const BedTransferScreen({super.key, required this.isSelectedMonthly,
-    required this.prevSelectedDate});
+  const BedTransferScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<BedTransferScreen> createState() => _BedTransferScreenState();
@@ -42,7 +43,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   @override
   void initState() {
     super.initState();
-     _selectedDate = widget.prevSelectedDate;
+    _selectedDate = widget.prevSelectedDate;
     isMonthly = widget.isSelectedMonthly;
     loadBedTransferData();
   }
@@ -58,7 +59,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
     setState(() {
       bedTransferData = fetchBedTransferData(
         isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
         pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
       );
     });
@@ -295,7 +296,7 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                                   selected["Admission Date"]),
                               dischargeDate: DateFormatter.formatDate(
                                   selected["Bed_End_Date"]),
-                              totalIpdBill:
+                              totalBill:
                                   selected["Total IPD Bill"]?.toString() ??
                                       "N/A",
                               screenName: "Bed Transfer",

@@ -106,6 +106,7 @@ class DocvedaTexts {
   static const String dashboardItems7 = " IPD Settlements";
   static const String dashboardItems8 = " Discounts";
   static const String dashboardItems9 = " Refunds";
+  static const String dashboardItems10 = " OpdVisit";
 
   // Error Messages
 

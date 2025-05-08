@@ -11,6 +11,7 @@ import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,10 @@ class IPDSettlementScreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const IPDSettlementScreen({
-    super.key,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-  });
+  const IPDSettlementScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<IPDSettlementScreen> createState() => _IPDSettlementScreenState();
@@ -60,10 +60,13 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
   void loadIPDSettlementData() {
     final toggleController = Get.find<ToggleController>();
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }
@@ -354,7 +357,7 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                       ),
                                       DocvedaText(
                                         text:
-                                            "₹${patients[index]["IPD Bill"] ?? "0"}",
+                                            "₹${patients[index]["Total IPD Bill"] ?? "0"}",
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
@@ -435,13 +438,23 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                 patientName: selected["Patient Name"] ?? "N/A",
                                 age: age,
                                 gender: selected["Gender"] ?? "N/A",
+                                uhidno: selected["UHID No"] ?? "N/A",
                                 admissionDate: DateFormatter.formatDate(
                                     selected["Admission Date"]),
+                                totalIpdBill: FormatAmount.formatAmount(
+                                    selected["Total IPD Bill"] ?? "0"),
+                                finalSettlement: FormatAmount.formatAmount(
+                                    selected["Final Settlement"] ?? "0"),
+                                deposit: FormatAmount.formatAmount(
+                                    selected["Deposit"] ?? "0"),
+                                discountAmount: FormatAmount.formatAmount(
+                                    selected["Discount Amount"] ?? "0"),
+                                refundAmount: FormatAmount.formatAmount(
+                                    selected["Refund Amount"] ?? "0"),
+                                doctorInCharge:
+                                    selected["Doctor Name"] ?? "N/A",
                                 dischargeDate: DateFormatter.formatDate(
                                     selected["Discharge Date"]),
-                                finalSettlement:
-                                    selected["Total IPD Bill"]?.toString() ??
-                                        "N/A",
                                 screenName: "IPD Settlement",
                               ),
                             );

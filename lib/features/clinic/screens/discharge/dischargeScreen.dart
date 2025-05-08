@@ -25,8 +25,10 @@ class Dischargescreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const Dischargescreen({super.key, required this.isSelectedMonthly,
-    required this.prevSelectedDate});
+  const Dischargescreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   _DischargescreenState createState() => _DischargescreenState();
@@ -60,10 +62,13 @@ class _DischargescreenState extends State<Dischargescreen> {
         Get.find<ToggleController>(); // Access the global toggle state
 
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }

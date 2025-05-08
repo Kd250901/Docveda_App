@@ -2,6 +2,7 @@ import 'package:docveda_app/common/widgets/card/card.dart';
 import 'package:docveda_app/common/widgets/layouts/grid_layout.dart';
 import 'package:docveda_app/features/clinic/screens/admission/admissionScreen.dart';
 import 'package:docveda_app/features/clinic/screens/discharge/dischargeScreen.dart';
+import 'package:docveda_app/features/clinic/screens/opdVisit/opVisit.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
@@ -13,9 +14,12 @@ class PatientInformationSection extends StatelessWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const PatientInformationSection({Key? key, required this.patientDataArray, required this.isSelectedMonthly,
-    required this.prevSelectedDate,})
-      : super(key: key);
+  const PatientInformationSection({
+    Key? key,
+    required this.patientDataArray,
+    required this.isSelectedMonthly,
+    required this.prevSelectedDate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +29,40 @@ class PatientInformationSection extends StatelessWidget {
         color: DocvedaColors.transparent,
         child: InkWell(
           onTap: () {
-            if (index < patientDataArray.length) {
+            final key = patientDataArray[index]['key'];
+
+            if (key == 'Admission') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) {
-                    return index == 0
-                        ? AdmissionScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,)
-                        : Dischargescreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,);
-                  },
+                  builder: (context) => AdmissionScreen(
+                    isSelectedMonthly: isSelectedMonthly,
+                    prevSelectedDate: prevSelectedDate,
+                  ),
+                ),
+              );
+            } else if (key == 'Discharge') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Dischargescreen(
+                    isSelectedMonthly: isSelectedMonthly,
+                    prevSelectedDate: prevSelectedDate,
+                  ),
+                ),
+              );
+            } else if (key == 'OPD_Visits') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OPDVisitScreen(
+                    isSelectedMonthly: isSelectedMonthly,
+                    prevSelectedDate: prevSelectedDate,
+                  ),
                 ),
               );
             } else {
-              print(
-                "Index $index is out of bounds for patientDataArray length ${patientDataArray.length}",
-              );
+              print("Unhandled key: $key");
             }
           },
           borderRadius: BorderRadius.circular(12),

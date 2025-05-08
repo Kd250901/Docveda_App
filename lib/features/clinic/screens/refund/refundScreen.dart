@@ -12,6 +12,7 @@ import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,10 @@ class RefundsScreen extends StatefulWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const RefundsScreen({
-    super.key,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    });
+  const RefundsScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<RefundsScreen> createState() => _RefundsScreenState();
@@ -55,10 +55,13 @@ class _RefundsScreenState extends State<RefundsScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchRefundData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: toggleController.isMonthly.value ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }
@@ -318,14 +321,13 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           DocvedaText(
-                                            text: "REG. NO",
+                                            text: "UHID.No",
                                             style: TextStyleFont.caption
                                                 .copyWith(color: Colors.grey),
                                           ),
                                           const SizedBox(height: 4),
                                           DocvedaText(
-                                            text: patient["Registration_No"] ??
-                                                "N/A",
+                                            text: patient["UHID No"] ?? "N/A",
                                             style: TextStyleFont.caption,
                                           ),
                                         ],
@@ -346,7 +348,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DocvedaText(
-                                        text: "DISCOUNT GIVEN",
+                                        text: "Refund Amount",
                                         style: TextStyleFont.body.copyWith(
                                           color: Colors.grey.shade700,
                                           fontSize: 14,
@@ -354,7 +356,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                       ),
                                       DocvedaText(
                                         text:
-                                            "₹${patient["Discount Amount"]?.toString() ?? "0"}",
+                                            "₹${patient["Refund Amount"]?.toString() ?? "0"}",
                                         style: TextStyleFont.body.copyWith(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -417,14 +419,14 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                 patientName: selected["Patient Name"] ?? "N/A",
                                 age: age,
                                 gender: selected["Gender"] ?? "N/A",
+                                uhidno: selected["UHID No"] ?? "N/A",
                                 admissionDate: DateFormatter.formatDate(
                                     selected["Admission Date"]),
-                                dischargeDate: DateFormatter.formatDate(
-                                    selected["Discharge Date"]),
-                                finalSettlement:
-                                    selected["Total IPD Bill"]?.toString() ??
-                                        "N/A",
-                                screenName: "Admission",
+                                dateOfRefund: DateFormatter.formatDate(
+                                    selected["Refund Date"] ?? "N/A"),
+                                refundAmount: FormatAmount.formatAmount(
+                                    selected["Refund Amount"] ?? "N/A"),
+                                screenName: "Refund",
                               ),
                             );
                           },

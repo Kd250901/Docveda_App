@@ -21,15 +21,13 @@ import 'package:docveda_app/features/authentication/screens/login/service/api_se
 import 'package:intl/intl.dart';
 
 class AdmissionScreen extends StatefulWidget {
-
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const AdmissionScreen({
-    super.key, 
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    });
+  const AdmissionScreen(
+      {super.key,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate});
 
   @override
   State<AdmissionScreen> createState() => _AdmissionScreenState();
@@ -62,10 +60,13 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+      final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
-        isMonthly: toggleController.isMonthly.value, // Use global toggle state
-        pDate: DateFormat('yyyy-MM-dd').format(selectedDate),
-        pType: isMonthly ? 'Monthly' : 'Daily',
+        isMonthly: isMonthlyToggle,
+        pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
+        pType: isMonthlyToggle
+            ? 'Monthly'
+            : 'Daily', // ✅ now both use the correct source
       );
     });
   }
