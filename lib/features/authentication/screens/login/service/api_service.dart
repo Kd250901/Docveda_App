@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.10.132:4000/api';
+  static const String baseUrl = 'http://192.168.10.148:4000/api';
   // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
@@ -567,6 +567,166 @@ class ApiService {
         body: jsonEncode({
           'mobile_no': mobile_no,
           'deviceId': deviceId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getProfileData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getProfileData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getForgotPassword(
+    BuildContext context, {
+    required String userName,
+  }) async {
+    try {
+      print("Sending POST request to forgotPassword API...");
+      print("Username: $userName");
+
+      final response = await http.post(
+        Uri.parse('https://api.docveda.in/api/auth/forgotPasswordOTP'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'userName': userName,
+        }),
+      );
+      print("getForgotPassword Response: ${response}");
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to send forgotPassword request: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error sending forgotPassword request: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getverifyForgotPasswordOTP(
+    BuildContext context, {
+    required String userName,
+    required String otp,
+    required String otp_Ric_Var,
+    required String otp_Transaction_Id,
+    required String dlt_CD,
+    required String user_MST_CD,
+  }) async {
+    try {
+      print(" Sending POST request to forgot_password API...");
+      print("Username: $userName");
+      print("otp : $otp");
+      print("otp : $otp_Ric_Var");
+      print("otp : $otp_Transaction_Id");
+      print("otp : $dlt_CD");
+      print("otp : $user_MST_CD");
+      final response = await http.post(
+        Uri.parse(
+          // '$baseUrl/auth/verifyForgotPasswordOTP',
+          'https://api.docveda.in/api/auth/verifyForgotPasswordOTP',
+        ),
+        headers: {
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'userName': userName,
+          'otp': otp,
+          'otp_Ric_Var': otp_Ric_Var,
+          'otp_Transaction_Id': otp_Transaction_Id,
+          'dlt_CD': dlt_CD
+        }),
+      );
+
+      print("getverifyForgotPasswordOTP Response: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getProfileData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getProfileData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getresetPassword(BuildContext context,
+      {required String userName,
+      required String hashedPassword,
+      required String userCd}) async {
+    try {
+      print(" Sending POST request to forgot_password API...");
+      print(" Username: $userName");
+      final response = await http.post(
+        Uri.parse(
+            // '$baseUrl/auth/verifyForgotPasswordOTP',
+            'https://api.docveda.in/api/auth/resetPassword'),
+        headers: {
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'userName': userName,
+          'hashedPassword': hashedPassword,
+          'userCd': userCd,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getProfileData: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getProfileData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getforgotPasswordOTPResend(BuildContext context,
+      {required String otp_Ric_Var,
+      required String dlt_CD,
+      required String userName,
+      required String mobileNumber}) async {
+    try {
+      print(" Sending POST request to forgot_password API...");
+      print(" Username: $userName");
+      final response = await http.post(
+        Uri.parse(
+            // '$baseUrl/auth/verifyForgotPasswordOTP',
+            'https://api.docveda.in/api/auth/forgotPasswordOTPResend'),
+        headers: {
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({
+          'otp_Ric_Var': otp_Ric_Var,
+          'dlt_CD': dlt_CD,
+          'userName': userName,
+          'mobileNumber': mobileNumber,
+          'source': "App",
         }),
       );
 

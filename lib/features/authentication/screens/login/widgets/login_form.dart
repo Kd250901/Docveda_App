@@ -52,32 +52,32 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
     print("deviceId ${deviceId}");
   }
 
-  Future<Map<String, dynamic>?> checkDeviceIdOnScreen({
-    required BuildContext context,
-    required String mobileNo,
-    required String deviceId,
-  }) async {
-    final accessToken = await StorageHelper.getAccessToken();
-    print("Access Token: $accessToken"); //
+  // Future<Map<String, dynamic>?> checkDeviceIdOnScreen({
+  //   required BuildContext context,
+  //   required String mobileNo,
+  //   required String deviceId,
+  // }) async {
+  //   final accessToken = await StorageHelper.getAccessToken();
+  //   print("Access Token: $accessToken"); //
 
-    final ApiService apiService = ApiService();
+  //   final ApiService apiService = ApiService();
 
-    if (accessToken != null) {
-      final response = await apiService.getDeviceId(
-        accessToken,
-        context,
-        mobile_no: mobileNo,
-        deviceId: deviceId,
-      );
+  //   if (accessToken != null) {
+  //     final response = await apiService.getDeviceId(
+  //       accessToken,
+  //       context,
+  //       mobile_no: mobileNo,
+  //       deviceId: deviceId,
+  //     );
 
-      print("Device ID Response: $response");
-      return response; // ✅ return the response to use it in loginUser
-    } else {
-      print('No access token found');
-      Get.offAll(() => const LoginScreen());
-      return null;
-    }
-  }
+  //     print("Device ID Response: $response");
+  //     return response; // ✅ return the response to use it in loginUser
+  //   } else {
+  //     print('No access token found');
+  //     Get.offAll(() => const LoginScreen());
+  //     return null;
+  //   }
+  // }
 
   Future<void> _loadSavedCredentials() async {
     final credentials = await StorageHelper.getLoginInfo();
@@ -154,23 +154,23 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
         tokenResponse["refreshToken"],
       );
 
-      final deviceCheckRes = await checkDeviceIdOnScreen(
-        context: context,
-        mobileNo: username,
-        deviceId: deviceId.value,
-      );
-      print("Device Check Response: $deviceCheckRes");
+      // final deviceCheckRes = await checkDeviceIdOnScreen(
+      //   context: context,
+      //   mobileNo: username,
+      //   deviceId: deviceId.value,
+      // );
+      // print("Device Check Response: $deviceCheckRes");
 
-      if (deviceCheckRes?['data'] == 'N') {
-        Get.snackbar(
-          "Error",
-          "Login with your registered device only.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: DocvedaColors.error,
-          colorText: DocvedaColors.white,
-        );
-        return;
-      }
+      // if (deviceCheckRes?['data'] == 'N') {
+      //   Get.snackbar(
+      //     "Error",
+      //     "Login with your registered device only.",
+      //     snackPosition: SnackPosition.BOTTOM,
+      //     backgroundColor: DocvedaColors.error,
+      //     colorText: DocvedaColors.white,
+      //   );
+      //   return;
+      // }
 
       // Save credentials if Remember Me is checked
       await StorageHelper.saveLoginInfo(username, password, rememberMe);

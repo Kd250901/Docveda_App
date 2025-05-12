@@ -58,9 +58,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
       patientData = fetchDiscountData(
         isMonthly: isMonthlyToggle,
         pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
-        pType: isMonthlyToggle
-            ? 'Monthly'
-            : 'Daily', // ✅ now both use the correct source
+        pType: isMonthlyToggle ? 'Monthly' : 'Daily',
       );
     });
   }

@@ -60,4 +60,26 @@ class StorageHelper {
     }
     return {'username': '', 'password': '', 'rememberMe': false};
   }
+
+  static Future<void> saveForgotPasswordData(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('otp_Ric_Var', data['otp_Ric_Var']?.toString() ?? '');
+    await prefs.setString(
+        'otp_Transaction_Id', data['otp_Transaction_Id']?.toString() ?? '');
+    await prefs.setString('dlt_CD', data['dlt_CD']?.toString() ?? '');
+    await prefs.setString('user_MST_CD', data['user_MST_CD']?.toString() ?? '');
+    await prefs.setString('user', data['user']?.toString() ?? '');
+  }
+
+  static Future<Map<String, String>> getForgotPasswordData() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'otp_Ric_Var': prefs.getString('otp_Ric_Var') ?? '',
+      'otp_Transaction_Id': prefs.getString('otp_Transaction_Id') ?? '',
+      'dlt_CD': prefs.getString('dlt_CD') ?? '',
+      'user_MST_CD': prefs.getString('user_MST_CD') ?? '',
+      'user': prefs.getString('user') ?? '',
+    };
+  }
 }

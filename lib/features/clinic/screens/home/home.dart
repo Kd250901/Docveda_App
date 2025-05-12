@@ -315,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Column(
                                 children: [
                                   Text(
-                                    profileData?['f_DV_Display_Name'] ?? " ",
+                                    profileData?['f_DV_Clinic_Name'] ?? " ",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall!

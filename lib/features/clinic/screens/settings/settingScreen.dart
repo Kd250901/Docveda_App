@@ -71,14 +71,14 @@ class SettingsScreen extends StatelessWidget {
                 const Divider(),
 
                 // Change Password
-                ListTile(
-                  leading: Icon(Iconsax.lock, color: DocvedaColors.primary),
-                  title: const Text(DocvedaTexts.changePassword),
-                  subtitle: const Text(DocvedaTexts.changePasswordDesc),
-                  // trailing: const Icon(Icons.arrow_forward_ios,
-                  //     size: DocvedaSizes.fontSizeMd),
-                  onTap: () => Get.to(() => const NewPasswordScreen()),
-                ),
+                // ListTile(
+                //   leading: Icon(Iconsax.lock, color: DocvedaColors.primary),
+                //   title: const Text(DocvedaTexts.changePassword),
+                //   subtitle: const Text(DocvedaTexts.changePasswordDesc),
+                //   // trailing: const Icon(Icons.arrow_forward_ios,
+                //   //     size: DocvedaSizes.fontSizeMd),
+                //   onTap: () => Get.to(() => const NewPasswordScreen()),
+                // ),
                 const Divider(),
 
                 // Logout

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/app_text_field/app_text_field.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
+import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/authentication/screens/password_configuration/new_password_screen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
+import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,6 +24,8 @@ class _OtpScreenState extends State<OtpScreen> {
     6,
     (index) => TextEditingController(),
   );
+  final ApiService apiService = ApiService();
+
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   String _errorMessage = "";
@@ -110,32 +114,94 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  void _verifyOtp() {
+  void _verifyOtp() async {
     String enteredOtp = _controllers.map((c) => c.text).join();
+    // String enteredOtp = '123456'; // Hardcoded OTP for testing
 
-    setState(() {
-      if (enteredOtp.length < 6) {
+    if (enteredOtp.length < 6) {
+      setState(() {
         _errorMessage = DocvedaTexts.enterAllDigitsErrorMsg;
-      } else if (enteredOtp != _correctOtp) {
-        _errorMessage = DocvedaTexts.invalidOTPErrorMsg;
-      } else {
-        _errorMessage = "";
+      });
+      return;
+    }
+
+    try {
+      final forgotData = await StorageHelper.getForgotPasswordData();
+      print("Forgot Data: $forgotData");
+
+      final response = await apiService.getverifyForgotPasswordOTP(
+        context,
+        userName: forgotData['user'] ?? '',
+        otp: enteredOtp,
+        otp_Ric_Var: forgotData['otp_Ric_Var'] ?? '',
+        otp_Transaction_Id: forgotData['otp_Transaction_Id'] ?? '',
+        dlt_CD: forgotData['dlt_CD'] ?? '',
+        user_MST_CD: forgotData['user_MST_CD'] ?? '',
+      );
+      print(" OTP verification response: $response");
+      // if (enteredOtp == _correctOtp) {
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const NewPasswordScreen()),
+      //   );
+      // } else {
+      //   setState(() {
+      //     _errorMessage = 'Invalid OTP. Please try again.';
+      //   });
+      // }
+
+      if (response?['message'] == "SUCCESS") {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const NewPasswordScreen()),
+          MaterialPageRoute(
+            builder: (context) => NewPasswordScreen(
+              username: forgotData['user'] ?? '',
+              userCd: forgotData['user_MST_CD'] ?? '',
+            ),
+          ),
         );
+      } else {
+        setState(() {
+          _errorMessage =
+              response?['message'] ?? 'Invalid OTP. Please try again.';
+        });
       }
-    });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Something went wrong. Please try again.';
+      });
+    }
   }
 
-  void _resendOtp() {
-    // TODO: Call your resend OTP API here
+  void _resendOtp() async {
+    try {
+      final forgotData = await StorageHelper.getForgotPasswordData();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(DocvedaTexts.OTPReset)),
-    );
+      final response = await apiService.getforgotPasswordOTPResend(
+        context,
+        otp_Ric_Var: forgotData['otp_Ric_Var'] ?? '',
+        dlt_CD: forgotData['dlt_CD'] ?? '',
+        userName: forgotData['user'] ?? '',
+        mobileNumber: forgotData['mobileNumber'] ?? '',
+      );
 
-    startTimer(); // Restart timer after resend
+      if (response?['status'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(response?['message'] ?? DocvedaTexts.OTPReset)),
+        );
+        startTimer(); // Restart timer after resend
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(response?['message'] ?? 'Failed to resend OTP')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error occurred while resending OTP.')),
+      );
+    }
   }
 
   @override

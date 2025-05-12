@@ -14,8 +14,9 @@ class DocvedaTexts {
   // Forgot Password
   static const String forgotPasswordTitle = "Forgot Password";
   static const String forgotPasswordDesc =
-      "Don't worry, sometimes people forget too! Enter your email and we will send you a password reset link.";
+      "Don't worry, sometimes people forget too! Enter your mobile number and we will send you a OTP.";
   static const String getOTP = "Get OTP";
+  static const String mobileno = "Mobile Number";
 
   // New Password
   static const String resetPasswordSuccess = "Password Reset Successfully!";
