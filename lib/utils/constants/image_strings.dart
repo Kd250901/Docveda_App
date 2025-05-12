@@ -5,6 +5,9 @@ class DocvedaImages {
   static const String clinicLogo = "assets/images/clinic-logo.png";
   static const String protectLogo = "assets/images/Protect.png";
   static const String docvedaLogo = "assets/images/docveda-logo.png";
+  static const String revenueImg = "assets/images/revenue.png";
+  static const String expensesImg = "assets/images/expenses.png";
+
   // Update app
   static const String updateApp = "assets/images/update_app.png";
 }

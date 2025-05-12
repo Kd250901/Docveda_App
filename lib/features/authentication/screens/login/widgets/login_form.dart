@@ -6,7 +6,6 @@ import 'package:docveda_app/features/authentication/screens/login/service/api_se
 import 'package:docveda_app/features/authentication/screens/password_configuration/forgot_password.dart';
 import 'package:docveda_app/navigation_menu.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
-import 'package:docveda_app/utils/constants/image_strings.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/encryption/pkec_keys.dart';
@@ -14,7 +13,6 @@ import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:docveda_app/utils/device/device_utility.dart';
 
 class DocvedaLoginForm extends StatefulWidget {
@@ -52,32 +50,32 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
     print("deviceId ${deviceId}");
   }
 
-  // Future<Map<String, dynamic>?> checkDeviceIdOnScreen({
-  //   required BuildContext context,
-  //   required String mobileNo,
-  //   required String deviceId,
-  // }) async {
-  //   final accessToken = await StorageHelper.getAccessToken();
-  //   print("Access Token: $accessToken"); //
+  Future<Map<String, dynamic>?> checkDeviceIdOnScreen({
+    required BuildContext context,
+    required String mobileNo,
+    required String deviceId,
+  }) async {
+    final accessToken = await StorageHelper.getAccessToken();
+    print("Access Token: $accessToken"); //
 
-  //   final ApiService apiService = ApiService();
+    final ApiService apiService = ApiService();
 
-  //   if (accessToken != null) {
-  //     final response = await apiService.getDeviceId(
-  //       accessToken,
-  //       context,
-  //       mobile_no: mobileNo,
-  //       deviceId: deviceId,
-  //     );
+    if (accessToken != null) {
+      final response = await apiService.getDeviceId(
+        accessToken,
+        context,
+        mobile_no: mobileNo,
+        deviceId: deviceId,
+      );
 
-  //     print("Device ID Response: $response");
-  //     return response; // ✅ return the response to use it in loginUser
-  //   } else {
-  //     print('No access token found');
-  //     Get.offAll(() => const LoginScreen());
-  //     return null;
-  //   }
-  // }
+      print("Device ID Response: $response");
+      return response; // return the response to use it in loginUser
+    } else {
+      print('No access token found');
+      Get.offAll(() => const LoginScreen());
+      return null;
+    }
+  }
 
   Future<void> _loadSavedCredentials() async {
     final credentials = await StorageHelper.getLoginInfo();

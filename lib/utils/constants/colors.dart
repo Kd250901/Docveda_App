@@ -17,6 +17,7 @@ class DocvedaColors {
   static const Color textPrimary = Color(0xFF333333);
   static const Color textSecondary = Color(0xFF6c7570);
   static const Color textWhite = Colors.white;
+  static final Color textTitle = const Color(0xFF1B1B1B).withOpacity(0.5);
 
   // Background Colors
   static const Color light = Color(0xFFF6F6F6);

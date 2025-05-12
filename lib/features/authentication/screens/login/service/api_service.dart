@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.10.148:4000/api';
-  // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
+  // static const String baseUrl = 'http://192.168.10.148:4000/api';
+  static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
     String username,
@@ -569,6 +569,9 @@ class ApiService {
           'deviceId': deviceId,
         }),
       );
+
+      print("${deviceId} deviceId");
+      print("${response} response");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);

@@ -409,7 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontFamily: "Manrope",
                           fontSize: DocvedaSizes.fontSizeMd,
                           fontWeight: FontWeight.bold,
-                          color: DocvedaColors.black,
+                          color: DocvedaColors.textTitle,
                         ),
                       ),
 
@@ -437,8 +437,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontFamily: "Manrope",
                           fontSize: DocvedaSizes.fontSizeMd,
                           fontWeight: FontWeight.bold,
-                          color: DocvedaColors.black,
+                          color: DocvedaColors.textTitle,
                         ),
+                        image: DocvedaImages.revenueImg,
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),
@@ -458,8 +459,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontFamily: "Manrope",
                           fontSize: DocvedaSizes.fontSizeMd,
                           fontWeight: FontWeight.bold,
-                          color: DocvedaColors.black,
+                          color: DocvedaColors.textTitle,
                         ),
+                        image: DocvedaImages.expensesImg,
                       ),
 
                       const SizedBox(height: DocvedaSizes.spaceBtwItems),

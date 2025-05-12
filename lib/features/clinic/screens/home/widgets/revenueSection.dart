@@ -4,6 +4,7 @@ import 'package:docveda_app/features/clinic/screens/depositScreen/depositsScreen
 import 'package:docveda_app/features/clinic/screens/ipdSettlement/ipdSettlementsScreen.dart';
 import 'package:docveda_app/features/clinic/screens/opdBills/opdBillsScreen.dart';
 import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
+import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
@@ -15,8 +16,11 @@ class RevenueSection extends StatelessWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const RevenueSection({Key? key, required this.revenueDataArray, required this.isSelectedMonthly,
-    required this.prevSelectedDate})
+  const RevenueSection(
+      {Key? key,
+      required this.revenueDataArray,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate})
       : super(key: key);
 
   @override
@@ -28,10 +32,22 @@ class RevenueSection extends StatelessWidget {
 
         // Map of keywords to corresponding screens
         final Map<String, Widget Function()> revenueScreens = {
-          'deposit': () => DepositScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
-          'opd payment': () => Opdpaymentscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
-          'opd bill': () => Opdbillsscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
-          'ipd settlement': () => IPDSettlementScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          'deposit': () => DepositScreen(
+                isSelectedMonthly: isSelectedMonthly,
+                prevSelectedDate: prevSelectedDate,
+              ),
+          'opd payment': () => Opdpaymentscreen(
+                isSelectedMonthly: isSelectedMonthly,
+                prevSelectedDate: prevSelectedDate,
+              ),
+          'opd bill': () => Opdbillsscreen(
+                isSelectedMonthly: isSelectedMonthly,
+                prevSelectedDate: prevSelectedDate,
+              ),
+          'ipd settlement': () => IPDSettlementScreen(
+                isSelectedMonthly: isSelectedMonthly,
+                prevSelectedDate: prevSelectedDate,
+              ),
         };
 
         return GestureDetector(
@@ -68,7 +84,8 @@ class RevenueSection extends StatelessWidget {
                           revenueDataArray[index]['label'] ?? "N/A",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyleFont.dashboardcard,
+                          style: TextStyleFont.dashboardcard
+                              .copyWith(color: DocvedaColors.textTitle),
                         ),
                         Text(
                           FormatAmount.formatAmount(

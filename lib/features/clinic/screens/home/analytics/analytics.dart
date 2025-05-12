@@ -28,7 +28,7 @@ class AnalyticsScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              "Coming Up!",
+              "Coming Soon!",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

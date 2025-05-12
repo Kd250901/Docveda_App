@@ -1,5 +1,6 @@
 import 'package:docveda_app/common/widgets/card/card.dart';
 import 'package:docveda_app/features/clinic/screens/bedTransferScreen/bedTransferScreen.dart';
+import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,11 @@ class BedTransferCard extends StatelessWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const BedTransferCard({Key? key, required this.bedTransferCount, required this.isSelectedMonthly,
-    required this.prevSelectedDate})
+  const BedTransferCard(
+      {Key? key,
+      required this.bedTransferCount,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate})
       : super(key: key);
 
   @override
@@ -23,7 +27,10 @@ class BedTransferCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           // Navigate to BedTransferScreen when tapped
-          Get.to(() => BedTransferScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,));
+          Get.to(() => BedTransferScreen(
+                isSelectedMonthly: isSelectedMonthly,
+                prevSelectedDate: prevSelectedDate,
+              ));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,10 +39,24 @@ class BedTransferCard extends StatelessWidget {
               children: [
                 Icon(Iconsax.repeat),
                 const SizedBox(width: DocvedaSizes.spaceBtwItemsS),
-                Text(
-                  "$bedTransferCount Bed Transfer",
-                  style: TextStyleFont.subheading,
-                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '$bedTransferCount',
+                        style: TextStyleFont.subheading.copyWith(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: ' Bed Transfer',
+                        style: TextStyleFont.subheading.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: DocvedaColors.textTitle,
+                            fontSize: DocvedaSizes.fontSizeLg),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
             Icon(Iconsax.arrow_right_3),

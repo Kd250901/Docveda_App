@@ -2,6 +2,7 @@ import 'package:docveda_app/common/widgets/card/card.dart';
 import 'package:docveda_app/common/widgets/layouts/grid_layout.dart';
 import 'package:docveda_app/features/clinic/screens/discount/discountScreen.dart';
 import 'package:docveda_app/features/clinic/screens/refund/refundScreen.dart';
+import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
@@ -12,12 +13,11 @@ class ExpensesSection extends StatelessWidget {
   final bool isSelectedMonthly;
   final DateTime prevSelectedDate;
 
-  const ExpensesSection({
-    Key? key, 
-    required this.expenseDataArray,
-    required this.isSelectedMonthly,
-    required this.prevSelectedDate
-    })
+  const ExpensesSection(
+      {Key? key,
+      required this.expenseDataArray,
+      required this.isSelectedMonthly,
+      required this.prevSelectedDate})
       : super(key: key);
 
   @override
@@ -33,16 +33,20 @@ class ExpensesSection extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      DiscountsScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,), // Navigate to DiscountsScreen
+                  builder: (context) => DiscountsScreen(
+                    isSelectedMonthly: isSelectedMonthly,
+                    prevSelectedDate: prevSelectedDate,
+                  ), // Navigate to DiscountsScreen
                 ),
               );
             } else if (label.toLowerCase().contains('refund')) {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      RefundsScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,), // Navigate to RefundsScreen
+                  builder: (context) => RefundsScreen(
+                    isSelectedMonthly: isSelectedMonthly,
+                    prevSelectedDate: prevSelectedDate,
+                  ), // Navigate to RefundsScreen
                 ),
               );
             }
@@ -60,7 +64,9 @@ class ExpensesSection extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: TextStyleFont.dashboardcard,
+                      style: TextStyleFont.dashboardcard.copyWith(
+                        color: DocvedaColors.textTitle,
+                      ),
                     ),
                     Text(
                       FormatAmount.formatAmount(

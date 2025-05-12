@@ -91,8 +91,8 @@ class PatientInformationSection extends StatelessWidget {
                           Text(
                             patientDataArray[index]['label'] ?? "N/A",
                             style: TextStyleFont.dashboardcard.copyWith(
-                              fontSize: DocvedaSizes.fontSize,
-                            ),
+                                fontSize: DocvedaSizes.fontSize,
+                                color: DocvedaColors.textTitle),
                             softWrap: true,
                             maxLines: 2,
                           ),

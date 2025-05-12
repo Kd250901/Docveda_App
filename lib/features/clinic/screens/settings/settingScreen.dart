@@ -1,6 +1,5 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/features/authentication/screens/login/login.dart';
-import 'package:docveda_app/features/authentication/screens/password_configuration/new_password_screen.dart';
 import 'package:docveda_app/features/clinic/screens/home/analytics/analytics.dart';
 import 'package:docveda_app/features/clinic/screens/home/notifications/notifications.dart';
 import 'package:docveda_app/features/clinic/screens/profileScreen/profile_screen.dart';
@@ -79,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                 //   //     size: DocvedaSizes.fontSizeMd),
                 //   onTap: () => Get.to(() => const NewPasswordScreen()),
                 // ),
-                const Divider(),
+                // const Divider(),
 
                 // Logout
                 ListTile(

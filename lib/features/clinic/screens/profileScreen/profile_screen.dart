@@ -84,6 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             'pincode': rawData['f_DV_Pincode'] ?? 'N/A',
             'logopath': rawData['Logo_Path'] ?? 'N/A',
             'base64': rawData['Base64_Logo_Path'] ?? 'N/A',
+            'clinic_name': rawData['f_DV_Clinic_Name'] ?? 'N/A',
           };
         }
 
@@ -181,9 +182,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     backgroundColor: DocvedaColors.white,
                                   ),
                             const SizedBox(height: DocvedaSizes.spaceBtwItemsS),
-                            const DocvedaText(
-                              text: "Samarth Hospital",
-                              style: TextStyle(
+                            DocvedaText(
+                              text: profileData?['clinic_name'] ?? 'N/A',
+                              style: const TextStyle(
                                 color: DocvedaColors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: DocvedaSizes.fontSizeLg,
@@ -234,9 +235,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           DocvedaText(
             text: title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: DocvedaSizes.fontSizeSm,
-              color: DocvedaColors.grey,
+              color: DocvedaColors.textTitle,
             ),
           ),
           const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
