@@ -10,9 +10,30 @@ import 'package:docveda_app/utils/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class SettingScreen extends StatefulWidget {
+  const SettingScreen({super.key});
+
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  String version = "";
+
+  @override
+  void didChangeDependencies() {
+    getAppVersion();
+    super.didChangeDependencies();
+  }
+
+  getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +236,7 @@ class SettingsScreen extends StatelessWidget {
 
           Center(
             child: DocvedaText(
-              text: "App Version\nv 1.0.1",
+              text: "${DocvedaTexts.app_version} $version",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: DocvedaColors.darkGrey,

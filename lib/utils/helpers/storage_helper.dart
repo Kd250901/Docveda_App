@@ -6,6 +6,7 @@ class StorageHelper {
     String accessToken,
     String idToken,
     String refreshToken,
+    String username,
   ) async {
     final storage = FlutterSecureStorage();
 
@@ -13,12 +14,19 @@ class StorageHelper {
     await storage.write(key: 'accessToken', value: accessToken);
     await storage.write(key: 'idToken', value: idToken);
     await storage.write(key: 'refreshToken', value: refreshToken);
+    await storage.write(key: 'username', value: username);
   }
 
   // Retrieve stored access token
   static Future<String?> getAccessToken() async {
     final storage = FlutterSecureStorage();
     return await storage.read(key: 'accessToken');
+  }
+
+  // Retrieve stored username
+  static Future<String?> getUsername() async {
+    final storage = FlutterSecureStorage();
+    return await storage.read(key: 'username');
   }
 
   static Future<void> clearTokens() async {
@@ -28,7 +36,7 @@ class StorageHelper {
     await storage.delete(key: 'accessToken');
     await storage.delete(key: 'idToken');
     await storage.delete(key: 'refreshToken');
-
+    await storage.delete(key: 'username');
     print("Tokens cleared on logout!");
   }
 

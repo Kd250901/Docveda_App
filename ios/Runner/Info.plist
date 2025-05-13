@@ -49,5 +49,34 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+
+		<!-- Permissions -->
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
+
+		<key>NSCameraUsageDescription</key>
+		<string>This app uses the camera for document scanning.</string>
+
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs access to the photo library to upload and save images or PDFs.</string>
+
+		<key>NSMicrophoneUsageDescription</key>
+		<string>This app may use the microphone for communication features.</string>
+
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app uses your location to enable location-based services.</string>
+
+		<!-- Notifications -->
+		<key>FirebaseAppDelegateProxyEnabled</key>
+		<true/>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
+
 	</dict>
 </plist>

@@ -79,6 +79,7 @@ class DocvedaTexts {
   static const String logoutTitle = "Log out?";
   static const String logoutDesc = "Are you sure you want to log out?";
   static const String cancel = "Cancel";
+  static const String app_version = "App Version\nv";
 
   // View Report
   static const String dischargeRepost = "Discharge Report";

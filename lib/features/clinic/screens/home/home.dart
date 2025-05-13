@@ -102,13 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchProfileData() async {
     final storage = FlutterSecureStorage();
     final accessToken = await storage.read(key: 'accessToken');
-    final mobileNo = "7248960414"; // Replace with dynamic value if needed
+    final username = await storage.read(key: 'username');
+    final String? mobileNo = username; // Replace with dynamic value if needed
 
     if (accessToken != null) {
       final data = await apiService.getProfileData(
         accessToken,
         context,
-        mobile_no: mobileNo,
+        mobile_no: mobileNo ?? "",
       );
       setState(() {
         profileData = data?['data'][0];
@@ -360,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: DocvedaColors.white,
                               ),
                               onPressed: () {
-                                Get.to(() => const SettingsScreen());
+                                Get.to(() => const SettingScreen());
                               },
                             ),
                           ),
