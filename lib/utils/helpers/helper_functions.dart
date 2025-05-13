@@ -99,4 +99,11 @@ class DocvedaHelperFunctions {
     return wrappedList;
   }
 
+static int parseAge(dynamic ageValue) {
+  final ageStr = ageValue?.toString() ?? '';
+  final match = RegExp(r'\d+').firstMatch(ageStr);
+  return match != null ? int.parse(match.group(0)!) : 0;
+}
+
+
 }

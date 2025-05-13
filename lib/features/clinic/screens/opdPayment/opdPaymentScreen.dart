@@ -12,7 +12,10 @@ import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
+import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
+import 'package:docveda_app/utils/helpers/helper_functions.dart';
+import 'package:docveda_app/utils/pdf/pdf1.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -38,10 +41,14 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> patientData;
+        late List<Map<String, dynamic>> patients = [];
+
 
   DateTime selectedDate = DateTime.now();
   DateTime _selectedDate = DateTime.now();
   bool isMonthly = false;
+      Set<int> selectedPatientIndices = {};
+
 
   @override
   void initState() {
@@ -51,11 +58,16 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
     loadOpdPaymentData();
   }
 
-  void handlePatientSelection(int index) {
+ void handlePatientSelection(int index) {
     setState(() {
-      selectedPatientIndex = index;
+      if (selectedPatientIndices.contains(index)) {
+        selectedPatientIndices.remove(index);
+      } else {
+        selectedPatientIndices.add(index);
+      }
     });
   }
+
 
   void loadOpdPaymentData() {
     final toggleController = Get.find<ToggleController>();
@@ -151,8 +163,10 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
     final toggleController = Get.find<ToggleController>();
 
     return Scaffold(
-      body: Column(
-        children: [
+      body: Stack(
+     children: [
+          Column(
+            children:[
           /// Header Section
           DocvedaPrimaryHeaderContainer(
             child: Column(
@@ -202,7 +216,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                       child: Text("No patient data available."));
                 }
 
-                final patients = snapshot.data!;
+                 patients = snapshot.data!;
 
                 return Column(
                   children: [
@@ -211,40 +225,42 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: DocvedaSizes
-                                      .spaceBtwItems), // Add left padding here
-                              child: DocvedaText(
-                                text:
-                                    "${patients.length} ${DocvedaTexts.patientFound}",
-                                style: TextStyleFont.subheading,
+                          Row(
+                                children: [
+                                  Checkbox(
+                                    value: selectedPatientIndices.length ==
+                                        patients.length,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        if (val == true) {
+                                          selectedPatientIndices = Set.from(
+                                              List.generate(patients.length,
+                                                  (i) => i));
+                                        } else {
+                                          selectedPatientIndices.clear();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  DocvedaText(
+                                    text: "${patients.length} OPD Payments found",
+                                    style: TextStyleFont.subheading,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-
-                          const SizedBox(
-                              height: DocvedaSizes
-                                  .xs), // Optional space between texts
-                          Align(
-                              alignment: Alignment
-                                  .centerLeft, // Ensures alignment of subtext on the left
-                              child: Padding(
+                              const SizedBox(height: DocvedaSizes.xs),
+                              Padding(
                                 padding: const EdgeInsets.only(
-                                    left: DocvedaSizes
-                                        .spaceBtwItems), // Add left padding here
+                                    left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text: DocvedaTexts.depositePatientDesc,
+                                  text: "Patients with OPD Payments.",
                                   style: TextStyleFont.body,
                                 ),
-                              )),
-                        ],
-                      ),
-                    ),
-
-                    /// Patient Cards
+                              ),
+                            ],
+                          ),
+                        ),
+                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
                     Expanded(
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
@@ -252,241 +268,215 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                         itemCount: patients.length,
                         itemBuilder: (context, index) {
                           final patient = patients[index];
+                           final isSelected =
+                                  selectedPatientIndices.contains(index);
                           return PatientCard(
                             index: index,
-                            selectedPatientIndex: selectedPatientIndex,
-                            onPatientSelected: handlePatientSelection,
+                           selectedPatientIndex:
+                                    isSelected ? index : -1,
+                                onPatientSelected: handlePatientSelection,
 
-                            /// 👤 Top Row: Name, Age, Gender
-                            topRow: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        index == selectedPatientIndex
-                                            ? Icons.radio_button_checked
-                                            : Icons.radio_button_unchecked,
-                                        size: 16,
-                                        color: index == selectedPatientIndex
-                                            ? DocvedaColors.primaryColor
-                                            : Colors.grey,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      DocvedaText(
-                                        text: formatPatientName(
-                                            "${patient["Patient Name"] ?? ""}"
-                                                .trim()),
-                                        style: TextStyleFont.body.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14,
+                           topRow: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          isSelected
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_unchecked,
+                                          size: 16,
+                                          color: isSelected
+                                              ? DocvedaColors.primaryColor
+                                              : Colors.grey,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                  DocvedaText(
-                                    text:
-                                        "${patient["Age"]?.toString() ?? "--"} • ${patient["Gender"] ?? "--"}",
-                                    style: TextStyleFont.caption.copyWith(
-                                      color: Colors.grey,
-                                      fontSize: 12,
+                                        const SizedBox(width: 8),
+                                        DocvedaText(
+                                          text: formatPatientName(
+                                              "${patient["Patient Name"] ?? ""}".trim()),
+                                          style: TextStyleFont.body.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            /// 📅 Middle Row: Admission & UHID No & Final Bill
-                            middleRow: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 32.0, right: 8.0, top: 8, bottom: 8),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          DocvedaText(
-                                            text: "Visit Date",
-                                            style: TextStyleFont.caption
-                                                .copyWith(color: Colors.grey),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          DocvedaText(
-                                            text: DateFormatter.formatDate(
-                                                patient["Admission Date"]),
-                                            style: TextStyleFont.caption,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          DocvedaText(
-                                            text: "Date Of Payment",
-                                            style: TextStyleFont.caption
-                                                .copyWith(color: Colors.grey),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          DocvedaText(
-                                            text: DateFormatter.formatDate(
-                                                patient["Date Of Payment"]
-                                                    ?.toString()),
-                                            style: TextStyleFont.caption,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Divider(
-                                    height: 24,
-                                    color: Colors.grey.shade300,
-                                    thickness: 1,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      DocvedaText(
-                                        text: "Total Bill Amount",
-                                        style: TextStyleFont.caption
-                                            .copyWith(color: Colors.grey),
-                                      ),
-                                      DocvedaText(
-                                        text:
-                                            "₹${patient["Bill Amount"] ?? "0"}",
-                                        style: TextStyleFont.body.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: DocvedaColors.primaryColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      DocvedaText(
-                                        text: "Paid Amount",
-                                        style: TextStyleFont.caption
-                                            .copyWith(color: Colors.grey),
-                                      ),
-                                      DocvedaText(
-                                        text:
-                                            "₹${patient["Paid Amount"] ?? "0"}",
-                                        style: TextStyleFont.body.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: DocvedaColors.primaryColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            /// Bottom row not used here
-                            bottomRow: const SizedBox.shrink(),
-                          );
-                        },
-                      ),
-                    ),
-
-                    /// View Report Button
-                    SafeArea(
-                      top:
-                          false, // Ensures the button stays within the safe area at the bottom
-                      child: Align(
-                        alignment: Alignment
-                            .bottomCenter, // Stick the button to the bottom
-                        child: Container(
-                          width: double
-                              .infinity, // Ensures full width for the button container
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05,
-                            vertical: DocvedaSizes.spaceBtwItemsS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: DocvedaColors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: DocvedaColors.black.withOpacity(0.1),
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: PrimaryButton(
-                            onPressed: () {
-                              if (patients.isEmpty ||
-                                  selectedPatientIndex >= patients.length)
-                                return;
-
-                              final selected = patients[selectedPatientIndex];
-
-                              // Strip the "Y" from the Age string and convert it to an integer
-                              String ageString = selected["Age"] ?? "0";
-                              int age = 0;
-
-                              // Check if the age string contains 'Y' and remove it
-                              if (ageString.contains('Y')) {
-                                ageString =
-                                    ageString.replaceAll('Y', '').trim();
-                              }
-
-                              // Parse the age as an integer
-                              age = int.tryParse(ageString) ?? 0;
-
-                              print('Age: $age'); // Debugging line
-
-                              Get.to(
-                                () => ViewReportScreen(
-                                  patientName:
-                                      selected["Patient Name"] ?? "N/A",
-                                  age: age,
-                                  gender: selected["Gender"] ?? "N/A",
-                                  admissionDate: DateFormatter.formatDate(
-                                      selected["Admission Date"]),
-                                  dischargeDate:
-                                      "", // Not required for OPD Payments
-                                  finalSettlement:
-                                      "", // Not required for OPD Payments
-                                  screenName: "Opd Payments",
-                                  dateOfPayment: DateFormatter.formatDate(
-                                          selected["Date Of Payment"]) ??
-                                      "-",
-                                  billAmount:
-                                      selected["Bill Amount"]?.toString() ??
-                                          "-",
+                                    DocvedaText(
+                                      text:
+                                          "${patient["Age"] ?? "--"}  • ${patient["Gender"] ?? "--"}",
+                                      style: TextStyleFont.caption.copyWith(
+                                          color: Colors.grey, fontSize: 12),
+                                    ),
+                                  ],
                                 ),
+                                middleRow: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 32, right: 8, top: 8, bottom: 8),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              DocvedaText(
+                                                text: "Visit Date",
+                                                style: TextStyleFont.caption
+                                                    .copyWith(color: Colors.grey),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              DocvedaText(
+                                                text: DateFormatter.formatDate(
+                                                    patient["Admission Date"]),
+                                                style: TextStyleFont.caption,
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              DocvedaText(
+                                                text: "UHID No",
+                                                style: TextStyleFont.caption
+                                                    .copyWith(color: Colors.grey),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              DocvedaText(
+                                                text:
+                                                    patient["UHID No"],
+                                                style: TextStyleFont.caption,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const Divider(height: 24, thickness: 1, color: Colors.grey),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          DocvedaText(
+                                            text: "Total Bill",
+                                            style: TextStyleFont.body.copyWith(
+                                              color: Colors.grey.shade700,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          DocvedaText(
+                                            text: "₹${patient["Bill Amount"] ?? "0"}",
+                                            style: TextStyleFont.body.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: DocvedaColors.primaryColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          DocvedaText(
+                                            text: "Paid Amount",
+                                            style: TextStyleFont.body.copyWith(
+                                              color: Colors.grey.shade700,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          DocvedaText(
+                                            text: "₹${patient["Paid Amount"] ?? "0"}",
+                                            style: TextStyleFont.body.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: DocvedaColors.primaryColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                bottomRow: Container(),
                               );
                             },
-                            text: DocvedaTexts.viewReport,
-                            backgroundColor: DocvedaColors.primaryColor,
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                );
-              },
-            ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+                           if (selectedPatientIndices.isNotEmpty)
+
+             SafeArea(
+  top: false,
+  child: Align(
+    alignment: Alignment.bottomCenter,
+    child: Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.05,
+        vertical: DocvedaSizes.spaceBtwItemsS,
+      ),
+      decoration: BoxDecoration(
+        color: DocvedaColors.white,
+        boxShadow: [
+          BoxShadow(
+            color: DocvedaColors.black.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: PrimaryButton(
+        text: selectedPatientIndices.length == 1
+            ? "View Report"
+            : "Download Reports",
+        backgroundColor: DocvedaColors.primaryColor,
+        onPressed: () {
+          if (selectedPatientIndices.length == 1) {
+            final idx = selectedPatientIndices.first;
+            final patient = patients[idx];
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ViewReportScreen(
+                  patientName: patient['Patient Name'] ?? 'Unknown',
+                  age: patient['Age'] ?? 'unknown',
+                  gender: patient['Gender'] ?? '',
+                                    uhidno: patient['UHID No'],
+
+                  screenName: "OPD Payment",
+
+                  admissionDate: patient['Admission Date'] ?? '',
+                  dateOfPayment:DateFormatter.formatDate( patient['Date of Payment'] ?? ''),
+             billAmount:FormatAmount.formatAmount( patient['Bill Amount']),
+             refund:FormatAmount.formatAmount( patient['Refund'] ?? '0'),
+             discount:FormatAmount.formatAmount( patient['Discount'] ?? '0'),
+             doctorInCharge: patient['Doctor Name'] ?? '',
+                paidAmount:FormatAmount.formatAmount( patient['Paid Amount'] ?? '0'),
+                  
+                ),
+              ),
+            );
+          } else {
+            final selectedPatients = selectedPatientIndices
+                .map((i) => patients[i])
+                .toList();
+            generateAndShowPdf(selectedPatients);
+          }
+        },
+      ),
+    ),
+  ),
+)
+            ],
           ),
         ],
       ),

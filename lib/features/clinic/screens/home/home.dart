@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchProfileData();
     // Listen for toggle changes
     toggleController.isMonthly.listen((newValue) {
-      if (!mounted) return; // ✅ Prevent listener from calling after dispose
+      if (!mounted) return; //  Prevent listener from calling after dispose
       _handleToggle(newValue); // re-fetch data
     });
 

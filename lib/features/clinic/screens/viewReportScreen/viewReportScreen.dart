@@ -8,7 +8,7 @@ import 'package:docveda_app/utils/constants/colors.dart';
 
 class ViewReportScreen extends StatelessWidget {
   final String patientName;
-  final int age;
+  final String age;
   final String gender;
   final String screenName;
 
@@ -38,6 +38,10 @@ class ViewReportScreen extends StatelessWidget {
   final String? paidAmount;
   final String? doctorInCharge;
   final String? totalIpdBill;
+  final String? visitDate;
+  final String? deposite;
+  final String? refund;
+  final String? discount;
 
   const ViewReportScreen({
     super.key,
@@ -70,6 +74,11 @@ class ViewReportScreen extends StatelessWidget {
     this.paidAmount,
     this.doctorInCharge,
     this.totalIpdBill,
+    this.visitDate,
+    this.deposite,
+    this.refund,
+    this.discount,
+
   });
 
   @override
@@ -88,8 +97,8 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "UHID No": uhidno ?? "-",
-          "Deposit": deposit ?? "-",
-          "Total Bill": totalBill ?? "-",
+          "Deposite": deposite ?? "-",
+          "Total Ipd Bill": totalIpdBill ?? "-",
           "Ward Name": wardName ?? "-",
           "Bed Name": bedName ?? "-",
         });
@@ -99,6 +108,13 @@ class ViewReportScreen extends StatelessWidget {
           "Admission Date": admissionDate ?? "-",
           "Discharge Date": dischargeDate ?? "-",
           "Bill Amount": billAmount ?? "-",
+        });
+        break;
+         case "opd visit":
+        reportData.addAll({
+          "Visit Date": visitDate ?? "-",
+          "Doctor Name": doctorInCharge ?? "-",
+         
         });
         break;
       case "bed transfer":
@@ -115,15 +131,19 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "Total Ipd Bill": totalIpdBill ?? "-",
-          "Deposite": deposit ?? "-",
+          "Deposit": deposit ?? "-",
           "Pending Amount": pendingAmount ?? "-",
         });
         break;
-      case "opd payments":
+      case "opd payment":
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
-          "Bill Amount": finalSettlement ?? "-",
+          "Bill Amount": billAmount ?? "-",
           "Date Of Payment": dateOfPayment ?? "-",
+          "Paid Amount": paidAmount ?? "-",
+          "Refund ": refund ?? "-",
+          "Discount ": discount?? "-",
+          "Doctor Name": doctorInCharge ?? "-",
         });
         break;
       case "opd bills":
@@ -140,9 +160,10 @@ class ViewReportScreen extends StatelessWidget {
           "Total IPD Bill": totalIpdBill ?? "-",
           "Deposit": deposit ?? "-",
           "Final Settlement": finalSettlement ?? "-",
-          "Discount Amount": discountAmount ?? "-",
           "Refund Amount": refundAmount ?? "-",
+          "Discount Amount": discountAmount ?? "-",
           "Discharge Date": dischargeDate ?? "-",
+         
         });
         break;
       case "refund":
@@ -167,7 +188,7 @@ class ViewReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: DocvedaText(
-          text: "$screenName Report", // ✅ Dynamic title
+          text: "$screenName Report", //  Dynamic title
           style: const TextStyle(color: DocvedaColors.white),
         ),
         backgroundColor: DocvedaColors.primaryColor,

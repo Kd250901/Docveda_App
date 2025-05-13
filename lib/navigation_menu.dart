@@ -39,7 +39,7 @@ class NavigationMenu extends StatelessWidget {
         ),
         child: Obx(
           () => NavigationBar(
-            height: 80,
+            height: 60,
             elevation: 0,
             selectedIndex: controller.selectedIndex.value,
             onDestinationSelected: (index) async {
@@ -60,8 +60,8 @@ class NavigationMenu extends StatelessWidget {
             },
             backgroundColor: Colors
                 .transparent, // Make NavigationBar transparent to use Container's color
-            indicatorColor: DocvedaColors
-                .primaryColor, // Background color for selected item
+            indicatorColor:
+               DocvedaColors.primaryColor, // Background color for selected item
             indicatorShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 16,

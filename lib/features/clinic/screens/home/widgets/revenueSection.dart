@@ -32,22 +32,10 @@ class RevenueSection extends StatelessWidget {
 
         // Map of keywords to corresponding screens
         final Map<String, Widget Function()> revenueScreens = {
-          'deposit': () => DepositScreen(
-                isSelectedMonthly: isSelectedMonthly,
-                prevSelectedDate: prevSelectedDate,
-              ),
-          'opd payment': () => Opdpaymentscreen(
-                isSelectedMonthly: isSelectedMonthly,
-                prevSelectedDate: prevSelectedDate,
-              ),
-          'opd bill': () => Opdbillsscreen(
-                isSelectedMonthly: isSelectedMonthly,
-                prevSelectedDate: prevSelectedDate,
-              ),
-          'ipd settlement': () => IPDSettlementScreen(
-                isSelectedMonthly: isSelectedMonthly,
-                prevSelectedDate: prevSelectedDate,
-              ),
+          'deposit': () => DepositScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          'opd payment': () => Opdpaymentscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+          //'opd bill': () => Opdbillsscreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
+         'ipd settlement': () => IPDSettlementScreen(isSelectedMonthly: isSelectedMonthly, prevSelectedDate: prevSelectedDate,),
         };
 
         return GestureDetector(
