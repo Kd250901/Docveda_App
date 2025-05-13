@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-  // static const String baseUrl = 'http://192.168.10.148:4000/api';
-  static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
+  static const String baseUrl = 'http://192.168.10.148:4000/api';
+  // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
     String username,
@@ -550,10 +550,10 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>?> getDeviceId(
-    String accessToken,
     BuildContext context, {
     required String mobile_no,
     required String deviceId,
+    required String dbName,
   }) async {
     try {
       final response = await http.post(
@@ -561,17 +561,14 @@ class ApiService {
           '$baseUrl/frontdesk/app/checkDeviceId',
         ),
         headers: {
-          'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json', // Ensure correct headers
         },
         body: jsonEncode({
           'mobile_no': mobile_no,
-          'deviceId': deviceId,
+          'device_id': deviceId,
+          "entityOrgId": dbName
         }),
       );
-
-      print("${deviceId} deviceId");
-      print("${response} response");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -744,6 +741,36 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching getProfileData: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getDbName(
+    BuildContext context, {
+    required String mobile_no,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/auth/getDBName',
+        ),
+        headers: {
+          'Content-Type': 'application/json', // Ensure correct headers
+        },
+        body: jsonEncode({'mobile_no': mobile_no}),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401) {
+        UnauthorizedHelper.handle();
+        return null;
+      } else {
+        print('Failed to load getDbName: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching getDbName: $e');
       return null;
     }
   }
