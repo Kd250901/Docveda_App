@@ -323,15 +323,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Row(
                                     children: [
-                                      Image.asset(
-                                        DocvedaImages.protectLogo,
-                                        width: DocvedaSizes.imageWidthS,
-                                        height: DocvedaSizes.imageHeightS,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      const SizedBox(
-                                        width: DocvedaSizes.spaceBtwItemsSm,
-                                      ),
+                                      // Image.asset(
+                                      //   DocvedaImages.protectLogo,
+                                      //   width: DocvedaSizes.imageWidthS,
+                                      //   height: DocvedaSizes.imageHeightS,
+                                      //   fit: BoxFit.contain,
+                                      // ),
+                                      // const SizedBox(
+                                      //   width: DocvedaSizes.spaceBtwItemsSm,
+                                      // ),
                                       Text(
                                         DocvedaTexts.logo,
                                         style: Theme.of(

@@ -35,7 +35,8 @@ class DateSwitcherBar extends StatelessWidget {
           icon: const Icon(Iconsax.arrow_left_2),
           onPressed: () {
             final newDate = isMonthly
-                ? DateTime(selectedDate.year, selectedDate.month - 1, 1)
+                ? DateTime(
+                    selectedDate.year, selectedDate.month - 1, selectedDate.day)
                 : selectedDate.subtract(const Duration(days: 1));
             onDateChanged(newDate);
             onPrevious(); // optional
@@ -56,7 +57,8 @@ class DateSwitcherBar extends StatelessWidget {
           icon: const Icon(Iconsax.arrow_right_3),
           onPressed: () {
             final newDate = isMonthly
-                ? DateTime(selectedDate.year, selectedDate.month + 1, 1)
+                ? DateTime(
+                    selectedDate.year, selectedDate.month + 1, selectedDate.day)
                 : selectedDate.add(const Duration(days: 1));
             onDateChanged(newDate);
             onNext(); // optional

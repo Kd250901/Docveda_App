@@ -60,8 +60,8 @@ class NavigationMenu extends StatelessWidget {
             },
             backgroundColor: Colors
                 .transparent, // Make NavigationBar transparent to use Container's color
-            indicatorColor:
-                Colors.deepPurple, // Background color for selected item
+            indicatorColor: DocvedaColors
+                .primaryColor, // Background color for selected item
             indicatorShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 16,
