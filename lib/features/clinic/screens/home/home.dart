@@ -237,24 +237,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return options;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Prepare the logo image inside build method
-    ImageProvider logoImage;
-
+  ImageProvider getLogoImage(Map<String, dynamic>? profileData) {
     try {
       final base64Logo = profileData?['Base64_Logo_Path'];
+
       if (base64Logo != null && base64Logo.isNotEmpty) {
         final cleanString = cleanBase64(base64Logo);
         final decodedBytes = base64Decode(cleanString);
-        logoImage = MemoryImage(decodedBytes);
-      } else {
-        logoImage = const AssetImage(DocvedaImages.clinicLogo);
+
+        // Validate image bytes length before returning MemoryImage
+        if (decodedBytes.isNotEmpty) {
+          return MemoryImage(decodedBytes);
+        }
       }
     } catch (e) {
       print('Error decoding logo: $e');
-      logoImage = const AssetImage(DocvedaImages.clinicLogo);
     }
+
+    // Fallback to default logo if error or invalid base64
+    return const AssetImage(DocvedaImages.clinicLogo);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Prepare the logo image inside build method
+    ImageProvider logoImage = getLogoImage(profileData);
+
     return Scaffold(
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: dashboardDataFuture,
