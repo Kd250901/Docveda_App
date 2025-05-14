@@ -127,7 +127,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
     try {
       final forgotData = await StorageHelper.getForgotPasswordData();
-      print("Forgot Data: $forgotData");
 
       final response = await apiService.getverifyForgotPasswordOTP(
         context,
@@ -138,7 +137,6 @@ class _OtpScreenState extends State<OtpScreen> {
         dlt_CD: forgotData['dlt_CD'] ?? '',
         user_MST_CD: forgotData['user_MST_CD'] ?? '',
       );
-      print(" OTP verification response: $response");
       // if (enteredOtp == _correctOtp) {
       //   Navigator.pushReplacement(
       //     context,

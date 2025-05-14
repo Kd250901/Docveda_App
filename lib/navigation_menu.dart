@@ -43,25 +43,25 @@ class NavigationMenu extends StatelessWidget {
             elevation: 0,
             selectedIndex: controller.selectedIndex.value,
             onDestinationSelected: (index) async {
-              print('Index $index');
               controller.selectedIndex.value = index;
               // Log Firebase Analytics Event
-              await analytics.logEvent(
-                name: "navigation_selected",
-                parameters: {
-                  "index": index,
-                  "screen_name": pageNames[index],
-                },
-              ).then((value) {
-                print("Analytics event logged successfully");
-              }).catchError((error) {
-                print("Failed to log event: $error");
-              });
+              await analytics
+                  .logEvent(
+                    name: "navigation_selected",
+                    parameters: {
+                      "index": index,
+                      "screen_name": pageNames[index],
+                    },
+                  )
+                  .then((value) {})
+                  .catchError((error) {
+                    print("Failed to log event: $error");
+                  });
             },
             backgroundColor: Colors
                 .transparent, // Make NavigationBar transparent to use Container's color
-            indicatorColor:
-               DocvedaColors.primaryColor, // Background color for selected item
+            indicatorColor: DocvedaColors
+                .primaryColor, // Background color for selected item
             indicatorShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 16,

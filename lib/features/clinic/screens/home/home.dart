@@ -132,8 +132,6 @@ class _HomeScreenState extends State<HomeScreen> {
     required String pType,
     required String pDate,
   }) async {
-    print(
-        ' API Called with mode: ${isMonthly ? 'monthly' : 'daily'} on date: $selectedDate');
     String? accessToken = await StorageHelper.getAccessToken();
 
     if (accessToken != null) {
@@ -173,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _goToPrevious() {
     final isMonthly = toggleController.isMonthly.value;
-    print("Home _goToPrevious triggered");
     setState(() {
       selectedDate = isMonthly
           ? DateTime(
@@ -189,7 +186,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _goToNext() {
-    print("Home _goToNext triggered");
     setState(() {
       selectedDate = isMonthly
           ? DateTime(

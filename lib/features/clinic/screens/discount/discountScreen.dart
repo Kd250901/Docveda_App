@@ -37,15 +37,12 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> patientData;
-      late List<Map<String, dynamic>> patients = [];
-
-
+  late List<Map<String, dynamic>> patients = [];
 
   DateTime selectedDate = DateTime.now();
   DateTime _selectedDate = DateTime.now();
   bool isMonthly = false;
-      Set<int> selectedPatientIndices = {};
-
+  Set<int> selectedPatientIndices = {};
 
   @override
   void initState() {
@@ -54,8 +51,6 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
     isMonthly = widget.isSelectedMonthly;
     loadDiscountData();
   }
-
-  
 
   void loadDiscountData() {
     final toggleController = Get.find<ToggleController>();
@@ -80,8 +75,6 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
 
     if (accessToken != null) {
       try {
-        print('pDate: $pDate');
-        print('pType: $pType');
         final response = await apiService.getDiscountData(
           accessToken,
           context,
@@ -89,8 +82,6 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
           pDate: pDate,
           pType: pType[0].toUpperCase() + pType.substring(1).toLowerCase(),
         );
-        print(
-            'Sending pType: ${pType[0].toUpperCase() + pType.substring(1).toLowerCase()}');
 
         if (response != null && response['data'] != null) {
           return List<Map<String, dynamic>>.from(response['data']);
@@ -137,7 +128,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
   //   loadDiscountData(); //  Re-fetch on toggle change
   // }
 
- void handlePatientSelection(int index) {
+  void handlePatientSelection(int index) {
     setState(() {
       if (selectedPatientIndices.contains(index)) {
         selectedPatientIndices.remove(index);
@@ -163,62 +154,62 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
       body: Stack(
         children: [
           Column(
-            children:[
-          DocvedaPrimaryHeaderContainer(
-            child: Column(
-              children: [
-                DocvedaAppBar(
-                  title: Center(
-                    child: Text(
-                      "Discounts",
-                      style: TextStyleFont.subheading
-                          .copyWith(color: DocvedaColors.white),
-                    ),
-                  ),
-                  showBackArrow: true,
-                ),
-                DocvedaToggle(
-                  onToggle: (value) {
-                    toggleController.isMonthly.value = value;
-                    loadDiscountData(); // or any other action you need
-                  },
-                ),
-                DateSwitcherBar(
-                  selectedDate: _selectedDate,
-                  onPrevious: _goToPrevious,
-                  onNext: _goToNext,
-                  onDateChanged: _updateDate,
-                  isMonthly:
-                      toggleController.isMonthly.value, // Use global state
-                  textColor: DocvedaColors.white,
-                  fontSize: DocvedaSizes.fontSizeSm,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: patientData,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No discount data available.'));
-                }
-
-                 patients = snapshot.data!;
-
-                return Column(
+            children: [
+              DocvedaPrimaryHeaderContainer(
+                child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Row(
+                    DocvedaAppBar(
+                      title: Center(
+                        child: Text(
+                          "Discounts",
+                          style: TextStyleFont.subheading
+                              .copyWith(color: DocvedaColors.white),
+                        ),
+                      ),
+                      showBackArrow: true,
+                    ),
+                    DocvedaToggle(
+                      onToggle: (value) {
+                        toggleController.isMonthly.value = value;
+                        loadDiscountData(); // or any other action you need
+                      },
+                    ),
+                    DateSwitcherBar(
+                      selectedDate: _selectedDate,
+                      onPrevious: _goToPrevious,
+                      onNext: _goToNext,
+                      onDateChanged: _updateDate,
+                      isMonthly:
+                          toggleController.isMonthly.value, // Use global state
+                      textColor: DocvedaColors.white,
+                      fontSize: DocvedaSizes.fontSizeSm,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: patientData,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                          child: Text('No discount data available.'));
+                    }
+
+                    patients = snapshot.data!;
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
                                   Checkbox(
                                     value: selectedPatientIndices.length ==
@@ -227,8 +218,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                       setState(() {
                                         if (val == true) {
                                           selectedPatientIndices = Set.from(
-                                              List.generate(patients.length,
-                                                  (i) => i));
+                                              List.generate(
+                                                  patients.length, (i) => i));
                                         } else {
                                           selectedPatientIndices.clear();
                                         }
@@ -236,7 +227,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                     },
                                   ),
                                   DocvedaText(
-                                    text: "${patients.length} settlements found",
+                                    text:
+                                        "${patients.length} settlements found",
                                     style: TextStyleFont.subheading,
                                   ),
                                 ],
@@ -246,30 +238,29 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                 padding: const EdgeInsets.only(
                                     left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text: "Patients whose IPD bills are fully settled.",
+                                  text:
+                                      "Patients whose IPD bills are fully settled.",
                                   style: TextStyleFont.body,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: DocvedaSizes.spaceBtwItems),
-                        itemCount: patients.length,
-                        itemBuilder: (context, index) {
-                          final patient = patients[index];
-                           final isSelected =
+                        const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: DocvedaSizes.spaceBtwItems),
+                            itemCount: patients.length,
+                            itemBuilder: (context, index) {
+                              final patient = patients[index];
+                              final isSelected =
                                   selectedPatientIndices.contains(index);
-                          return PatientCard(
-                            index: index,
-                           selectedPatientIndex:
-                                    isSelected ? index : -1,
+                              return PatientCard(
+                                index: index,
+                                selectedPatientIndex: isSelected ? index : -1,
                                 onPatientSelected: handlePatientSelection,
-
-                           topRow: Row(
+                                topRow: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -287,7 +278,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                         const SizedBox(width: 8),
                                         DocvedaText(
                                           text: formatPatientName(
-                                              "${patient["Patient Name"] ?? ""}".trim()),
+                                              "${patient["Patient Name"] ?? ""}"
+                                                  .trim()),
                                           style: TextStyleFont.body.copyWith(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 14,
@@ -319,7 +311,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                               DocvedaText(
                                                 text: "Admission Date",
                                                 style: TextStyleFont.caption
-                                                    .copyWith(color: Colors.grey),
+                                                    .copyWith(
+                                                        color: Colors.grey),
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
@@ -336,19 +329,24 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                               DocvedaText(
                                                 text: "Date Of Discount",
                                                 style: TextStyleFont.caption
-                                                    .copyWith(color: Colors.grey),
+                                                    .copyWith(
+                                                        color: Colors.grey),
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
                                                 text: DateFormatter.formatDate(
-                                                    patient["Date Of Discount"]),
+                                                    patient[
+                                                        "Date Of Discount"]),
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                      const Divider(height: 24, thickness: 1, color: Colors.grey),
+                                      const Divider(
+                                          height: 24,
+                                          thickness: 1,
+                                          color: Colors.grey),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -361,7 +359,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                             ),
                                           ),
                                           DocvedaText(
-                                            text: "₹${patient["Discount Amount"] ?? "0"}",
+                                            text:
+                                                "₹${patient["Discount Amount"] ?? "0"}",
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
@@ -383,72 +382,75 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                   },
                 ),
               ),
-                           if (selectedPatientIndices.isNotEmpty)
+              if (selectedPatientIndices.isNotEmpty)
+                SafeArea(
+                  top: false,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: DocvedaSizes.spaceBtwItemsS,
+                      ),
+                      decoration: BoxDecoration(
+                        color: DocvedaColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DocvedaColors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: PrimaryButton(
+                        text: selectedPatientIndices.length == 1
+                            ? "View Report"
+                            : "Download Reports",
+                        backgroundColor: DocvedaColors.primaryColor,
+                        onPressed: () {
+                          if (selectedPatientIndices.length == 1) {
+                            final idx = selectedPatientIndices.first;
+                            final patient = patients[idx];
 
-               SafeArea(
-  top: false,
-  child: Align(
-    alignment: Alignment.bottomCenter,
-    child: Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.05,
-        vertical: DocvedaSizes.spaceBtwItemsS,
-      ),
-      decoration: BoxDecoration(
-        color: DocvedaColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: DocvedaColors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: PrimaryButton(
-        text: selectedPatientIndices.length == 1
-            ? "View Report"
-            : "Download Reports",
-        backgroundColor: DocvedaColors.primaryColor,
-        onPressed: () {
-          if (selectedPatientIndices.length == 1) {
-            final idx = selectedPatientIndices.first;
-            final patient = patients[idx];
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewReportScreen(
+                                  patientName:
+                                      patient['Patient Name'] ?? 'Unknown',
+                                  age: patient['Age'] ?? 'unknown',
+                                  gender: patient['Gender'] ?? '',
+                                  uhidno: patient['UHID No'],
+                                  screenName: "Discount",
+                                  admissionDate:
+                                      patient['Admission Date'] ?? '',
+                                  discountAmount: FormatAmount.formatAmount(
+                                      patient['Discount Amount'] ?? 0),
+                                  dateOfDiscount: DateFormatter.formatDate(
+                                      patient['Date Of Discount'] ?? ''),
+                                ),
+                              ),
+                            );
+                          } else {
+                            final selectedPatients =
+                                selectedPatientIndices.map((i) {
+                              final patient = patients[i];
+                              // Add screen name if you know the context (e.g., admission/discharge/etc.)
+                              return {
+                                ...patient,
+                                'Screen Name':
+                                    'discount', // <-- update this dynamically if needed
+                              };
+                            }).toList();
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ViewReportScreen(
-                  patientName: patient['Patient Name'] ?? 'Unknown',
-                  age:patient['Age'] ?? 'unknown',
-                  gender: patient['Gender'] ?? '',
-                                    uhidno: patient['UHID No'],
-
-                  screenName: "Discount",
-               
-                  admissionDate: patient['Admission Date'] ?? '',
-                  discountAmount:FormatAmount.formatAmount( patient['Discount Amount'] ?? 0),
-                  dateOfDiscount: DateFormatter.formatDate( patient['Date Of Discount'] ?? ''),  
-                ),
-              ),
-            );
-          } else {
-  final selectedPatients = selectedPatientIndices.map((i) {
-    final patient = patients[i];
-    // Add screen name if you know the context (e.g., admission/discharge/etc.)
-    return {
-      ...patient,
-      'Screen Name': 'discount', // <-- update this dynamically if needed
-    };
-  }).toList();
-
-  generateAndShowPdf(selectedPatients);
-}
-        },
-      ),
-    ),
-  ),
-)
+                            generateAndShowPdf(selectedPatients);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                )
             ],
           ),
         ],

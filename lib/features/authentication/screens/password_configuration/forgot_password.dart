@@ -36,8 +36,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   Future<void> handleForgotPassword() async {
-    print(" OTP button pressed");
-
     String username = usernameController.text.trim();
 
     if (username.isEmpty) {
@@ -55,7 +53,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       context,
       userName: username,
     );
-    print(" OTP response: $response");
 
     await StorageHelper.saveForgotPasswordData({
       "user": response?["mobileNumber"],
@@ -66,7 +63,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     });
 
     if (response != null) {
-      print(" OTP sent response: $response");
       Get.to(() => const OtpScreen());
     } else {
       Get.snackbar(

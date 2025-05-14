@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:docveda_app/utils/helpers/unauthorized_helper.dart';
 
 class ApiService {
-     static const String baseUrl = 'http://192.168.0.101:4000/api';
-  //static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
+  //  static const String baseUrl = 'http://192.168.0.101:4000/api';
+  // static const String baseUrl = 'https://api-uat-dv.docveda.in/api';
+  static const String baseUrl = 'https://app.docveda.in/api';
 
   Future<Map<String, dynamic>> issueAuthCode(
     String username,
@@ -16,13 +17,8 @@ class ApiService {
     final Uri apiUrl = Uri.parse(
       '$baseUrl/auth/auth_code?code_challenge=$code_challenger',
     );
-    print("apiUrl: $apiUrl");
-    print("baseUrl: $baseUrl");
 
     var encryptedText = AESHelper.encryptText(password);
-    print("Username: $username");
-    print("Password (Before Encryption): $password");
-    print("Password (After Encryption): $encryptedText");
 
     try {
       final response = await http.post(
@@ -56,10 +52,6 @@ class ApiService {
     final Uri apiUrl = Uri.parse('$baseUrl/auth/token');
 
     try {
-      print(
-        " Requesting token with Authorization Code: $authorizationCode and Code Verifier: $codeVerifer",
-      );
-
       final response = await http.post(
         apiUrl,
         headers: {'Content-Type': 'application/json'},
@@ -590,11 +582,8 @@ class ApiService {
     required String userName,
   }) async {
     try {
-      print("Sending POST request to forgotPassword API...");
-      print("Username: $userName");
-
       final response = await http.post(
-        Uri.parse('https://api.docveda.in/api/auth/forgotPasswordOTP'),
+        Uri.parse('$baseUrl/auth/forgotPasswordOTP'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -602,7 +591,6 @@ class ApiService {
           'userName': userName,
         }),
       );
-      print("getForgotPassword Response: ${response}");
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else if (response.statusCode == 401) {
@@ -629,17 +617,10 @@ class ApiService {
     required String user_MST_CD,
   }) async {
     try {
-      print(" Sending POST request to forgot_password API...");
-      print("Username: $userName");
-      print("otp : $otp");
-      print("otp : $otp_Ric_Var");
-      print("otp : $otp_Transaction_Id");
-      print("otp : $dlt_CD");
-      print("otp : $user_MST_CD");
       final response = await http.post(
         Uri.parse(
           // '$baseUrl/auth/verifyForgotPasswordOTP',
-          'https://api.docveda.in/api/auth/verifyForgotPasswordOTP',
+          '$baseUrl/auth/verifyForgotPasswordOTP',
         ),
         headers: {
           'Content-Type': 'application/json', // Ensure correct headers
@@ -652,8 +633,6 @@ class ApiService {
           'dlt_CD': dlt_CD
         }),
       );
-
-      print("getverifyForgotPasswordOTP Response: ${response.statusCode}");
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -675,12 +654,10 @@ class ApiService {
       required String hashedPassword,
       required String userCd}) async {
     try {
-      print(" Sending POST request to forgot_password API...");
-      print(" Username: $userName");
       final response = await http.post(
         Uri.parse(
             // '$baseUrl/auth/verifyForgotPasswordOTP',
-            'https://api.docveda.in/api/auth/resetPassword'),
+            '$baseUrl/auth/resetPassword'),
         headers: {
           'Content-Type': 'application/json', // Ensure correct headers
         },
@@ -712,12 +689,10 @@ class ApiService {
       required String userName,
       required String mobileNumber}) async {
     try {
-      print(" Sending POST request to forgot_password API...");
-      print(" Username: $userName");
       final response = await http.post(
         Uri.parse(
             // '$baseUrl/auth/verifyForgotPasswordOTP',
-            'https://api.docveda.in/api/auth/forgotPasswordOTPResend'),
+            '$baseUrl/auth/forgotPasswordOTPResend'),
         headers: {
           'Content-Type': 'application/json', // Ensure correct headers
         },

@@ -54,8 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (accessToken != null && mobileNo != null) {
       try {
-        print("Sending API request...");
-
         final response = await apiService.getProfileData(
           accessToken,
           context,
@@ -90,7 +88,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           };
         }
 
-        print("No data in response.");
         return null;
       } catch (e) {
         print('Error fetching profile data: $e');

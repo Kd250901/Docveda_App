@@ -84,7 +84,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     );
 
     setState(() => _isLoading = false);
-    print("Reset Password Response: $response");
     if (response?['message'] == "The password changed  successfully.") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

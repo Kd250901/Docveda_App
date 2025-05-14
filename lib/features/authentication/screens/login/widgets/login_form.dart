@@ -46,7 +46,6 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
 
   void fetchDeviceId() async {
     deviceId.value = await DocvedaDeviceUtils.getDeviceId() ?? 'Unknown';
-    print("deviceId ${deviceId}");
   }
 
   Future<Map<String, dynamic>?> checkDeviceIdOnScreen({
@@ -70,7 +69,6 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
       dbName: getDbNameResponse["DB"],
     );
 
-    print("Device ID Response: $response");
     return response; // return the response to use it in loginUser
   }
 

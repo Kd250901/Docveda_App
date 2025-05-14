@@ -21,7 +21,7 @@ class NotificationsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Text(
-              "We're working on bringing you notifications soon.",
+              "No Notifications Found",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),

@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void fetchDeviceId() async {
     deviceId.value = await DocvedaDeviceUtils.getDeviceId() ?? 'Unknown';
-    print("deviceId ${deviceId}");
   }
 
   Future<void> _checkAccessToken() async {
