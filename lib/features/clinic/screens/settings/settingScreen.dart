@@ -234,17 +234,28 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
 
-          Center(
-            child: DocvedaText(
-              text: "${DocvedaTexts.app_version} $version",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: DocvedaColors.darkGrey,
-                fontSize: DocvedaSizes.fontSizeSm,
+          SafeArea(
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 16.0), // Optional extra spacing
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: DocvedaText(
+                      text: "${DocvedaTexts.app_version} $version",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: DocvedaColors.darkGrey,
+                        fontSize: DocvedaSizes.fontSizeSm,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 10),
         ],
       ),
     );
