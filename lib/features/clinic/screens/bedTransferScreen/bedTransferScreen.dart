@@ -11,8 +11,6 @@ import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportS
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
 import 'package:docveda_app/utils/constants/text_strings.dart';
-import 'package:docveda_app/utils/helpers/date_formater.dart';
-import 'package:docveda_app/utils/helpers/helper_functions.dart';
 import 'package:docveda_app/utils/pdf/pdf1.dart';
 import 'package:docveda_app/utils/theme/custom_themes/text_style_font.dart';
 import 'package:flutter/material.dart';
@@ -326,12 +324,18 @@ SafeArea(
                 ),
               ),
             );
-          } else {
-            final selectedPatients = selectedPatientIndices
-                .map((i) => patients[i])
-                .toList();
-            generateAndShowPdf(selectedPatients);
-          }
+          }  else {
+  final selectedPatients = selectedPatientIndices.map((i) {
+    final patient = patients[i];
+    // Add screen name if you know the context (e.g., admission/discharge/etc.)
+    return {
+      ...patient,
+      'Screen Name': 'bed transfer', // <-- update this dynamically if needed
+    };
+  }).toList();
+
+  generateAndShowPdf(selectedPatients);
+}
         },
       ),
     ),

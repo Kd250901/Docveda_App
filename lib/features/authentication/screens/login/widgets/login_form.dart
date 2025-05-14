@@ -1,7 +1,6 @@
 import 'package:docveda_app/common/widgets/app_text/app_text.dart';
 import 'package:docveda_app/common/widgets/app_text_field/app_text_field.dart';
 import 'package:docveda_app/common/widgets/primary_button/primary_button.dart';
-import 'package:docveda_app/features/authentication/screens/login/login.dart';
 import 'package:docveda_app/features/authentication/screens/login/service/api_service.dart';
 import 'package:docveda_app/features/authentication/screens/password_configuration/forgot_password.dart';
 import 'package:docveda_app/navigation_menu.dart';

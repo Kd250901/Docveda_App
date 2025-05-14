@@ -2,7 +2,6 @@ import 'package:docveda_app/common/widgets/card/card.dart';
 import 'package:docveda_app/common/widgets/layouts/grid_layout.dart';
 import 'package:docveda_app/features/clinic/screens/depositScreen/depositsScreen.dart';
 import 'package:docveda_app/features/clinic/screens/ipdSettlement/ipdSettlementsScreen.dart';
-import 'package:docveda_app/features/clinic/screens/opdBills/opdBillsScreen.dart';
 import 'package:docveda_app/features/clinic/screens/opdPayment/opdPaymentScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';

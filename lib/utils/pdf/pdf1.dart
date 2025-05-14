@@ -1,8 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
@@ -17,14 +15,14 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
   final Map<String, List<List<String>>> screenWiseData = {};
   final Map<String, List<String>> screenWiseHeaders = {
     'admission': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Total Bill', 'Ward Name', 'Bed Name'],
-    'discharge': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Discharge Date', 'Bill Amount', 'Ward', 'Bed'],
+    'discharge': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Discharge Date', 'Bill Amount', ],
     'ipd settlement': ['Name',  'UHID No', 'Admission Date', 'Total Ipd Bill', 'Deposit','Final Settlement', ],
     'deposit': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Deposit', 'Total Ipd Bill','Pending Amount', ],
-    'bed transfer': ['Name', 'Age', 'Gender', 'UHID No', 'Transfer Date', 'From Ward', 'To Ward', 'Bed Shift'],
+    'bed transfer': ['Name', 'Age', 'Gender', 'UHID No', 'Transfer Date', 'From Ward', 'To Ward', ],
     'opd visit': ['Name', 'Age', 'Gender', 'UHID No', 'Visit Date',  'Doctor Name', ],
     'opd payment': ['Name', 'Age', 'Gender', 'UHID No', 'Bill Amount','Payment Date', 'Paid Amount', 'Doctor Name', ],
     'opd bills': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Bill Amount', 'Bill No', ],
-    'refund': ['Name', 'Age', 'Gender', 'UHID No', 'Refund Date', 'Refund Amount', 'N/A', ],
+    'refund': ['Name', 'Age', 'Gender', 'UHID No', 'Refund Date', 'Refund Amount', ],
     'discount': ['Name', 'Age', 'Gender', 'UHID No', 'Discount Date', 'Discount Amount', ],
   };
 
@@ -56,8 +54,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           DateFormatter.formatDate(patient['Admission Date']),
           DateFormatter.formatDate(patient['Discharge Date']),
           FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
-          patient['Ward Name'] ?? '--',
-          patient['Bed Name'] ?? '--',
+         
         ]);
         break;
       case 'ipd settlement':
@@ -90,10 +87,10 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Age'] ?? '--',
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
-          DateFormatter.formatDate(patient['Bed Transfer Date']),
-          patient['From Ward'] ?? '--',
-          patient['To Ward'] ?? '--',
-          '${patient['From Bed'] ?? '--'} → ${patient['To Bed'] ?? '--'}',
+          DateFormatter.formatDate(patient['Bed_End_Date']),
+          patient['FROM WARD'] ?? '--',
+          patient['TO WARD'] ?? '--',
+        
         ]);
         break;
       case 'opd visit':
@@ -164,11 +161,8 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
     screenWiseData[screenName]!.add(data);
   }
 
-  // Add a page per screen type
-  for (final entry in screenWiseData.entries) {
-    final screen = entry.key;
-    final data = entry.value;
-    final headers = screenWiseHeaders[screen] ?? [];
+  
+ 
 // Add a page per screen type
   for (final entry in screenWiseData.entries) {
     final screen = entry.key;
@@ -182,7 +176,7 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           pw.Text(
             '${screen[0].toUpperCase()}${screen.substring(1)} Report',
             style: pw.TextStyle(
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: pw.FontWeight.bold,
             
             ),
@@ -210,5 +204,4 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
   }
 
   await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
-}
 }
