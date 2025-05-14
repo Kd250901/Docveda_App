@@ -357,7 +357,7 @@ class _OPDVisitScreenState extends State<OPDVisitScreen> {
                                             ),
                                           ),
                                           DocvedaText(
-                                            text: "₹${patient["Doctor Name"] ?? "0"}",
+                                            text: patient["Doctor Name"],
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,

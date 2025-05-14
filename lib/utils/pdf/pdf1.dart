@@ -13,7 +13,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
   final Map<String, List<String>> screenWiseHeaders = {
     'admission': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Total Bill', 'Ward Name', 'Bed Name'],
     'discharge': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Discharge Date', 'Bill Amount', 'Ward', 'Bed'],
-    'ipd settlement': ['Name',  'UHID No', 'Admission Date', 'Total Ipd Bill', 'Deposit','Final Settlement','Refund Amount', 'Discount Amount', 'Discharge Date', 'Doctor Name'],
+    'ipd settlement': ['Name',  'UHID No', 'Admission Date', 'Total Ipd Bill', 'Deposit','Final Settlement', ],
     'deposit': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Deposit', 'Total Ipd Bill','Pending Amount', ],
     'bed transfer': ['Name', 'Age', 'Gender', 'UHID No', 'Transfer Date', 'From Ward', 'To Ward', 'Bed Shift'],
     'opd visit': ['Name', 'Age', 'Gender', 'UHID No', 'Visit Date',  'Doctor Name', ],
@@ -61,10 +61,6 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
           FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0'),
           FormatAmount.formatAmount(patient['Final Settlement']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0'),
-          DateFormatter.formatDate(patient['Discharge Date']),
-          patient['Doctor Name'] ?? '--',
         
         ]);
         break;

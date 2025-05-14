@@ -454,7 +454,7 @@ class _DepositScreenState extends State<DepositScreen> {
                   gender: patient['Gender'] ?? '',
                                     uhidno: patient['UHID No'],
 
-                  screenName: "IPD Settlement",
+                  screenName: "Deposit",
                   doctorInCharge: patient['Doctor In Charge'] ?? '',
     deposit: FormatAmount.formatAmount(['Deposit']),
     pendingAmount: FormatAmount.formatAmount(['Pending Amount']),
