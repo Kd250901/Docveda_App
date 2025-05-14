@@ -1,8 +1,8 @@
 import 'package:intl/intl.dart';
 
 class FormatAmount {
-  /// Format number like "28626.00" -> "₹28,626"
-  static String formatAmount(dynamic value) {
+  /// Format number like "28626.00" -> "₹28,626" or "Rs. 28,626"
+  static String formatAmount(dynamic value, {bool showSymbol = true}) {
     double amount = 0.0;
 
     if (value is String) {
@@ -13,7 +13,7 @@ class FormatAmount {
 
     final format = NumberFormat.currency(
       locale: 'en_IN',
-      symbol: '₹',
+      symbol: showSymbol ? '₹' : 'Rs', // Use the rupee symbol or Rs based on showSymbol
       decimalDigits: 0,
     );
     return format.format(amount);

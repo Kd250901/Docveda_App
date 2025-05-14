@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
@@ -7,6 +10,8 @@ import 'package:printing/printing.dart';
 
 Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) async {
   final pdf = pw.Document();
+  //  final ByteData bytes = await rootBundle.load("assets/fonts/Roboto-Regular.ttf");
+  // final pw.Font font = pw.Font.ttf(bytes);
 
   // Define one set of headers and rows per screen type
   final Map<String, List<List<String>>> screenWiseData = {};
@@ -26,6 +31,8 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
   for (final patient in selectedPatients) {
     final screenName = (patient['Screen Name'] ?? '').toString().toLowerCase();
     final data = <String>[];
+//     final ttf = await rootBundle.load("assets/fonts/Roboto-Regular.ttf");
+// final font = pw.Font.ttf(ttf);
 
     switch (screenName) {
       case 'admission':
@@ -35,7 +42,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0',showSymbol: false),
           patient['Ward Name'] ?? '--',
           patient['Bed Name'] ?? '--',
         ]);
@@ -48,7 +55,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
           DateFormatter.formatDate(patient['Discharge Date']),
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
           patient['Ward Name'] ?? '--',
           patient['Bed Name'] ?? '--',
         ]);
@@ -58,9 +65,9 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Patient Name'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Final Settlement']?.toString() ?? '0'),
+FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymbol: false) ,   
+      FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(patient['Final Settlement']?.toString() ?? '0',showSymbol: false),
         
         ]);
         break;
@@ -71,9 +78,9 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-           FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0'),
-          FormatAmount.formatAmount(patient['Pending Amount']?.toString() ?? '0'),
+           FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(patient['Pending Amount']?.toString() ?? '0',showSymbol: false),
           patient['Bed Name'] ?? '--',
         ]);
         break;
@@ -107,9 +114,9 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Payment']),
-          FormatAmount.formatAmount(patient['Paid Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Paid Amount']?.toString() ?? '0',showSymbol: false),
           patient['Doctor Name'] ?? '--',
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
          
         ]);
         break;
@@ -120,7 +127,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
           patient['Bill No'] ?? '--',
          
         ]);
@@ -132,7 +139,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Refund']),
-          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0',showSymbol: false),
           
         ]);
         break;
@@ -143,7 +150,7 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Discount']),
-          FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0'),
+ FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0',showSymbol: false),
           
         ]);
         break;
@@ -162,6 +169,11 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
     final screen = entry.key;
     final data = entry.value;
     final headers = screenWiseHeaders[screen] ?? [];
+// Add a page per screen type
+  for (final entry in screenWiseData.entries) {
+    final screen = entry.key;
+    final data = entry.value;
+    final headers = screenWiseHeaders[screen] ?? [];
 
     pdf.addPage(
       pw.MultiPage(
@@ -169,22 +181,34 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
         build: (context) => [
           pw.Text(
             '${screen[0].toUpperCase()}${screen.substring(1)} Report',
-            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+            style: pw.TextStyle(
+              fontSize: 22,
+              fontWeight: pw.FontWeight.bold,
+            
+            ),
           ),
           pw.SizedBox(height: 12),
           pw.Table.fromTextArray(
             headers: headers,
             data: data,
-            headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            headerStyle: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+            
+            ),
             cellAlignment: pw.Alignment.centerLeft,
             headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
             border: pw.TableBorder.all(color: PdfColors.grey),
             cellHeight: 25,
           ),
         ],
+        footer: (context) => pw.Text(
+          'Generated on ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
+          style: pw.TextStyle(fontSize: 9, ),
+        ),
       ),
     );
   }
 
   await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+}
 }
