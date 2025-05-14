@@ -45,7 +45,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final storage = FlutterSecureStorage();
     final accessToken = await storage.read(key: 'accessToken');
-    final mobileNo = "7248960414";
+    final username = await storage.read(key: 'username');
+
+    final mobileNo = username;
 
     // print("Access Token: $accessToken");
     // print("Mobile Number: $mobileNo");

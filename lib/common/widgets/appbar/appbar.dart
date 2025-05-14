@@ -24,23 +24,22 @@ class DocvedaAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.md),
+      padding: const EdgeInsets.symmetric(horizontal: DocvedaSizes.sm),
       child: AppBar(
         automaticallyImplyLeading: false,
-        leading:
-            showBackArrow
+        leading: showBackArrow
+            ? IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(
+                  Iconsax.arrow_left_2,
+                  color: DocvedaColors.white,
+                ),
+              )
+            : leadingIcon != null
                 ? IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(
-                    Iconsax.arrow_left_2,
-                    color: DocvedaColors.white,
-                  ),
-                )
-                : leadingIcon != null
-                ? IconButton(
-                  onPressed: leadingOnPressed,
-                  icon: Icon(leadingIcon, color: DocvedaColors.white),
-                )
+                    onPressed: leadingOnPressed,
+                    icon: Icon(leadingIcon, color: DocvedaColors.white),
+                  )
                 : null,
         actions: actions,
         title: null, // Remove default title
