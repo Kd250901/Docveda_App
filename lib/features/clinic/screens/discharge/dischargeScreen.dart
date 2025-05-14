@@ -457,11 +457,17 @@ class _DischargescreenState extends State<Dischargescreen> {
               ),
             );
           } else {
-            final selectedPatients = selectedPatientIndices
-                .map((i) => patients[i])
-                .toList();
-            generateAndShowPdf(selectedPatients);
-          }
+  final selectedPatients = selectedPatientIndices.map((i) {
+    final patient = patients[i];
+    // Add screen name if you know the context (e.g., admission/discharge/etc.)
+    return {
+      ...patient,
+      'Screen Name': 'discharge', // <-- update this dynamically if needed
+    };
+  }).toList();
+
+  generateAndShowPdf(selectedPatients);
+}
         },
       ),
     ),

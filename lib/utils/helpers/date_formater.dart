@@ -8,6 +8,7 @@ class DateFormatter {
       DateTime parsedDate;
 
       if (inputDate.contains('/')) {
+        // Handles formats like "02/05/2025"
         List<String> parts = inputDate.split(' ');
         List<String> dateParts = parts[0].split('/');
 
@@ -19,12 +20,13 @@ class DateFormatter {
 
         parsedDate = DateTime(year, month, day);
       } else if (inputDate.contains('-')) {
-        parsedDate = DateTime.parse(inputDate).toLocal();
+        // Handles formats like "2025-05-02" and "2025-05-02T00:00:00.000Z"
+        parsedDate = DateTime.parse(inputDate);
       } else {
         return inputDate;
       }
 
-      return DateFormat('yyyy-MM-dd').format(parsedDate);
+      return DateFormat('yyyy-MM-dd').format(parsedDate.toLocal());
     } catch (e) {
       return "N/A";
     }

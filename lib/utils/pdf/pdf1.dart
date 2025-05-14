@@ -1,149 +1,194 @@
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
 
 Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) async {
   final pdf = pw.Document();
-  final numberFormatter = NumberFormat.currency(locale: 'en_IN', symbol: '₹');
 
-  pdf.addPage(
-    pw.MultiPage(
-      pageFormat: PdfPageFormat.a4,
-      build: (context) {
-        return [
+  // Define one set of headers and rows per screen type
+  final Map<String, List<List<String>>> screenWiseData = {};
+  final Map<String, List<String>> screenWiseHeaders = {
+    'admission': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Total Bill', 'Ward Name', 'Bed Name'],
+    'discharge': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Discharge Date', 'Bill Amount', 'Ward', 'Bed'],
+    'ipd settlement': ['Name',  'UHID No', 'Admission Date', 'Total Ipd Bill', 'Deposit','Final Settlement','Refund Amount', 'Discount Amount', 'Discharge Date', 'Doctor Name'],
+    'deposit': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Deposit', 'Total Ipd Bill','Pending Amount', ],
+    'bed transfer': ['Name', 'Age', 'Gender', 'UHID No', 'Transfer Date', 'From Ward', 'To Ward', 'Bed Shift'],
+    'opd visit': ['Name', 'Age', 'Gender', 'UHID No', 'Visit Date',  'Doctor Name', ],
+    'opd payment': ['Name', 'Age', 'Gender', 'UHID No', 'Bill Amount','Payment Date', 'Paid Amount', 'Doctor Name', ],
+    'opd bills': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Bill Amount', 'Bill No', ],
+    'refund': ['Name', 'Age', 'Gender', 'UHID No', 'Refund Date', 'Refund Amount', 'N/A', ],
+    'discount': ['Name', 'Age', 'Gender', 'UHID No', 'Discount Date', 'Discount Amount', ],
+  };
+
+  for (final patient in selectedPatients) {
+    final screenName = (patient['Screen Name'] ?? '').toString().toLowerCase();
+    final data = <String>[];
+
+    switch (screenName) {
+      case 'admission':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Admission Date']),
+          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
+          patient['Ward Name'] ?? '--',
+          patient['Bed Name'] ?? '--',
+        ]);
+        break;
+      case 'discharge':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Admission Date']),
+          DateFormatter.formatDate(patient['Discharge Date']),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+          patient['Ward Name'] ?? '--',
+          patient['Bed Name'] ?? '--',
+        ]);
+        break;
+      case 'ipd settlement':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Admission Date']),
+          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Final Settlement']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0'),
+          DateFormatter.formatDate(patient['Discharge Date']),
+          patient['Doctor Name'] ?? '--',
+        
+        ]);
+        break;
+      case 'deposit':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Admission Date']),
+           FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0'),
+          FormatAmount.formatAmount(patient['Pending Amount']?.toString() ?? '0'),
+          patient['Bed Name'] ?? '--',
+        ]);
+        break;
+      case 'bed transfer':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Bed Transfer Date']),
+          patient['From Ward'] ?? '--',
+          patient['To Ward'] ?? '--',
+          '${patient['From Bed'] ?? '--'} → ${patient['To Bed'] ?? '--'}',
+        ]);
+        break;
+      case 'opd visit':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Visit Date']),
+          patient['Doctor Name'] ?? '--',
+         
+        ]);
+        break;
+      case 'opd payment':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Date Of Payment']),
+          FormatAmount.formatAmount(patient['Paid Amount']?.toString() ?? '0'),
+          patient['Doctor Name'] ?? '--',
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+         
+        ]);
+        break;
+      case 'opd bills':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Admission Date']),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0'),
+          patient['Bill No'] ?? '--',
+         
+        ]);
+        break;
+      case 'refund':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Date Of Refund']),
+          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0'),
+          
+        ]);
+        break;
+      case 'discount':
+        data.addAll([
+          patient['Patient Name'] ?? '--',
+          patient['Age'] ?? '--',
+          patient['Gender'] ?? '--',
+          patient['UHID No'] ?? '--',
+          DateFormatter.formatDate(patient['Date Of Discount']),
+          FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0'),
+          
+        ]);
+        break;
+      default:
+        continue;
+    }
+
+    if (!screenWiseData.containsKey(screenName)) {
+      screenWiseData[screenName] = [];
+    }
+    screenWiseData[screenName]!.add(data);
+  }
+
+  // Add a page per screen type
+  for (final entry in screenWiseData.entries) {
+    final screen = entry.key;
+    final data = entry.value;
+    final headers = screenWiseHeaders[screen] ?? [];
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) => [
           pw.Text(
-            'Patient Report',
-            style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+            '${screen[0].toUpperCase()}${screen.substring(1)} Report',
+            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
           ),
-          ...selectedPatients.map((patient) {
-            final screenName = (patient['Screen Name'] ?? '').toString().toLowerCase();
-            final name = patient['Patient Name'] ?? '--';
-
-            final reportData = <String, String>{
-              'Name': name,
-              'Age': patient['Age'] ?? '--',
-              'Gender': patient['Gender'] ?? '--',
-              'UHID No': patient['UHID No'] ?? '--',
-            };
-
-            switch (screenName) {
-              case 'admission':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Deposite':FormatAmount.formatAmount( patient['Deposite'] ?? '--'),
-                  'Total IPD Bill': FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0'),
-                  'Ward Name': patient['Ward Name'] ?? '--',
-                  'Bed Name': patient['Bed Name'] ?? '--',
-                });
-                break;
-              case 'discharge':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Discharge Date': DateFormatter.formatDate(patient['Discharge Date']),
-                  'Bill Amount': numberFormatter.format(num.tryParse(patient['Bill Amount']?.toString() ?? '0')),
-                });
-                break;
-              case 'ipd settlement':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Discharge Date': DateFormatter.formatDate(patient['Discharge Date']),
-                  'Total IPD Bill': numberFormatter.format(num.tryParse(patient['Total IPD Bill']?.toString() ?? '0')),
-                  'Final Settlement': patient['Final Settlement'] ?? '--',
-                  'Refund Amount': numberFormatter.format(num.tryParse(patient['Refund Amount']?.toString() ?? '0')),
-                  'Discount Amount': numberFormatter.format(num.tryParse(patient['Discount Amount']?.toString() ?? '0')),
-                  'Doctor Name': patient['Doctor Name'] ?? '--',
-                });
-                break;
-              case 'opd visit':
-                reportData.addAll({
-                  'Visit Date': DateFormatter.formatDate(patient['Visit Date']),
-                  'Doctor Name': patient['Doctor Name'] ?? '--',
-                });
-                break;
-              case 'deposit':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Deposit': numberFormatter.format(num.tryParse(patient['Deposit']?.toString() ?? '0')),
-                  'Pending Amount': numberFormatter.format(num.tryParse(patient['Pending Amount']?.toString() ?? '0')),
-                });
-                break;
-              case 'bed transfer':
-                reportData.addAll({
-                  'Bed Transfer Date': DateFormatter.formatDate(patient['Bed Transfer Date']),
-                  'Bed Transfer Time': patient['Bed Transfer Time'] ?? '--',
-                  'From Ward': patient['From Ward'] ?? '--',
-                  'To Ward': patient['To Ward'] ?? '--',
-                  'From Bed': patient['From Bed'] ?? '--',
-                  'To Bed': patient['To Bed'] ?? '--',
-                });
-                break;
-              case 'opd payment':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Bill Amount': numberFormatter.format(num.tryParse(patient['Bill Amount']?.toString() ?? '0')),
-                  'Date Of Payment': DateFormatter.formatDate(patient['Date Of Payment']),
-                  'Paid Amount': numberFormatter.format(num.tryParse(patient['Paid Amount']?.toString() ?? '0')),
-                  'Refund': numberFormatter.format(num.tryParse(patient['Refund']?.toString() ?? '0')),
-                  'Discount': numberFormatter.format(num.tryParse(patient['Discount']?.toString() ?? '0')),
-                  'Doctor Name': patient['Doctor Name'] ?? '--',
-                });
-                break;
-              case 'opd bills':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Bill Amount': numberFormatter.format(num.tryParse(patient['Bill Amount']?.toString() ?? '0')),
-                  'Bill No': patient['Bill No'] ?? '--',
-                });
-                break;
-              case 'refund':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Refund Amount': numberFormatter.format(num.tryParse(patient['Refund Amount']?.toString() ?? '0')),
-                  'Date Of Refund': DateFormatter.formatDate(patient['Date Of Refund']),
-                });
-                break;
-              case 'discount':
-                reportData.addAll({
-                  'Admission Date': DateFormatter.formatDate(patient['Admission Date']),
-                  'Discount Amount': numberFormatter.format(num.tryParse(patient['Discount Amount']?.toString() ?? '0')),
-                  'Date Of Discount': DateFormatter.formatDate(patient['Date Of Discount']),
-                });
-                break;
-            }
-
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                  '${screenName.toUpperCase()} REPORT',
-                  style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
-                ),
-                pw.SizedBox(height: 8),
-                ...reportData.entries.map((entry) {
-                  return pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 2),
-                    child: pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text('${entry.key}:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.Text(entry.value),
-                      ],
-                    ),
-                  );
-                }),
-                pw.Divider(thickness: 1),
-                pw.SizedBox(height: 10),
-              ],
-            );
-          }).toList(),
-        ];
-      },
-    ),
-  );
+          pw.SizedBox(height: 12),
+          pw.Table.fromTextArray(
+            headers: headers,
+            data: data,
+            headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            cellAlignment: pw.Alignment.centerLeft,
+            headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
+            border: pw.TableBorder.all(color: PdfColors.grey),
+            cellHeight: 25,
+          ),
+        ],
+      ),
+    );
+  }
 
   await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
 }

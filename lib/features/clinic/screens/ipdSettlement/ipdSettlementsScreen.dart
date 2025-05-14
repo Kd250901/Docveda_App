@@ -415,17 +415,23 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
     discountAmount:FormatAmount.formatAmount( patient['Discount Amount'] ?? ''),
                   admissionDate: patient['Admission Date'] ?? '',
              billAmount:FormatAmount.formatAmount( patient['Bill Amount']),
-             dischargeDate: patient['Discharge Date'] ?? '',
+             dischargeDate: DateFormatter.formatDate(patient['Discharge Date'] ?? ''),
                 
                 ),
               ),
             );
           } else {
-            final selectedPatients = selectedPatientIndices
-                .map((i) => patients[i])
-                .toList();
-            generateAndShowPdf(selectedPatients);
-          }
+  final selectedPatients = selectedPatientIndices.map((i) {
+    final patient = patients[i];
+    // Add screen name if you know the context (e.g., admission/discharge/etc.)
+    return {
+      ...patient,
+      'Screen Name': 'ipd settlement', // <-- update this dynamically if needed
+    };
+  }).toList();
+
+  generateAndShowPdf(selectedPatients);
+}
         },
       ),
     ),
