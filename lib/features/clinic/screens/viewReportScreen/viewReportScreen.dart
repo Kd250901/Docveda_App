@@ -107,7 +107,7 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "Discharge Date": dischargeDate ?? "-",
-          "Bill Amount": billAmount ?? "-",
+          "Total Ipd Bill": totalIpdBill ?? "-",
         });
         break;
          case "opd visit":

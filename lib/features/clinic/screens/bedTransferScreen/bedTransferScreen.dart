@@ -320,7 +320,7 @@ SafeArea(
                         toBed: patient['TO BED'] ?? '', 
 
 
-                        screenName: "bed transfer",
+                        screenName: "Bed Transfer",
                 ),
               ),
             );

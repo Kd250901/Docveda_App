@@ -335,7 +335,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                                     ),
                                     DocvedaText(
                                       text:
-                                          "${patient["Age"] ?? "--"} Yrs • ${patient["Gender"] ?? "--"}",
+                                          "${patient["Age"] ?? "--"}  • ${patient["Gender"] ?? "--"}",
                                       style: TextStyleFont.caption.copyWith(
                                           color: Colors.grey, fontSize: 12),
                                     ),
@@ -397,7 +397,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           DocvedaText(
-                                            text: "TOTAL BILL",
+                                            text: "Total Bill",
                                             style: TextStyleFont.body.copyWith(
                                               color: Colors.grey.shade700,
                                               fontSize: 14,
@@ -464,15 +464,15 @@ class _DischargescreenState extends State<Dischargescreen> {
                                 builder: (context) => ViewReportScreen(
                                   patientName:
                                       patient['Patient Name'] ?? 'Unknown',
-                                  age: patient['Age'] ?? 'unknown',
+                                  age: patient['Age'].toString(),
                                   gender: patient['Gender'] ?? '',
                                   uhidno: patient['UHID No'],
-                                  screenName: "discharge",
+                                  screenName: "Discharge",
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                   dischargeDate:
-                                      patient['Discharge Date'] ?? '',
-                                  totalIpdBill: patient['Total IPD Bill'] ?? 0,
+                                     DateFormatter.formatDate( patient['Discharge Date'] ?? ''),
+                                  totalIpdBill: patient['Total IPD Bill'].toString(),
                                 ),
                               ),
                             );
