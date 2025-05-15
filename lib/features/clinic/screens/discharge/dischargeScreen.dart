@@ -348,42 +348,69 @@ class _DischargescreenState extends State<Dischargescreen> {
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              DocvedaText(
-                                                text: "Admission Date",
-                                                style: TextStyleFont.caption
-                                                    .copyWith(
-                                                        color: Colors.grey),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Admission Date"]),
-                                                style: TextStyleFont.caption,
-                                              ),
-                                            ],
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                DocvedaText(
+                                                  text: "Admission Date",
+                                                  style: TextStyleFont.caption
+                                                      .copyWith(
+                                                          color: Colors.grey),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                                const SizedBox(height: 4),
+                                                DocvedaText(
+                                                  text: DateFormatter
+                                                      .formatDate(patient[
+                                                          "Admission Date"]),
+                                                  style: TextStyleFont.caption,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              DocvedaText(
-                                                text: "Discharge Date",
-                                                style: TextStyleFont.caption
-                                                    .copyWith(
-                                                        color: Colors.grey),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Discharge Date"]),
-                                                style: TextStyleFont.caption,
-                                              ),
-                                            ],
+                                          const SizedBox(
+                                              width:
+                                                  12), // spacing between columns
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                DocvedaText(
+                                                  text: "Discharge Date",
+                                                  style: TextStyleFont.caption
+                                                      .copyWith(
+                                                          color: Colors.grey),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                                const SizedBox(height: 4),
+                                                DocvedaText(
+                                                  text: DateFormatter
+                                                      .formatDate(patient[
+                                                          "Discharge Date"]),
+                                                  style: TextStyleFont.caption,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  softWrap: false,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
