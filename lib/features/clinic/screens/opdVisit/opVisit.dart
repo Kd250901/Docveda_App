@@ -317,8 +317,8 @@ class _OPDVisitScreenState extends State<OPDVisitScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Visit Date"]),
+                                                text: 
+                                                    patient["Visit Date"],
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],

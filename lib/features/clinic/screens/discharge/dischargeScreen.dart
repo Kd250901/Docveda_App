@@ -372,9 +372,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Admission Date"]),
+                                                  text: patient[
+                                                          "Admission Date"],
                                                   style: TextStyleFont.caption,
                                                   maxLines: 1,
                                                   overflow:
@@ -404,9 +403,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Discharge Date"]),
+                                                  text:patient[
+                                                          "Discharge Date"],
                                                   style: TextStyleFont.caption,
                                                   maxLines: 1,
                                                   overflow:
@@ -500,8 +498,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                                   screenName: "Discharge",
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
-                                  dischargeDate: DateFormatter.formatDate(
-                                      patient['Discharge Date'] ?? ''),
+                                  dischargeDate:
+                                      patient['Discharge Date'] ?? '',
                                deposit: FormatAmount.formatAmount(['Deposit']),
                               finalSettlement: FormatAmount.formatAmount(
                                   patient['Final Settlement'] ?? ''),

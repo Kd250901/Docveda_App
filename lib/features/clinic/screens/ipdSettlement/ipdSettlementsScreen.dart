@@ -322,9 +322,8 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Admission Date"]),
+                                                  text:patient[
+                                                          "Admission Date"],
                                                   style: TextStyleFont.caption,
                                                   maxLines: 1,
                                                   overflow:
@@ -354,9 +353,8 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Discharge Date"]),
+                                                  text: patient[
+                                                          "Discharge Date"],
                                                   style: TextStyleFont.caption,
                                                   maxLines: 1,
                                                   overflow:

@@ -318,9 +318,8 @@ class _DepositScreenState extends State<DepositScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Deposit Date"]),
+                                                  text: patient[
+                                                          "Deposit Date"],
                                                   style: TextStyleFont.caption,
                                                 ),
                                               ],
@@ -487,7 +486,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                     patient  ['Total IPD Bill']),
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
-                                      depositdate: DateFormatter.formatDate( patient['Deposit Date']),
+                                      depositdate: patient['Deposit Date'],
                                 ),
                               ),
                             );

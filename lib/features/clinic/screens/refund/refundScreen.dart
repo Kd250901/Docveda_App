@@ -321,8 +321,8 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Admission Date"]),
+                                                text:
+                                                    patient["Admission Date"],
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],
@@ -339,8 +339,8 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Date Of Refund"]),
+                                                text: 
+                                                    patient["Date Of Refund"],
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],
@@ -431,8 +431,8 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                       patient['Admission Date'] ?? '',
                                   refundAmount: FormatAmount.formatAmount(
                                       patient['Refund Amount']),
-                                  dateOfRefund: DateFormatter.formatDate(
-                                      patient['Date Of Refund'] ?? ''),
+                                  dateOfRefund:
+                                      patient['Date Of Refund'] ?? '',
                                 ),
                               ),
                             );

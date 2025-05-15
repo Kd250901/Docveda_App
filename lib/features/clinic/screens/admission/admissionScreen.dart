@@ -330,8 +330,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
-                                                text: DateFormatter.formatDate(
-                                                    patient["Admission Date"]),
+                                                text: 
+                                                    patient["Admission Date"],
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],

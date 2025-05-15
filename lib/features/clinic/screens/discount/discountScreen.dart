@@ -357,9 +357,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Date Of Discount"]),
+                                                  text: patient[
+                                                          "Date Of Discount"],
                                                   style: TextStyleFont.caption,
                                                   maxLines: 1,
                                                   overflow:
@@ -455,8 +454,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                       patient['Admission Date'] ?? '',
                                   discountAmount: FormatAmount.formatAmount(
                                       patient['Discount Amount'] ?? 0),
-                                  dateOfDiscount: DateFormatter.formatDate(
-                                      patient['Date Of Discount'] ?? ''),
+                                  dateOfDiscount: 
+                                      patient['Date Of Discount'] ?? '',
                                 ),
                               ),
                             );
