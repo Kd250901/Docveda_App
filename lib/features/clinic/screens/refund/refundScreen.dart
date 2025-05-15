@@ -426,7 +426,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                   age: patient['Age'] ?? 'unknown',
                                   gender: patient['Gender'] ?? '',
                                   uhidno: patient['UHID No'],
-                                  screenName: "refund",
+                                  screenName: "Refund",
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                   refundAmount: FormatAmount.formatAmount(
