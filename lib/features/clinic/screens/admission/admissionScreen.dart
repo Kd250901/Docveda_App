@@ -68,6 +68,8 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+      // Clear selected patient indices when loading new data
+    selectedPatientIndices.clear();
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
         isMonthly: isMonthlyToggle,
@@ -363,7 +365,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           DocvedaText(
-                                            text: "TOTAL BILL",
+                                            text: "Total Bill",
                                             style: TextStyleFont.body.copyWith(
                                               color: Colors.grey.shade700,
                                               fontSize: 14,
@@ -432,7 +434,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                       patient['Patient Name'] ?? 'Unknown',
                                   age: patient['Age'] ?? 'unknown',
                                   gender: patient['Gender'] ?? '',
-                                  screenName: "admission",
+                                  screenName: "Admission",
 
                                   // Pass required fields for "Admission"
                                   admissionDate: patient['Admission Date'],

@@ -69,6 +69,8 @@ class _DischargescreenState extends State<Dischargescreen> {
         Get.find<ToggleController>(); // Access the global toggle state
 
     setState(() {
+          selectedPatientIndices.clear();
+
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
         isMonthly: isMonthlyToggle,
@@ -283,7 +285,8 @@ class _DischargescreenState extends State<Dischargescreen> {
                                 padding: const EdgeInsets.only(
                                     left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text: DocvedaTexts.depositePatientDesc,
+                                  text:
+                                      "Select a patient’s card to download the report",
                                   style: TextStyleFont.body,
                                 ),
                               ),

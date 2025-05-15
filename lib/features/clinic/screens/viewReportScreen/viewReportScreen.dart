@@ -98,7 +98,7 @@ class ViewReportScreen extends StatelessWidget {
           "Admission Date": admissionDate ?? "-",
           "UHID No": uhidno ?? "-",
           "Deposite": deposite ?? "-",
-          "Total Ipd Bill": totalIpdBill ?? "-",
+          "Total Bill": totalIpdBill ?? "-",
           "Ward Name": wardName ?? "-",
           "Bed Name": bedName ?? "-",
         });
@@ -107,7 +107,7 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "Discharge Date": dischargeDate ?? "-",
-          "Total Ipd Bill": totalIpdBill ?? "-",
+          "Total Bill": totalIpdBill ?? "-",
         });
         break;
          case "opd visit":
@@ -130,7 +130,7 @@ class ViewReportScreen extends StatelessWidget {
       case "deposit":
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
-          "Total Ipd Bill": totalIpdBill ?? "-",
+          "Total Bill": totalIpdBill ?? "-",
           "Deposit": deposit ?? "-",
           "Pending Amount": pendingAmount ?? "-",
         });
@@ -157,7 +157,7 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "Doctor Name": doctorInCharge ?? "-",
-          "Total IPD Bill": totalIpdBill ?? "-",
+          "Total Bill": totalIpdBill ?? "-",
           "Deposit": deposit ?? "-",
           "Final Settlement": finalSettlement ?? "-",
           "Refund Amount": refundAmount ?? "-",

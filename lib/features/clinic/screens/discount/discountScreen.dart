@@ -57,6 +57,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+          selectedPatientIndices.clear();
+
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDiscountData(
         isMonthly: isMonthlyToggle,

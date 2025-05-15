@@ -58,6 +58,8 @@ class _RefundsScreenState extends State<RefundsScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+          selectedPatientIndices.clear();
+
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchRefundData(
         isMonthly: isMonthlyToggle,

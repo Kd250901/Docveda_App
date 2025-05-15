@@ -69,13 +69,15 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+          selectedPatientIndices.clear();
+
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
         isMonthly: isMonthlyToggle,
         pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
         pType: isMonthlyToggle
             ? 'Monthly'
-            : 'Daily', // ✅ now both use the correct source
+            : 'Daily', // now both use the correct source
       );
     });
   }

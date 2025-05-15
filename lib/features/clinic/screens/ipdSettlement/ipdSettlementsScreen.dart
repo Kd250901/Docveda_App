@@ -68,6 +68,8 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
   void loadIPDSettlementData() {
     final toggleController = Get.find<ToggleController>();
     setState(() {
+          selectedPatientIndices.clear();
+
       patientData = fetchDashboardData(
         isMonthly: toggleController.isMonthly.value,
         pDate: DateFormat('yyyy-MM-dd').format(selectedDate),

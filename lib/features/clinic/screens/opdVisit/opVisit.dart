@@ -64,6 +64,8 @@ class _OPDVisitScreenState extends State<OPDVisitScreen> {
   void loadOPDVisitData() {
     final toggleController = Get.find<ToggleController>();
     setState(() {
+          selectedPatientIndices.clear();
+
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
         isMonthly: isMonthlyToggle,

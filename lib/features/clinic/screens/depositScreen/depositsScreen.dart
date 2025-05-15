@@ -68,6 +68,8 @@ class _DepositScreenState extends State<DepositScreen> {
     final toggleController = Get.find<ToggleController>();
 
     setState(() {
+          selectedPatientIndices.clear();
+
       patientData = fetchDashboardData(
         isMonthly: toggleController.isMonthly.value, // Use global toggle state
         pDate: DateFormat('yyyy-MM-dd').format(_selectedDate),
@@ -370,8 +372,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                             ),
                                           ),
                                           DocvedaText(
-                                            text:
-                                                "₹${patient["Deposit"] ?? "0"}",
+                                            text:FormatAmount.formatAmount( patient["Deposit"] ?? "0"),
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
@@ -392,8 +393,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                             ),
                                           ),
                                           DocvedaText(
-                                            text:
-                                                "₹${patient["Total IPD Bill"] ?? "0"}",
+                                            text:FormatAmount.formatAmount( patient["Total IPD Bill"] ?? "0"),
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
@@ -481,11 +481,11 @@ class _DepositScreenState extends State<DepositScreen> {
                                   doctorInCharge:
                                       patient['Doctor In Charge'] ?? '',
                                   deposit:
-                                      FormatAmount.formatAmount(['Deposit']),
+                                      FormatAmount.formatAmount(patient['Deposit']),
                                   pendingAmount: FormatAmount.formatAmount(
-                                      ['Pending Amount']),
+                                     patient ['Pending Amount']),
                                   totalIpdBill: FormatAmount.formatAmount(
-                                      ['Total IPD Bill']),
+                                    patient  ['Total IPD Bill']),
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                 ),
