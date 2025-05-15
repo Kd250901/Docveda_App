@@ -124,32 +124,35 @@ class BedTransferCard extends StatelessWidget {
 
             /// --- Ward Info ---
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// From Ward (top)
+                /// FROM WARD + BED (left aligned)
                 Flexible(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // FROM WARD
-                      DocvedaText(
-                        text: patient["FROM WARD"] ?? "--",
-                        style: TextStyleFont.body
-                            .copyWith(fontWeight: FontWeight.w500),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        // Let text wrap naturally
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: DocvedaText(
+                          text: patient["FROM WARD"] ?? "--",
+                          style: TextStyleFont.body
+                              .copyWith(fontWeight: FontWeight.w500),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        ),
                       ),
                       const SizedBox(height: 4),
-
-                      // FROM BED
-                      DocvedaText(
-                        text: patient["FROM BED"] ?? "--",
-                        style: TextStyleFont.body
-                            .copyWith(fontWeight: FontWeight.w500),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: DocvedaText(
+                          text: patient["FROM BED"] ?? "--",
+                          style: TextStyleFont.body
+                              .copyWith(fontWeight: FontWeight.w500),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        ),
                       ),
                     ],
                   ),
@@ -157,23 +160,24 @@ class BedTransferCard extends StatelessWidget {
 
                 const SizedBox(width: 12),
 
-                /// Arrow in the center
-                Expanded(
-                  child: Center(
-                    child: Icon(
-                      Iconsax.arrow_right_1,
-                      size: DocvedaSizes.iconXlg,
-                      color: DocvedaColors.grey,
-                    ),
+                /// Arrow (centered)
+                Container(
+                  width: 40,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Iconsax.arrow_right_1,
+                    size: DocvedaSizes.iconXlg,
+                    color: DocvedaColors.darkerGrey,
                   ),
                 ),
 
                 const SizedBox(width: 12),
 
-                /// To Ward (top) and To Bed (below it)
+                /// TO WARD + BED (right aligned without layout shift)
                 Flexible(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment
+                        .stretch, // 👈 Make column take full width
                     children: [
                       DocvedaText(
                         text: patient["TO WARD"] ?? "--",
@@ -182,6 +186,8 @@ class BedTransferCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
+                        textAlign: TextAlign
+                            .right, // 👈 Align each line right (even when wrapped)
                       ),
                       const SizedBox(height: 4),
                       DocvedaText(
@@ -191,10 +197,11 @@ class BedTransferCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
+                        textAlign: TextAlign.right,
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
 
