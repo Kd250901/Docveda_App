@@ -29,10 +29,9 @@ class _OtpScreenState extends State<OtpScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   String _errorMessage = "";
-  final String _correctOtp = "123456";
 
   late Timer _timer;
-  int _start = 10;
+  int _start = 60;
   bool _isResendVisible = false;
 
   @override

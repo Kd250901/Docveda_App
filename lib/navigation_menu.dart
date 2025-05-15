@@ -77,24 +77,21 @@ class NavigationMenu extends StatelessWidget {
                   Iconsax.chart_1,
                   color: DocvedaColors.white,
                 ), // Selected icon color
-                // label: 'Analytics',
-                label: '',
+                label: 'Analytics',
               ),
               NavigationDestination(
                 icon:
                     Icon(Iconsax.element_3, color: DocvedaColors.primaryColor),
                 selectedIcon:
                     Icon(Iconsax.element_3, color: DocvedaColors.white),
-                // label: 'Dashboard',
-                label: '',
+                label: 'Dashboard',
               ),
               NavigationDestination(
                 icon: Icon(Iconsax.notification,
                     color: DocvedaColors.primaryColor),
                 selectedIcon:
                     Icon(Iconsax.notification, color: DocvedaColors.white),
-                // label: 'Notifications',
-                label: '',
+                label: 'Notifications',
               ),
             ],
           ),
