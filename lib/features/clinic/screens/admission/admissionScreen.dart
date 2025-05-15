@@ -250,7 +250,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                 padding: const EdgeInsets.only(
                                     left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text: "Today's Admission",
+                                  text: DocvedaTexts.depositePatientDesc,
                                   style: TextStyleFont.body,
                                 ),
                               ),

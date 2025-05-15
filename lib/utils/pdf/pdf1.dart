@@ -1,4 +1,3 @@
-
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +5,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
-Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) async {
+Future<void> generateAndShowPdf(
+    List<Map<String, dynamic>> selectedPatients) async {
   final pdf = pw.Document();
   //  final ByteData bytes = await rootBundle.load("assets/fonts/Roboto-Regular.ttf");
   // final pw.Font font = pw.Font.ttf(bytes);
@@ -14,16 +14,95 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
   // Define one set of headers and rows per screen type
   final Map<String, List<List<String>>> screenWiseData = {};
   final Map<String, List<String>> screenWiseHeaders = {
-    'admission': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Total Bill', 'Ward Name', 'Bed Name'],
-    'discharge': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Discharge Date', 'Bill Amount', ],
-    'ipd settlement': ['Name',  'UHID No', 'Admission Date', 'Total Ipd Bill', 'Deposit','Final Settlement', ],
-    'deposit': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Deposit', 'Total Ipd Bill','Pending Amount', ],
-    'bed transfer': ['Name', 'Age', 'Gender', 'UHID No', 'Transfer Date', 'From Ward', 'To Ward', ],
-    'opd visit': ['Name', 'Age', 'Gender', 'UHID No', 'Visit Date',  'Doctor Name', ],
-    'opd payment': ['Name', 'Age', 'Gender', 'UHID No', 'Bill Amount','Payment Date', 'Paid Amount', 'Doctor Name', ],
-    'opd bills': ['Name', 'Age', 'Gender', 'UHID No', 'Admission Date', 'Bill Amount', 'Bill No', ],
-    'refund': ['Name', 'Age', 'Gender', 'UHID No', 'Refund Date', 'Refund Amount', ],
-    'discount': ['Name', 'Age', 'Gender', 'UHID No', 'Discount Date', 'Discount Amount', ],
+    'admission': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Admission Date',
+      'Total Bill',
+      'Ward Name',
+      'Bed Name'
+    ],
+    'discharge': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Admission Date',
+      'Discharge Date',
+      'Bill Amount',
+    ],
+    'ipd settlement': [
+      'Name',
+      'UHID No',
+      'Admission Date',
+      'Total Ipd Bill',
+      'Deposit',
+      'Final Settlement',
+    ],
+    'deposit': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Admission Date',
+      'Deposit',
+      'Total Ipd Bill',
+      'Pending Amount',
+    ],
+    'bed transfer': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Transfer Date',
+      'From Ward',
+      'To Ward',
+    ],
+    'opd visit': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Visit Date',
+      'Doctor Name',
+    ],
+    'opd payment': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Bill Amount',
+      'Payment Date',
+      'Paid Amount',
+      'Doctor Name',
+    ],
+    'opd bills': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Admission Date',
+      'Bill Amount',
+      'Bill No',
+    ],
+    'refund': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Refund Date',
+      'Refund Amount',
+    ],
+    'discount': [
+      'Name',
+      'Age',
+      'Gender',
+      'UHID No',
+      'Discount Date',
+      'Discount Amount',
+    ],
   };
 
   for (final patient in selectedPatients) {
@@ -40,7 +119,9 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-          FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(
+              patient['Total IPD Bill']?.toString() ?? '0',
+              showSymbol: false),
           patient['Ward Name'] ?? '--',
           patient['Bed Name'] ?? '--',
         ]);
@@ -53,8 +134,8 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
           DateFormatter.formatDate(patient['Discharge Date']),
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
-         
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       case 'ipd settlement':
@@ -62,10 +143,14 @@ Future<void> generateAndShowPdf(List<Map<String, dynamic>> selectedPatients) asy
           patient['Patient Name'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymbol: false) ,   
-      FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',showSymbol: false),
-          FormatAmount.formatAmount(patient['Final Settlement']?.toString() ?? '0',showSymbol: false),
-        
+          FormatAmount.formatAmount(
+              patient['Total IPD Bill']?.toString() ?? '0',
+              showSymbol: false),
+          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',
+              showSymbol: false),
+          FormatAmount.formatAmount(
+              patient['Final Settlement']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       case 'deposit':
@@ -75,10 +160,14 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-           FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0',showSymbol: false),
-          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',showSymbol: false),
-          FormatAmount.formatAmount(patient['Pending Amount']?.toString() ?? '0',showSymbol: false),
-          patient['Bed Name'] ?? '--',
+          FormatAmount.formatAmount(
+              patient['Total IPD Bill']?.toString() ?? '0',
+              showSymbol: false),
+          FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',
+              showSymbol: false),
+          FormatAmount.formatAmount(
+              patient['Pending Amount']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       case 'bed transfer':
@@ -90,7 +179,6 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           DateFormatter.formatDate(patient['Bed_End_Date']),
           patient['FROM WARD'] ?? '--',
           patient['TO WARD'] ?? '--',
-        
         ]);
         break;
       case 'opd visit':
@@ -101,7 +189,6 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Visit Date']),
           patient['Doctor Name'] ?? '--',
-         
         ]);
         break;
       case 'opd payment':
@@ -111,10 +198,11 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Payment']),
-          FormatAmount.formatAmount(patient['Paid Amount']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(patient['Paid Amount']?.toString() ?? '0',
+              showSymbol: false),
           patient['Doctor Name'] ?? '--',
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
-         
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       case 'opd bills':
@@ -124,9 +212,9 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Admission Date']),
-          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',showSymbol: false),
+          FormatAmount.formatAmount(patient['Bill Amount']?.toString() ?? '0',
+              showSymbol: false),
           patient['Bill No'] ?? '--',
-         
         ]);
         break;
       case 'refund':
@@ -136,8 +224,8 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Refund']),
-          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0',showSymbol: false),
-          
+          FormatAmount.formatAmount(patient['Refund Amount']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       case 'discount':
@@ -147,8 +235,9 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
           patient['Gender'] ?? '--',
           patient['UHID No'] ?? '--',
           DateFormatter.formatDate(patient['Date Of Discount']),
- FormatAmount.formatAmount(patient['Discount Amount']?.toString() ?? '0',showSymbol: false),
-          
+          FormatAmount.formatAmount(
+              patient['Discount Amount']?.toString() ?? '0',
+              showSymbol: false),
         ]);
         break;
       default:
@@ -161,8 +250,6 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
     screenWiseData[screenName]!.add(data);
   }
 
-  
- 
 // Add a page per screen type
   for (final entry in screenWiseData.entries) {
     final screen = entry.key;
@@ -178,7 +265,6 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
             style: pw.TextStyle(
               fontSize: 24,
               fontWeight: pw.FontWeight.bold,
-            
             ),
           ),
           pw.SizedBox(height: 12),
@@ -187,7 +273,6 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
             data: data,
             headerStyle: pw.TextStyle(
               fontWeight: pw.FontWeight.bold,
-            
             ),
             cellAlignment: pw.Alignment.centerLeft,
             headerDecoration: pw.BoxDecoration(color: PdfColors.grey300),
@@ -197,11 +282,14 @@ FormatAmount.formatAmount(patient['Total IPD Bill']?.toString() ?? '0', showSymb
         ],
         footer: (context) => pw.Text(
           'Generated on ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
-          style: pw.TextStyle(fontSize: 9, ),
+          style: pw.TextStyle(
+            fontSize: 9,
+          ),
         ),
       ),
     );
   }
 
-  await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+  await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save());
 }

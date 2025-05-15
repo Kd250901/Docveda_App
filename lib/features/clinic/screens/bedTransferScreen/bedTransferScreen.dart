@@ -35,14 +35,12 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
   final ApiService apiService = ApiService();
   int selectedPatientIndex = 0;
   late Future<List<Map<String, dynamic>>> bedTransferData;
-        late List<Map<String, dynamic>> patients = [];
-
+  late List<Map<String, dynamic>> patients = [];
 
   DateTime selectedDate = DateTime.now();
   DateTime _selectedDate = DateTime.now();
   bool isMonthly = false;
-      Set<int> selectedPatientIndices = {};
-
+  Set<int> selectedPatientIndices = {};
 
   @override
   void initState() {
@@ -61,7 +59,6 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
       }
     });
   }
-
 
   void loadBedTransferData() {
     final toggleController = Get.find<ToggleController>();
@@ -149,207 +146,214 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final toggleController = Get.find<ToggleController>();
     return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-          DocvedaPrimaryHeaderContainer(
-            child: Column(
-              children: [
-                DocvedaAppBar(
-                  title: Center(
-                    child: DocvedaText(
-                      text: DocvedaTexts.bedTransfer,
-                      style: TextStyleFont.subheading.copyWith(
-                        color: DocvedaColors.white,
+        body: Stack(
+      children: [
+        Column(
+          children: [
+            DocvedaPrimaryHeaderContainer(
+              child: Column(
+                children: [
+                  DocvedaAppBar(
+                    title: Center(
+                      child: DocvedaText(
+                        text: DocvedaTexts.bedTransfer,
+                        style: TextStyleFont.subheading.copyWith(
+                          color: DocvedaColors.white,
+                        ),
                       ),
                     ),
+                    showBackArrow: true,
                   ),
-                  showBackArrow: true,
-                ),
-                DocvedaToggle(
-                  onToggle: (value) {
-                    toggleController.isMonthly.value = value;
-                    loadBedTransferData(); // or any other action you need
-                  },
-                ),
-                DateSwitcherBar(
-                  selectedDate: _selectedDate,
-                  onPrevious: _goToPrevious,
-                  onNext: _goToNext,
-                  onDateChanged: _updateDate,
-                  isMonthly:
-                      toggleController.isMonthly.value, // Use global state
-                  textColor: DocvedaColors.white,
-                  fontSize: DocvedaSizes.fontSizeSm,
-                ),
-              ],
+                  DocvedaToggle(
+                    onToggle: (value) {
+                      toggleController.isMonthly.value = value;
+                      loadBedTransferData(); // or any other action you need
+                    },
+                  ),
+                  DateSwitcherBar(
+                    selectedDate: _selectedDate,
+                    onPrevious: _goToPrevious,
+                    onNext: _goToNext,
+                    onDateChanged: _updateDate,
+                    isMonthly:
+                        toggleController.isMonthly.value, // Use global state
+                    textColor: DocvedaColors.white,
+                    fontSize: DocvedaSizes.fontSizeSm,
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          /// Dynamic Content
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: bedTransferData,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: DocvedaText(text: 'Error: ${snapshot.error}'),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: DocvedaText(text: DocvedaTexts.noPatientFound),
-                  );
-                }
+            /// Dynamic Content
+            Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: bedTransferData,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: DocvedaText(text: 'Error: ${snapshot.error}'),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: DocvedaText(text: DocvedaTexts.noPatientFound),
+                        );
+                      }
 
-                 patients = snapshot.data!;
+                      patients = snapshot.data!;
 
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: DocvedaSizes.spaceBtwItems),
-                      child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start, // Ensures left alignment
+                      return Column(
                         children: [
-                          Row(
-                                children: [
-                                  Checkbox(
-                                    value: selectedPatientIndices.length ==
-                                        patients.length,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        if (val == true) {
-                                          selectedPatientIndices = Set.from(
-                                              List.generate(patients.length,
-                                                  (i) => i));
-                                        } else {
-                                          selectedPatientIndices.clear();
-                                        }
-                                      });
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: DocvedaSizes.spaceBtwItems),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start, // Ensures left alignment
+                              children: [
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      value: selectedPatientIndices.length ==
+                                          patients.length,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          if (val == true) {
+                                            selectedPatientIndices = Set.from(
+                                                List.generate(
+                                                    patients.length, (i) => i));
+                                          } else {
+                                            selectedPatientIndices.clear();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    DocvedaText(
+                                      text:
+                                          "${patients.length} Bed transfer found",
+                                      style: TextStyleFont.subheading,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: DocvedaSizes.xs),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: DocvedaSizes.spaceBtwItems),
+                                  child: DocvedaText(
+                                    text: DocvedaTexts.depositePatientDesc,
+                                    style: TextStyleFont.body,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: DocvedaSizes.spaceBtwItems),
+                              itemCount: patients.length,
+                              itemBuilder: (context, index) {
+                                final patient = patients[index];
+                                final isSelected =
+                                    selectedPatientIndices.contains(index);
+                                return BedTransferCard(
+                                  index: index,
+                                  selectedPatientIndex: isSelected ? index : -1,
+                                  onPatientSelected: handlePatientSelection,
+                                  patient:
+                                      patient, // Pass the entire patient map here
+                                );
+                              },
+                            ),
+                          ),
+                          if (selectedPatientIndices.isNotEmpty)
+
+                            /// View Report Button (Sticky to bottom)
+                            SafeArea(
+                              top: false,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.05,
+                                    vertical: DocvedaSizes.spaceBtwItemsS,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: DocvedaColors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: DocvedaColors.black
+                                            .withOpacity(0.1),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: PrimaryButton(
+                                    text: selectedPatientIndices.length == 1
+                                        ? "View Report"
+                                        : "Download Reports",
+                                    backgroundColor: DocvedaColors.primaryColor,
+                                    onPressed: () {
+                                      if (selectedPatientIndices.length == 1) {
+                                        final idx =
+                                            selectedPatientIndices.first;
+                                        final patient = patients[idx];
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewReportScreen(
+                                              patientName:
+                                                  patient['Patient Name'] ??
+                                                      'Unknown',
+                                              age: patient['Age'] ?? 'unknown',
+                                              gender: patient['Gender'] ?? '',
+                                              uhidno: patient['UHID No'] ?? '',
+                                              bedTransferDate:
+                                                  patient['Bed_End_Date'] ?? '',
+                                              bedTransferTime: patient[
+                                                      'f_HIS_Bed_End_Time'] ??
+                                                  '',
+                                              fromWard:
+                                                  patient['FROM WARD'] ?? '',
+                                              toWard: patient['TO WARD'] ?? '',
+                                              fromBed:
+                                                  patient['FROM BED'] ?? '',
+                                              toBed: patient['TO BED'] ?? '',
+                                              screenName: "Bed Transfer",
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        final selectedPatients =
+                                            selectedPatientIndices.map((i) {
+                                          final patient = patients[i];
+                                          // Add screen name if you know the context (e.g., admission/discharge/etc.)
+                                          return {
+                                            ...patient,
+                                            'Screen Name':
+                                                'bed transfer', // <-- update this dynamically if needed
+                                          };
+                                        }).toList();
+
+                                        generateAndShowPdf(selectedPatients);
+                                      }
                                     },
                                   ),
-                                  DocvedaText(
-                                    text: "${patients.length} Bed transfer found",
-                                    style: TextStyleFont.subheading,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: DocvedaSizes.xs),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: DocvedaSizes.spaceBtwItems),
-                                child: DocvedaText(
-                                  text: "Patients with bed transfer found",
-                                  style: TextStyleFont.body,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                    const SizedBox(height: DocvedaSizes.spaceBtwItemsSsm),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: DocvedaSizes.spaceBtwItems),
-                        itemCount: patients.length,
-                        itemBuilder: (context, index) {
-                          final patient = patients[index];
-                           final isSelected =
-                                  selectedPatientIndices.contains(index);
-                          return BedTransferCard(
-                            index: index,
-                             selectedPatientIndex:
-                                    isSelected ? index : -1,
-                                onPatientSelected: handlePatientSelection,
-                            patient:
-                                patient, // Pass the entire patient map here
-                          );
-                        },
-                      ),
-                    ),
-                
-                                       if (selectedPatientIndices.isNotEmpty)
-        /// View Report Button (Sticky to bottom)
-SafeArea(
-  top: false,
-  child: Align(
-    alignment: Alignment.bottomCenter,
-    child: Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.05,
-        vertical: DocvedaSizes.spaceBtwItemsS,
-      ),
-      decoration: BoxDecoration(
-        color: DocvedaColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: DocvedaColors.black.withOpacity(0.1),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: PrimaryButton(
-        text: selectedPatientIndices.length == 1
-            ? "View Report"
-            : "Download Reports",
-        backgroundColor: DocvedaColors.primaryColor,
-        onPressed: () {
-          if (selectedPatientIndices.length == 1) {
-            final idx = selectedPatientIndices.first;
-            final patient = patients[idx];
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ViewReportScreen(
-                   patientName: patient['Patient Name'] ?? 'Unknown',
-                        age: patient['Age'] ?? 'unknown',
-                        gender: patient['Gender'] ?? '',
-                        uhidno: patient['UHID No'] ?? '',
-                        bedTransferDate : patient['Bed_End_Date'] ?? '',
-                       bedTransferTime : patient['f_HIS_Bed_End_Time'] ?? '',
-                       fromWard: patient['FROM WARD'] ?? '',
-                        toWard: patient['TO WARD'] ?? '', 
-                        fromBed: patient['FROM BED'] ?? '',
-                        toBed: patient['TO BED'] ?? '', 
-
-
-                        screenName: "Bed Transfer",
-                ),
-              ),
-            );
-          }  else {
-  final selectedPatients = selectedPatientIndices.map((i) {
-    final patient = patients[i];
-    // Add screen name if you know the context (e.g., admission/discharge/etc.)
-    return {
-      ...patient,
-      'Screen Name': 'bed transfer', // <-- update this dynamically if needed
-    };
-  }).toList();
-
-  generateAndShowPdf(selectedPatients);
-}
-        },
-      ),
-    ),
-  ),
-)
-            ],
-              );
-  }
-  )
-  )
-  ],
-      )
-        ],
-    )
-    );
+                            )
+                        ],
+                      );
+                    }))
+          ],
+        )
+      ],
+    ));
   }
 }

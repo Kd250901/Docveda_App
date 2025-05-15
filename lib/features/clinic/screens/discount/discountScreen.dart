@@ -10,6 +10,7 @@ import 'package:docveda_app/features/authentication/screens/login/service/api_se
 import 'package:docveda_app/features/clinic/screens/viewReportScreen/viewReportScreen.dart';
 import 'package:docveda_app/utils/constants/colors.dart';
 import 'package:docveda_app/utils/constants/sizes.dart';
+import 'package:docveda_app/utils/constants/text_strings.dart';
 import 'package:docveda_app/utils/helpers/date_formater.dart';
 import 'package:docveda_app/utils/helpers/format_amount.dart';
 import 'package:docveda_app/utils/helpers/format_name.dart';
@@ -238,8 +239,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                 padding: const EdgeInsets.only(
                                     left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text:
-                                      "Patients whose IPD bills are fully settled.",
+                                  text: DocvedaTexts.depositePatientDesc,
                                   style: TextStyleFont.body,
                                 ),
                               ),

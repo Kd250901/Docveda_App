@@ -73,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     fetchProfileData();
+    Future.microtask(() {
+      toggleController.isMonthly.value = false;
+    });
     // Listen for toggle changes
     toggleController.isMonthly.listen((newValue) {
       if (!mounted) return; //  Prevent listener from calling after dispose
@@ -382,8 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPrevious: _goToPrevious,
                       onNext: _goToNext,
                       onDateChanged: _updateDate,
-                      isMonthly:
-                          toggleController.isMonthly.value, // Use global state
+                      isMonthly: isMonthly, // Use global state
                       textColor: DocvedaColors.white,
                       fontSize: DocvedaSizes.fontSizeSm,
                     ),

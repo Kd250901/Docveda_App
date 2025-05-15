@@ -283,8 +283,7 @@ class _DischargescreenState extends State<Dischargescreen> {
                                 padding: const EdgeInsets.only(
                                     left: DocvedaSizes.spaceBtwItems),
                                 child: DocvedaText(
-                                  text:
-                                      "Patients whose IPD bills are fully settled.",
+                                  text: DocvedaTexts.depositePatientDesc,
                                   style: TextStyleFont.body,
                                 ),
                               ),
@@ -470,9 +469,10 @@ class _DischargescreenState extends State<Dischargescreen> {
                                   screenName: "Discharge",
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
-                                  dischargeDate:
-                                     DateFormatter.formatDate( patient['Discharge Date'] ?? ''),
-                                  totalIpdBill: patient['Total IPD Bill'].toString(),
+                                  dischargeDate: DateFormatter.formatDate(
+                                      patient['Discharge Date'] ?? ''),
+                                  totalIpdBill:
+                                      patient['Total IPD Bill'].toString(),
                                 ),
                               ),
                             );
