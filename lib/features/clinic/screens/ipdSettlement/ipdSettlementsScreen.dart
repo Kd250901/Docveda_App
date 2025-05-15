@@ -194,8 +194,8 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                     }
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
-                          child:
-                              DocvedaText(text: "No settlement data found."));
+                          child: DocvedaText(
+                              text: "No IPD settlement data found."));
                     }
 
                     patients = snapshot.data!;

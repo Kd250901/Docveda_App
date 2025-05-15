@@ -209,7 +209,7 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                       return Center(child: Text("Error: ${snapshot.error}"));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
-                          child: Text("No patient data available."));
+                          child: Text("No OPD payment data available."));
                     }
 
                     patients = snapshot.data!;

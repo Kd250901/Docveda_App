@@ -197,7 +197,8 @@ class _BedTransferScreenState extends State<BedTransferScreen> {
                         );
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(
-                          child: DocvedaText(text: DocvedaTexts.noPatientFound),
+                          child: DocvedaText(
+                              text: DocvedaTexts.noBedTransferDataFound),
                         );
                       }
 

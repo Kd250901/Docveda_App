@@ -130,8 +130,11 @@ class DocvedaTexts {
   static const String invalidOTPErrorMsg = "Invalid OTP. Please try again.";
 
   // Admission Screen
-  static const String noPatientFound = "No registered patients found.";
+  static const String noAdmissionDataFound = "No admission data found.";
 
   // Discharge Screen
-  static const String noDischargePatientFound = "No discharged patients found.";
+  static const String noDischargePatientFound = "No discharge data found.";
+
+  // Bed Transfer Screen
+  static const String noBedTransferDataFound = "No bed transfer data found.";
 }
