@@ -42,6 +42,7 @@ class ViewReportScreen extends StatelessWidget {
   final String? deposite;
   final String? refund;
   final String? discount;
+  final String? depositdate;
 
   const ViewReportScreen({
     super.key,
@@ -78,6 +79,7 @@ class ViewReportScreen extends StatelessWidget {
     this.deposite,
     this.refund,
     this.discount,
+    this.depositdate,
   });
 
   @override
@@ -132,9 +134,11 @@ class ViewReportScreen extends StatelessWidget {
       case "deposit":
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
+          "Deposit Date": depositdate ?? "-",
           "Total Bill": totalIpdBill ?? "-",
           "Deposit": deposit ?? "-",
           "Pending Amount": pendingAmount ?? "-",
+          
         });
         break;
       case "opd payment":

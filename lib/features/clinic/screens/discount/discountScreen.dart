@@ -388,7 +388,7 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                           ),
                                           DocvedaText(
                                             text:
-                                                "₹${patient["Discount Amount"] ?? "0"}",
+                                                FormatAmount.formatAmount(patient["Discount Amount"] ?? "0"),
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,

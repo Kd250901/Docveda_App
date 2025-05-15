@@ -458,8 +458,8 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                   screenName: "OPD Payment",
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
-                                  dateOfPayment: DateFormatter.formatDate(
-                                      patient['Date of Payment'] ?? ''),
+                                dateOfPayment: DateFormatter.formatDate(
+                                    patient['Date Of Payment'] ?? ''),
                                   billAmount: FormatAmount.formatAmount(
                                       patient['Bill Amount']),
                                   refund: FormatAmount.formatAmount(

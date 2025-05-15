@@ -307,7 +307,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 DocvedaText(
-                                                  text: "Admission Date",
+                                                  text: "Deposit Date",
                                                   style: TextStyleFont.caption
                                                       .copyWith(
                                                           color: Colors.grey),
@@ -320,7 +320,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                                 DocvedaText(
                                                   text: DateFormatter
                                                       .formatDate(patient[
-                                                          "Admission Date"]),
+                                                          "Deposit Date"]),
                                                   style: TextStyleFont.caption,
                                                 ),
                                               ],
@@ -487,6 +487,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                     patient  ['Total IPD Bill']),
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
+                                      depositdate: DateFormatter.formatDate( patient['Deposit Date']),
                                 ),
                               ),
                             );

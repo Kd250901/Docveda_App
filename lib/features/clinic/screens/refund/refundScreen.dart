@@ -364,7 +364,7 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                           ),
                                           DocvedaText(
                                             text:
-                                                "₹${patient["Refund Amount"] ?? "0"}",
+                                               FormatAmount.formatAmount(patient["Refund Amount"] ?? "0"),
                                             style: TextStyleFont.body.copyWith(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
