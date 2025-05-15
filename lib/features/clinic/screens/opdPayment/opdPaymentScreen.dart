@@ -461,14 +461,18 @@ class _OpdpaymentscreenState extends State<Opdpaymentscreen> {
                                 dateOfPayment:
                                     patient['Date Of Payment'] ?? '',
                                   billAmount: FormatAmount.formatAmount(
-                                      patient['Bill Amount']),
+                                      patient['Bill Amount']?.toString() ?? '0',
+              showSymbol: false),
                                   refund: FormatAmount.formatAmount(
-                                      patient['Refund'] ?? '0'),
+                                      patient['Refund']?.toString() ?? '0',
+              showSymbol: false),
                                   discount: FormatAmount.formatAmount(
-                                      patient['Discount'] ?? '0'),
+                                      patient['Discount'] ?.toString() ?? '0',
+              showSymbol: false),
                                   doctorInCharge: patient['Doctor Name'] ?? '',
                                   paidAmount: FormatAmount.formatAmount(
-                                      patient['Paid Amount'] ?? '0'),
+                                      patient['Paid Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                                 ),
                               ),
                             );

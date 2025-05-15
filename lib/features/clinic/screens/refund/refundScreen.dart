@@ -430,7 +430,8 @@ class _RefundsScreenState extends State<RefundsScreen> {
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                   refundAmount: FormatAmount.formatAmount(
-                                      patient['Refund Amount']),
+                                      patient['Refund Amount']?.toString() ?? '0',
+              showSymbol: false),
                                   dateOfRefund:
                                       patient['Date Of Refund'] ?? '',
                                 ),

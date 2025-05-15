@@ -472,18 +472,24 @@ class _IPDSettlementScreenState extends State<IPDSettlementScreen> {
                               uhidno: patient['UHID No'],
                               screenName: "IPD Settlement",
                               doctorInCharge: patient['Doctor Name'] ?? '',
-                              deposit: FormatAmount.formatAmount(['Deposit']),
+                              deposit: FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',
+              showSymbol: false),
                               finalSettlement: FormatAmount.formatAmount(
-                                  patient['Final Settlement'] ?? ''),
+                                  patient['Final Settlement'] ?.toString() ?? '0',
+              showSymbol: false),
                               totalIpdBill: FormatAmount.formatAmount(
-                                  patient['Total IPD Bill'] ?? ''),
+                                  patient['Total IPD Bill'] ?.toString() ?? '0',
+              showSymbol: false),
                               refundAmount: FormatAmount.formatAmount(
-                                  patient['Refund Amount'] ?? ''),
+                                  patient['Refund Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                               discountAmount: FormatAmount.formatAmount(
-                                  patient['Discount Amount'] ?? ''),
+                                  patient['Discount Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                               admissionDate: patient['Admission Date'] ?? '',
                               billAmount: FormatAmount.formatAmount(
-                                  patient['Bill Amount']),
+                                  patient['Bill Amount']?.toString() ?? '0',
+              showSymbol: false),
                               dischargeDate: DateFormatter.formatDate(
                                   patient['Discharge Date'] ?? ''),
                             ),

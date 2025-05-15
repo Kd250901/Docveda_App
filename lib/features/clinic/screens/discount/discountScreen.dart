@@ -453,7 +453,8 @@ class _DiscountsScreenState extends State<DiscountsScreen> {
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                   discountAmount: FormatAmount.formatAmount(
-                                      patient['Discount Amount'] ?? 0),
+                                      patient['Discount Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                                   dateOfDiscount: 
                                       patient['Date Of Discount'] ?? '',
                                 ),

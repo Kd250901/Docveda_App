@@ -479,11 +479,14 @@ class _DepositScreenState extends State<DepositScreen> {
                                   doctorInCharge:
                                       patient['Doctor In Charge'] ?? '',
                                   deposit:
-                                      FormatAmount.formatAmount(patient['Deposit']),
+                                      FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',
+              showSymbol: false),
                                   pendingAmount: FormatAmount.formatAmount(
-                                     patient ['Pending Amount']),
+                                     patient ['Pending Amount']?.toString() ?? '0',
+              showSymbol: false),
                                   totalIpdBill: FormatAmount.formatAmount(
-                                    patient  ['Total IPD Bill']),
+                                    patient  ['Total IPD Bill']?.toString() ?? '0',
+              showSymbol: false),
                                   admissionDate:
                                       patient['Admission Date'] ?? '',
                                       depositdate: patient['Deposit Date'],

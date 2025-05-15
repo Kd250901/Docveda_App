@@ -500,15 +500,20 @@ class _DischargescreenState extends State<Dischargescreen> {
                                       patient['Admission Date'] ?? '',
                                   dischargeDate:
                                       patient['Discharge Date'] ?? '',
-                               deposit: FormatAmount.formatAmount(['Deposit']),
+                               deposit: FormatAmount.formatAmount(patient['Deposit']?.toString() ?? '0',
+              showSymbol: false),
                               finalSettlement: FormatAmount.formatAmount(
-                                  patient['Final Settlement'] ?? ''),
+                                  patient['Final Settlement']?.toString() ?? '0',
+              showSymbol: false),
                               totalIpdBill: FormatAmount.formatAmount(
-                                  patient['Total IPD Bill'] ?? ''),
+                                  patient['Total IPD Bill'] ?.toString() ?? '0',
+              showSymbol: false),
                                      refundAmount: FormatAmount.formatAmount(
-                                  patient['Refund Amount'] ?? ''),
+                                  patient['Refund Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                               discountAmount: FormatAmount.formatAmount(
-                                  patient['Discount Amount'] ?? ''),
+                                  patient['Discount Amount'] ?.toString() ?? '0',
+              showSymbol: false),
                                 ),
                               ),
                             );

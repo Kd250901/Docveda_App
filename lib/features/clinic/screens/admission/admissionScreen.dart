@@ -439,9 +439,11 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                   admissionDate: patient['Admission Date'],
                                   uhidno: patient['UHID No'],
                                   deposite: FormatAmount.formatAmount(
-                                      patient['Deposite']),
+                                      patient['Deposite']?.toString() ?? '0',
+              showSymbol: false),
                                   totalIpdBill: FormatAmount.formatAmount(
-                                      patient['Total IPD Bill']),
+                                      patient['Total IPD Bill']?.toString() ?? '0',
+              showSymbol: false),
                                   wardName: patient['Ward Name'],
                                   bedName: patient['Bed Name'],
                                 ),
