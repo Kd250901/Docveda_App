@@ -69,7 +69,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
 
     setState(() {
       // Clear selected patient indices when loading new data
-    selectedPatientIndices.clear();
+      selectedPatientIndices.clear();
       final isMonthlyToggle = toggleController.isMonthly.value;
       patientData = fetchDashboardData(
         isMonthly: isMonthlyToggle,
@@ -330,8 +330,7 @@ class _AdmissionScreenState extends State<AdmissionScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               DocvedaText(
-                                                text: 
-                                                    patient["Admission Date"],
+                                                text: patient["Admission Date"],
                                                 style: TextStyleFont.caption,
                                               ),
                                             ],

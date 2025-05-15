@@ -98,7 +98,7 @@ class ViewReportScreen extends StatelessWidget {
         reportData.addAll({
           "Admission Date": admissionDate ?? "-",
           "UHID No": uhidno ?? "-",
-          "Deposite": deposite ?? "-",
+          "Deposit": deposite ?? "-",
           "Total Bill": totalIpdBill ?? "-",
           "Ward Name": wardName ?? "-",
           "Bed Name": bedName ?? "-",
@@ -109,7 +109,7 @@ class ViewReportScreen extends StatelessWidget {
           "Admission Date": admissionDate ?? "-",
           "Discharge Date": dischargeDate ?? "-",
           "Total Bill": totalIpdBill ?? "-",
-            "Deposit": deposit ?? "-",
+          "Deposit": deposit ?? "-",
           "Final Settlement": finalSettlement ?? "-",
           "Refund Amount": refundAmount ?? "-",
           "Discount Amount": discountAmount ?? "-",
@@ -138,7 +138,6 @@ class ViewReportScreen extends StatelessWidget {
           "Total Bill": totalIpdBill ?? "-",
           "Deposit": deposit ?? "-",
           "Pending Amount": pendingAmount ?? "-",
-          
         });
         break;
       case "opd payment":
@@ -227,7 +226,7 @@ class ViewReportScreen extends StatelessWidget {
               child: PrimaryButton(
                 onPressed: () {
                   Pdf.generateAndDownloadPDF(
-                    title: "$screenName Patient Report",
+                    title: "$screenName Report",
                     data: reportData,
                     fileName:
                         "${convertToUnderscore(patientName)}_${convertToUnderscore(screenName)}_report.pdf",
