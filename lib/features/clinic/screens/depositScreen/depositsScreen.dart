@@ -335,7 +335,7 @@ class _DepositScreenState extends State<DepositScreen> {
                                                   CrossAxisAlignment.end,
                                               children: [
                                                 DocvedaText(
-                                                  text: "Discharge Date",
+                                                  text: "UHID No",
                                                   style: TextStyleFont.caption
                                                       .copyWith(
                                                           color: Colors.grey),
@@ -346,9 +346,8 @@ class _DepositScreenState extends State<DepositScreen> {
                                                 ),
                                                 const SizedBox(height: 4),
                                                 DocvedaText(
-                                                  text: DateFormatter
-                                                      .formatDate(patient[
-                                                          "Discharge Date"]),
+                                                  text: patient[
+                                                          "UHID No"],
                                                   style: TextStyleFont.caption,
                                                 ),
                                               ],

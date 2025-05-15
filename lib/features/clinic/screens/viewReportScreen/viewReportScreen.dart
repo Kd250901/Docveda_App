@@ -107,6 +107,10 @@ class ViewReportScreen extends StatelessWidget {
           "Admission Date": admissionDate ?? "-",
           "Discharge Date": dischargeDate ?? "-",
           "Total Bill": totalIpdBill ?? "-",
+            "Deposit": deposit ?? "-",
+          "Final Settlement": finalSettlement ?? "-",
+          "Refund Amount": refundAmount ?? "-",
+          "Discount Amount": discountAmount ?? "-",
         });
         break;
       case "opd visit":
