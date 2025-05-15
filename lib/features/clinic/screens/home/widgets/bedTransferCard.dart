@@ -45,7 +45,9 @@ class BedTransferCard extends StatelessWidget {
                       TextSpan(
                         text: '$bedTransferCount',
                         style: TextStyleFont.subheading.copyWith(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: DocvedaSizes.fontSizeXlg),
                       ),
                       TextSpan(
                         text: ' Bed Transfer',

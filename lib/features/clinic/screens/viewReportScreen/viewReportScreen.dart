@@ -78,7 +78,6 @@ class ViewReportScreen extends StatelessWidget {
     this.deposite,
     this.refund,
     this.discount,
-
   });
 
   @override
@@ -110,11 +109,10 @@ class ViewReportScreen extends StatelessWidget {
           "Total Bill": totalIpdBill ?? "-",
         });
         break;
-         case "opd visit":
+      case "opd visit":
         reportData.addAll({
           "Visit Date": visitDate ?? "-",
           "Doctor Name": doctorInCharge ?? "-",
-         
         });
         break;
       case "bed transfer":
@@ -142,7 +140,7 @@ class ViewReportScreen extends StatelessWidget {
           "Date Of Payment": dateOfPayment ?? "-",
           "Paid Amount": paidAmount ?? "-",
           "Refund ": refund ?? "-",
-          "Discount ": discount?? "-",
+          "Discount ": discount ?? "-",
           "Doctor Name": doctorInCharge ?? "-",
         });
         break;
@@ -163,7 +161,6 @@ class ViewReportScreen extends StatelessWidget {
           "Refund Amount": refundAmount ?? "-",
           "Discount Amount": discountAmount ?? "-",
           "Discharge Date": dischargeDate ?? "-",
-         
         });
         break;
       case "refund":
@@ -248,9 +245,9 @@ class ViewReportScreen extends StatelessWidget {
             label,
             style: const TextStyle(
               fontFamily: "Manrope",
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w600,
               fontSize: DocvedaSizes.fontSizeSm,
-              color: DocvedaColors.darkGrey,
+              color: DocvedaColors.darkerGrey,
             ),
           ),
           Text(
