@@ -220,13 +220,13 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
                     ),
                   ],
                 ),
-                TextButton(
-                  onPressed: () => Get.to(() => const ForgotPassword()),
-                  child: const DocvedaText(
-                    text: DocvedaTexts.forgotPassword,
-                    style: TextStyle(fontSize: DocvedaSizes.inputFieldRadius),
-                  ),
-                ),
+                // TextButton(
+                //   onPressed: () => Get.to(() => const ForgotPassword()),
+                //   child: const DocvedaText(
+                //     text: DocvedaTexts.forgotPassword,
+                //     style: TextStyle(fontSize: DocvedaSizes.inputFieldRadius),
+                //   ),
+                // ),
               ],
             ),
             const SizedBox(height: DocvedaSizes.spaceBtwSections),
