@@ -106,23 +106,23 @@ class _DocvedaLoginFormState extends State<DocvedaLoginForm> {
       }
 
       //  Check Device ID after storing tokens
-      // final deviceCheckRes = await checkDeviceIdOnScreen(
-      //   context: context,
-      //   mobileNo: username,
-      //   deviceId: deviceId.value,
-      // );
-      // // print("Device Check Response: $deviceCheckRes");
+      final deviceCheckRes = await checkDeviceIdOnScreen(
+        context: context,
+        mobileNo: username,
+        deviceId: deviceId.value,
+      );
+      // print("Device Check Response: $deviceCheckRes");
 
-      // if (deviceCheckRes?['data'] == 'N') {
-      //   Get.snackbar(
-      //     "Error",
-      //     "Login with your registered device only.",
-      //     snackPosition: SnackPosition.BOTTOM,
-      //     backgroundColor: DocvedaColors.error,
-      //     colorText: DocvedaColors.white,
-      //   );
-      //   return;
-      // }
+      if (deviceCheckRes?['data'] == 'N') {
+        Get.snackbar(
+          "Error",
+          "Login with your registered device only.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: DocvedaColors.error,
+          colorText: DocvedaColors.white,
+        );
+        return;
+      }
 
       final authCodeResponse = await apiService.issueAuthCode(
         username,
