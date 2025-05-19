@@ -1,4 +1,4 @@
-package com.example.docveda_app
+package com.sis.docveda_app
 
 import io.flutter.embedding.android.FlutterActivity
 
