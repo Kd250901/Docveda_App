@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.docveda_app"
+    namespace = "com.sis.docveda_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
